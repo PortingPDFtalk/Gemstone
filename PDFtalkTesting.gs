@@ -1,4 +1,4 @@
-# Created 12. Oktober 2017 um 20:40:37 by Gemstone Fileout(1.0.0.36,chaider)
+# Created 25. Mai 2018 um 23:58:31 by Gemstone Fileout(1.0.0.36,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -63,20 +63,6 @@ THE SOFTWARE.'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
 %
-# Define class ValuePrinterTests
-DoIt
-TestCase
-	subclass: 'ValuePrinterTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkTesting
-%
-DoIt
-	ValuePrinterTests category: 'Values Testing'.
-	ValuePrinterTests comment: 'Tests for the source strings of Values'.
-%
 # Define class Testvalue
 DoIt
 Value
@@ -90,6 +76,20 @@ Value
 DoIt
 	Testvalue category: 'Values Testing'.
 	Testvalue comment: 'Testvalue is a resource class for testing values'.
+%
+# Define class ValuePrinterTests
+DoIt
+TestCase
+	subclass: 'ValuePrinterTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkTesting
+%
+DoIt
+	ValuePrinterTests category: 'Values Testing'.
+	ValuePrinterTests comment: 'Tests for the source strings of Values'.
 %
 # Define class OrderedDictionaryTests
 DoIt
@@ -169,7 +169,6 @@ testDescribe
 %
 method: OrderedDictionaryTests
 testDescribeAndReadBackNew
-
 	| inst |
 	inst := OrderedDictionary new.
 	self assert: inst asDescription = inst asSource evaluate asDescription
@@ -230,16 +229,11 @@ testKeyedAccess
 %
 method: OrderedDictionaryTests
 testReadBackAllTestInstances
-
-	(OrderedDictionary class organization
-		listAtCategoryNamed: (OrderedDictionary class
-				whichCategoryIncludesSelector: #example))
-			do: 
-				[:sel |
-				| inst readInst |
-				inst := OrderedDictionary perform: sel.
-				self shouldnt: [readInst := inst asSource evaluate] raise: Error.
-				self assert: inst asSource = readInst asSource]
+	(OrderedDictionary class organization listAtCategoryNamed: (OrderedDictionary class whichCategoryIncludesSelector: #example)) do: [:sel |
+		| inst readInst |
+		inst := OrderedDictionary perform: sel.
+		self shouldnt: [readInst := inst asSource evaluate] raise: Error.
+		self assert: inst asSource = readInst asSource]
 %
 method: OrderedDictionaryTests
 testRemoving
@@ -677,10 +671,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Testing'.
-	dict at: #parcelName put: 'PDFtalk Testing'.
+	dict at: #parcelName put: 'PDFtalkTesting'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.0.30'.
+	dict at: #storeVersion put: '2.0.4.1'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -812,11 +806,9 @@ stringLf
 category: 'evaluating'
 method: Tests
 evaluate: sourceString
-
 	^(sourceString
 		_compileInContext: nil
-		symbolList: (SymbolList with: PDFtalk)
-				, GsSession currentSession symbolList
+		symbolList: (SymbolList with: PDFtalk) , GsSession currentSession symbolList
 		oldLitVars: nil
 		environmentId: 0
 		flags: 0) _executeInContext: nil
@@ -2201,39 +2193,39 @@ runAllTests
 
 	| testclasses |
 	testclasses := (OrderedCollection new)
-				add: (Smalltalk at: #OrderedDictionaryTests);
-				add: (Smalltalk at: #ValuePrinterTests);
-				add: (PDFtalk at: #LibraryTests);
-				add: (Smalltalk at: #ByteStreamTests);
-				add: (PDFtalk at: #NameTests);
-				add: (PDFtalk at: #ColorTests);
-				add: (PDFtalk at: #TypecheckingTests);
-				add: (PDFtalk at: #TypingTests);
-				add: (PDFtalk at: #SimpleObjectTests);
-				add: (PDFtalk at: #StringTests);
-				add: (PDFtalk at: #StreamTests);
-				add: (PDFtalk at: #ReferenceTests);
-				add: (PDFtalk at: #CrossReferenceTests);
-				add: (PDFtalk at: #ObjectStreamTests);
-				add: (PDFtalk at: #PDFObjectTests);
-				add: (PDFtalk at: #PagesTests);
-				add: (PDFtalk at: #ContentsTests);
-				add: (PDFtalk at: #AttributeTests);
-				add: (PDFtalk at: #CatalogTests);
-				add: (PDFtalk at: #TrailerTests);
-				add: (PDFtalk at: #MatrixTests);
-				add: (PDFtalk at: #FileTests);
-				add: (PDFtalk at: #ImageXTests);
-				add: (PDFtalk at: #FontEncodingTests);
-				add: ((PDFtalk at: #Fonts) at: #FontMetricsTests);
-				add: ((PDFtalk at: #Fonts) at: #FontProgramTests);
-				add: ((PDFtalk at: #Fonts) at: #PFMTests);
-				add: ((PDFtalk at: #Fonts) at: #AfmParsingTest);
-				add: ((PDFtalk at: #Fonts) at: #CharacterDecodingTests);
-				add: ((PDFtalk at: #Fonts) at: #FontEncodingTest);
-				add: (((PDFtalk at: #Fonts) at: #CFF) at: #CFFTests);
-				add: (((PDFtalk at: #Fonts) at: #OpenType) at: #OpenTypeTests);
-				yourself.
+		add: (Smalltalk at: #OrderedDictionaryTests);
+		add: (Smalltalk at: #ValuePrinterTests);
+		add: (PDFtalk at: #LibraryTests);
+		add: (Smalltalk at: #ByteStreamTests);
+		add: (PDFtalk at: #NameTests);
+		add: (PDFtalk at: #ColorTests);
+		add: (PDFtalk at: #TypecheckingTests);
+		add: (PDFtalk at: #TypingTests);
+		add: (PDFtalk at: #SimpleObjectTests);
+		add: (PDFtalk at: #StringTests);
+		add: (PDFtalk at: #StreamTests);
+		add: (PDFtalk at: #ReferenceTests);
+		add: (PDFtalk at: #CrossReferenceTests);
+		add: (PDFtalk at: #ObjectStreamTests);
+		add: (PDFtalk at: #PDFObjectTests);
+		add: (PDFtalk at: #PagesTests);
+		add: (PDFtalk at: #ContentsTests);
+		add: (PDFtalk at: #AttributeTests);
+		add: (PDFtalk at: #CatalogTests);
+		add: (PDFtalk at: #TrailerTests);
+		add: (PDFtalk at: #MatrixTests);
+		add: (PDFtalk at: #FileTests);
+		add: (PDFtalk at: #ImageXTests);
+		add: (PDFtalk at: #FontEncodingTests);
+		add: ((PDFtalk at: #Fonts) at: #FontMetricsTests);
+		add: ((PDFtalk at: #Fonts) at: #FontProgramTests);
+		add: ((PDFtalk at: #Fonts) at: #PFMTests);
+		add: ((PDFtalk at: #Fonts) at: #AfmParsingTest);
+		add: ((PDFtalk at: #Fonts) at: #CharacterDecodingTests);
+		add: ((PDFtalk at: #Fonts) at: #FontEncodingTest);
+		add: (((PDFtalk at: #Fonts) at: #CFF) at: #CFFTests);
+		add: (((PDFtalk at: #Fonts) at: #OpenType) at: #OpenTypeTests);
+		yourself.
 	^(TestSuite newForClassesSelected: testclasses) run
 %
 category: '*PDFtalk test resources-test instances'
@@ -2500,7 +2492,7 @@ example
 %
 classmethod: Trailer
 exampleMinimal
-	^self on: (Dictionary
+	^self on: (OrderedDictionary
 		with: #Size -> 22
 		with: #Root -> (Dictionary with: #Type -> #Catalog) asPDF newReference)
 %
@@ -7920,10 +7912,10 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: (PDFtalk at: #Fonts) at: 1.
 %
-# Define class AfmParsingTest
+# Define class FontMetricsTests
 DoIt
 (PDFtalk at: #Tests)
-	subclass: 'AfmParsingTest'
+	subclass: 'FontMetricsTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7931,36 +7923,8 @@ DoIt
 	inDictionary: Fonts
 %
 DoIt
-	AfmParsingTest category: 'PDFtalk Fonts tests'.
-	AfmParsingTest namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class FontProgramTests
-DoIt
-(PDFtalk at: #Tests)
-	subclass: 'FontProgramTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	FontProgramTests category: 'PDFtalk Fonts tests'.
-	FontProgramTests namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class PFMTests
-DoIt
-(PDFtalk at: #Tests)
-	subclass: 'PFMTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	PFMTests category: 'PDFtalk Fonts tests'.
-	PFMTests namespacePath: #(#PDFtalk #Fonts).
+	FontMetricsTests category: 'PDFtalk Fonts tests'.
+	FontMetricsTests namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class FontEncodingTest
 DoIt
@@ -7976,6 +7940,20 @@ DoIt
 	FontEncodingTest category: 'PDFtalk Fonts tests'.
 	FontEncodingTest namespacePath: #(#PDFtalk #Fonts).
 %
+# Define class FontProgramTests
+DoIt
+(PDFtalk at: #Tests)
+	subclass: 'FontProgramTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	FontProgramTests category: 'PDFtalk Fonts tests'.
+	FontProgramTests namespacePath: #(#PDFtalk #Fonts).
+%
 # Define class CharacterDecodingTests
 DoIt
 (PDFtalk at: #Tests)
@@ -7990,10 +7968,10 @@ DoIt
 	CharacterDecodingTests category: 'PDFtalk Fonts tests'.
 	CharacterDecodingTests namespacePath: #(#PDFtalk #Fonts).
 %
-# Define class FontMetricsTests
+# Define class PFMTests
 DoIt
 (PDFtalk at: #Tests)
-	subclass: 'FontMetricsTests'
+	subclass: 'PFMTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8001,8 +7979,22 @@ DoIt
 	inDictionary: Fonts
 %
 DoIt
-	FontMetricsTests category: 'PDFtalk Fonts tests'.
-	FontMetricsTests namespacePath: #(#PDFtalk #Fonts).
+	PFMTests category: 'PDFtalk Fonts tests'.
+	PFMTests namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class AfmParsingTest
+DoIt
+(PDFtalk at: #Tests)
+	subclass: 'AfmParsingTest'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	AfmParsingTest category: 'PDFtalk Fonts tests'.
+	AfmParsingTest namespacePath: #(#PDFtalk #Fonts).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8546,7 +8538,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk tests'.
-	dict at: #storeVersion put: '2.0.0.20'.
+	dict at: #storeVersion put: '2.0.4.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -8567,10 +8559,10 @@ DoIt
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class TypecheckingTests
+# Define class AttributeTests
 DoIt
 Tests
-	subclass: 'TypecheckingTests'
+	subclass: 'AttributeTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8578,8 +8570,8 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	TypecheckingTests category: 'PDFtalk tests'.
-	TypecheckingTests namespacePath: #(#PDFtalk).
+	AttributeTests category: 'PDFtalk tests'.
+	AttributeTests namespacePath: #(#PDFtalk).
 %
 # Define class ColorTests
 DoIt
@@ -8594,6 +8586,35 @@ Tests
 DoIt
 	ColorTests category: 'PDFtalk tests'.
 	ColorTests namespacePath: #(#PDFtalk).
+%
+# Define class ImageXTests
+DoIt
+Tests
+	subclass: 'ImageXTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ImageXTests category: 'PDFtalk tests'.
+	ImageXTests comment: 'Tests for the PDF ImageX object'.
+	ImageXTests namespacePath: #(#PDFtalk).
+%
+# Define class TypingTests
+DoIt
+Tests
+	subclass: 'TypingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TypingTests category: 'PDFtalk tests'.
+	TypingTests namespacePath: #(#PDFtalk).
 %
 # Define class TrailerTests
 DoIt
@@ -8623,20 +8644,6 @@ DoIt
 	FontEncodingTests category: 'PDFtalk tests'.
 	FontEncodingTests namespacePath: #(#PDFtalk).
 %
-# Define class PDFObjectTests
-DoIt
-Tests
-	subclass: 'PDFObjectTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFObjectTests category: 'PDFtalk tests'.
-	PDFObjectTests namespacePath: #(#PDFtalk).
-%
 # Define class NameTests
 DoIt
 Tests
@@ -8650,104 +8657,6 @@ Tests
 DoIt
 	NameTests category: 'PDFtalk tests'.
 	NameTests namespacePath: #(#PDFtalk).
-%
-# Define class CrossReferenceTests
-DoIt
-Tests
-	subclass: 'CrossReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReferenceTests category: 'PDFtalk tests'.
-	CrossReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class StreamTests
-DoIt
-Tests
-	subclass: 'StreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StreamTests category: 'PDFtalk tests'.
-	StreamTests namespacePath: #(#PDFtalk).
-%
-# Define class StringTests
-DoIt
-Tests
-	subclass: 'StringTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StringTests category: 'PDFtalk tests'.
-	StringTests namespacePath: #(#PDFtalk).
-%
-# Define class FileTests
-DoIt
-Tests
-	subclass: 'FileTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FileTests category: 'PDFtalk tests'.
-	FileTests namespacePath: #(#PDFtalk).
-%
-# Define class AttributeTests
-DoIt
-Tests
-	subclass: 'AttributeTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AttributeTests category: 'PDFtalk tests'.
-	AttributeTests namespacePath: #(#PDFtalk).
-%
-# Define class ObjectStreamTests
-DoIt
-Tests
-	subclass: 'ObjectStreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ObjectStreamTests category: 'PDFtalk tests'.
-	ObjectStreamTests namespacePath: #(#PDFtalk).
-%
-# Define class ContentsTests
-DoIt
-Tests
-	subclass: 'ContentsTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ContentsTests category: 'PDFtalk tests'.
-	ContentsTests namespacePath: #(#PDFtalk).
 %
 # Define class MatrixTests
 DoIt
@@ -8777,20 +8686,6 @@ DoIt
 	ReferenceTests category: 'PDFtalk tests'.
 	ReferenceTests namespacePath: #(#PDFtalk).
 %
-# Define class SimpleObjectTests
-DoIt
-Tests
-	subclass: 'SimpleObjectTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SimpleObjectTests category: 'PDFtalk tests'.
-	SimpleObjectTests namespacePath: #(#PDFtalk).
-%
 # Define class PagesTests
 DoIt
 Tests
@@ -8805,10 +8700,10 @@ DoIt
 	PagesTests category: 'PDFtalk tests'.
 	PagesTests namespacePath: #(#PDFtalk).
 %
-# Define class TypingTests
+# Define class TypecheckingTests
 DoIt
 Tests
-	subclass: 'TypingTests'
+	subclass: 'TypecheckingTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8816,8 +8711,92 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	TypingTests category: 'PDFtalk tests'.
-	TypingTests namespacePath: #(#PDFtalk).
+	TypecheckingTests category: 'PDFtalk tests'.
+	TypecheckingTests namespacePath: #(#PDFtalk).
+%
+# Define class PDFObjectTests
+DoIt
+Tests
+	subclass: 'PDFObjectTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PDFObjectTests category: 'PDFtalk tests'.
+	PDFObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class StringTests
+DoIt
+Tests
+	subclass: 'StringTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StringTests category: 'PDFtalk tests'.
+	StringTests namespacePath: #(#PDFtalk).
+%
+# Define class ContentsTests
+DoIt
+Tests
+	subclass: 'ContentsTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ContentsTests category: 'PDFtalk tests'.
+	ContentsTests namespacePath: #(#PDFtalk).
+%
+# Define class CrossReferenceTests
+DoIt
+Tests
+	subclass: 'CrossReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReferenceTests category: 'PDFtalk tests'.
+	CrossReferenceTests namespacePath: #(#PDFtalk).
+%
+# Define class MergingTests
+DoIt
+Tests
+	subclass: 'MergingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MergingTests category: 'PDFtalk tests'.
+	MergingTests namespacePath: #(#PDFtalk).
+%
+# Define class LibraryTests
+DoIt
+Tests
+	subclass: 'LibraryTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LibraryTests category: 'PDFtalk tests'.
+	LibraryTests namespacePath: #(#PDFtalk).
 %
 # Define class CatalogTests
 DoIt
@@ -8833,10 +8812,10 @@ DoIt
 	CatalogTests category: 'PDFtalk tests'.
 	CatalogTests namespacePath: #(#PDFtalk).
 %
-# Define class ImageXTests
+# Define class StreamTests
 DoIt
 Tests
-	subclass: 'ImageXTests'
+	subclass: 'StreamTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8844,14 +8823,13 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	ImageXTests category: 'PDFtalk tests'.
-	ImageXTests comment: 'Tests for the PDF ImageX object'.
-	ImageXTests namespacePath: #(#PDFtalk).
+	StreamTests category: 'PDFtalk tests'.
+	StreamTests namespacePath: #(#PDFtalk).
 %
-# Define class LibraryTests
+# Define class SimpleObjectTests
 DoIt
 Tests
-	subclass: 'LibraryTests'
+	subclass: 'SimpleObjectTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8859,8 +8837,36 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	LibraryTests category: 'PDFtalk tests'.
-	LibraryTests namespacePath: #(#PDFtalk).
+	SimpleObjectTests category: 'PDFtalk tests'.
+	SimpleObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class FileTests
+DoIt
+Tests
+	subclass: 'FileTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FileTests category: 'PDFtalk tests'.
+	FileTests namespacePath: #(#PDFtalk).
+%
+# Define class ObjectStreamTests
+DoIt
+Tests
+	subclass: 'ObjectStreamTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectStreamTests category: 'PDFtalk tests'.
+	ObjectStreamTests namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -9257,7 +9263,7 @@ method: ContentsTests
 test
 	self assert: (ContentParser onString: (PDF classAt: #Contents) example internal) readOperations size = 24.
 	self assert: (ContentParser onString: (PDF classAt: #Contents) example internal) readOperations first printString = '2 J'.
-	self assert: (ContentParser onString: (PDF classAt: #Contents) example internal) readOperations first isOperator.
+	self assert: ((ContentParser onString: (PDF classAt: #Contents) example internal) readOperations first isKindOf: Operation).
 	self assert: (ContentParser onString: (PDF classAt: #Contents) example internal) readOperations first operands = (Array with: 2 asPDF)
 %
 category: 'tests'
@@ -10055,27 +10061,20 @@ ET
 %
 method: FontEncodingTests
 testStandardTwoByteString
-
 	| page |
-	page := PDF Page
-				newInBounds: (0 @ -5 corner: 120 @ 15)
-				colorspace: (PDF classAt: #DeviceCMYK) new
-				render: 
-					[:renderer |
-					renderer textObjectDo: 
-							[renderer setFont: #Helvetica size: 16.
-							renderer showString: (Unicode16 withAll: (String with: 0 asCharacter))]].
+	page := PDF Page newInBounds: (0 @ -5 corner: 120 @ 15) colorspace: (PDF classAt: #DeviceCMYK) new render: [:renderer |
+		renderer textObjectDo: [
+			renderer setFont: #Helvetica size: 16.
+			renderer showString: (Unicode16 withAll: (String with: 0 asCharacter))]].
 	self assert: page Contents internal = 'BT
 /F1 16 Tf
 (\000) Tj
 ET
 ' withLf.
-	self assert: (page Resources fonts objectAt: #F1) pdfSource
-				= '<<	/Type /Font
+	self assert: (page Resources fonts objectAt: #F1) pdfSource = '<<	/Type /Font
 	/Subtype /Type1
 	/BaseFont /Helvetica
-	/Encoding /WinAnsiEncoding	>>'
-						withLf
+	/Encoding /WinAnsiEncoding	>>' withLf
 %
 method: FontEncodingTests
 testStandardUnknownCharacter
@@ -10281,17 +10280,80 @@ test
 	self assert: (((PDF classAt: #Matrix) translation: 10 @ 26) concatinatedWith: ((PDF classAt: #Matrix) translation: 200 @ 300)) printString = '[1 0 0 1 210 326]'.
 	self assert: ((PDF classAt: #Matrix) scaling: 10 @ 26) printString = '[10 0 0 26 0 0]'.
 	self assert: (((PDF classAt: #Matrix) scaling: 10 @ 26) concatinatedWith: ((PDF classAt: #Matrix) scaling: 200 @ 300)) printString = '[2000 0 0 7800 0 0]'.
-	self assert: ((PDF classAt: #Matrix) xFrom: 10 @ 26 to: 200 @ 300) printString = '[190.0 274.0 -274.0 190.0 10 26]'.
-	self assert: ((PDF classAt: #Matrix) xFrom: 10 @ 10 to: 200 @ 200) printString = '[190.0 190.0 -190.0 190.0 10 10]'.
-	self assert: ((PDF classAt: #Matrix) rotation: 0) printString = '[1.0 0 0 1.0 0 0]'.
-	self assert: ((PDF classAt: #Matrix) rotation: 90 degreesToRadians) printString = '[0 1.0 -1.0 0 0 0]'.
-	self assert: ((PDF classAt: #Matrix) rotationDegrees: -90) printString = '[0 -1.0 1.0 0 0 0]'.
-	self assert: ((PDF classAt: #Matrix) rotationDegrees: 180) printString = '[-1.0 0 0 -1.0 0 0]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) scaling: 20 @ 30)) printString = '[0 30.0 -20.0 0 0 0]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) printString = '[0 30.0 -20.0 0 0 0]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) translation: 20 @ 30)) printString = '[0 1.0 -1.0 0 20 30]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) translatedBy: 20 @ 30) printString = '[0 1.0 -1.0 0 20 30]'.
-	self assert: ((((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) translatedBy: 20 @ 30) printString = '[0 30.0 -20.0 0 20 30]'.
+	self assert: ((PDF classAt: #Matrix) xFrom: 10 @ 10 to: 200 @ 200) printString = '[190 190 -190 190 10 10]'.
+	self assert: ((PDF classAt: #Matrix) rotation: 0) printString = '[1 0 0 1 0 0]'.
+	self assert: ((PDF classAt: #Matrix) rotation: 90 degreesToRadians) printString = '[0 1 -1 0 0 0]'.
+	self assert: ((PDF classAt: #Matrix) rotationDegrees: -90) printString = '[0 -1 1 0 0 0]'.
+	self assert: ((PDF classAt: #Matrix) rotationDegrees: 180) printString = '[-1 0 0 -1 0 0]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) scaling: 20 @ 30)) printString = '[0 30 -20 0 0 0]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) printString = '[0 30 -20 0 0 0]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) translation: 20 @ 30)) printString = '[0 1 -1 0 20 30]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) translatedBy: 20 @ 30) printString = '[0 1 -1 0 20 30]'.
+	self assert: ((((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) translatedBy: 20 @ 30) printString = '[0 30 -20 0 20 30]'.
+%
+category: 'tests'
+method: MergingTests
+mergeTitlePage: aTitlePageReport with: aReport
+	| pagesReference pages addPagesReference |
+	pagesReference := aTitlePageReport root at: #Pages.
+	pages := pagesReference referent.
+	addPagesReference := aReport root at: #Pages.
+	addPagesReference referent at: #Parent put: pagesReference.
+	pages at: #Kids put: (pages Kids with: addPagesReference).
+	pages at: #Count put: pages count
+%
+method: MergingTests
+mergeTitlePageNew: aTitlePageReport with: aReport
+	| pagesReference |
+	pagesReference := aTitlePageReport root at: #Pages.
+	pagesReference referent
+		addPageTreeReference: (aReport root at: #Pages)
+		withParent: pagesReference
+%
+method: MergingTests
+testAddDocument
+	"self new testAddDocument"
+
+	| pdfDocumentToAddTo pdfFileToAppend |
+	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
+	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
+	self mergeTitlePageNew: pdfDocumentToAddTo with: pdfFileToAppend.
+	pdfDocumentToAddTo saveAs: '1-merged.pdf'
+%
+method: MergingTests
+testMergingWithInheritedResources
+	"self new testMergingWithInheritedResources"
+
+	| pdfDocumentToAddTo topPagesReference topPages pdfFileToAppend endPagesReference |
+	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
+	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
+	topPagesReference := pdfDocumentToAddTo root at: #Pages.
+	topPages := topPagesReference referent.
+	endPagesReference := pdfFileToAppend root at: #Pages.
+	endPagesReference referent at: #Parent put: topPagesReference.
+	topPages at: #Kids put: (topPages Kids with: endPagesReference).
+	topPages at: #Count put: topPages count.
+	pdfDocumentToAddTo saveAs: '1-merged.pdf'
+%
+method: MergingTests
+testMergingWithInheritedResourcesWorks
+	"self new testMergingWithInheritedResourcesWorks"
+
+	| pdfDocumentToAddTo startPagesReference startPages pdfFileToAppend endPagesReference endPages newTopPages newTopPagesReference |
+	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
+	startPagesReference := pdfDocumentToAddTo root at: #Pages.
+	startPages := startPagesReference referent.
+	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
+	endPagesReference := pdfFileToAppend root at: #Pages.
+	endPages := endPagesReference referent.
+	newTopPages := (PDF classAt: #Pages) empty.
+	newTopPagesReference := newTopPages newReference.
+	startPages at: #Parent put: newTopPagesReference.
+	endPages at: #Parent put: newTopPagesReference.
+	newTopPages at: #Kids put: (Array with: startPagesReference with: endPagesReference).
+	newTopPages at: #Count put: newTopPages count.
+	pdfDocumentToAddTo root at: #Pages put: newTopPagesReference.
+	pdfDocumentToAddTo saveAs: '1-merged.pdf'
 %
 category: 'tests'
 method: NameTests
@@ -10742,24 +10804,10 @@ testConvertChars
 %
 method: SimpleObjectTests
 testDate
-
-	self assert: ((File readTesterOn: '(D:199812231952-08''00)') readObject
-				isKindOf: (PDF classAt: #Date)).
-	self
-		assert: ((File readTesterOn: '(D:199812231952-08''00)') readObject
-				asSmalltalkValue isKindOf: Timestamp).
-	self
-		assert: (File readTesterOn: '(D:199812231952-08''00)') readObject
-				asSmalltalkValue
-					= (Timestamp
-							d: 24
-							m: 12
-							y: 1998
-							h: 3
-							m: 52) asLocal.
-	self
-		assert: (File readTesterOn: '(D:199812231952-08''00)') readObject asUTC
-				= (File readTesterOn: '(D:19981224045200+01'')') readObject asUTC
+	self assert: ((File readTesterOn: '(D:199812231952-08''00)') readObject isKindOf: (PDF classAt: #Date)).
+	self assert: ((File readTesterOn: '(D:199812231952-08''00)') readObject asSmalltalkValue isKindOf: Timestamp).
+	self assert: (File readTesterOn: '(D:199812231952-08''00)') readObject asSmalltalkValue = (Timestamp d: 24 m: 12 y: 1998 h: 3 m: 52) asLocal.
+	self assert: (File readTesterOn: '(D:199812231952-08''00)') readObject asUTC = (File readTesterOn: '(D:19981224045200+01'')') readObject asUTC
 %
 method: SimpleObjectTests
 testDictionaryAccess
@@ -10980,9 +11028,13 @@ testNumberRead
 	self assert: (File readTesterOn: '34.5') readObject = 34.5 asPDF.
 	self assert: (File readTesterOn: '-3.62') readObject = -3.62 asPDF.
 	self assert: (File readTesterOn: '+123.6') readObject = 123.6 asPDF.
-	self assert: (File readTesterOn: '4.') readObject = 4.0 asPDF.
+	self assert: (File readTesterOn: '4.') readObject printString = '4'.
 	self assert: (File readTesterOn: '-.002') readObject = -0.002 asPDF.
-	self assert: (File readTesterOn: '0.0') readObject = 0 asPDF
+	self assert: (File readTesterOn: '0.0') readObject = 0 asPDF.
+	self assert: (File readTesterOn: '-0.0') readObject = 0 asPDF.
+	self assert: (File readTesterOn: '0.0000012345') readObject printString = '0'.
+	self deny: (File readTesterOn: '0.0000012345') readObject = 0 asPDF.
+	self assert: (File readTesterOn: '0.0000012345') readObject content = 1.2345e-6.
 %
 method: SimpleObjectTests
 testNumberWrite
@@ -10991,12 +11043,14 @@ testNumberWrite
 	self assert: 17 asPDF pdfSource = '17'.
 	self assert: -98 asPDF pdfSource = '-98'.
 	self assert: 0 asPDF pdfSource = '0'.
+	self assert: 0 negated asPDF pdfSource = '0'.
 	self assert: 34.5 asPDF pdfSource = '34.5'.
 	self assert: -3.62 asPDF pdfSource = '-3.62'.
 	self assert: 123.6 asPDF pdfSource = '123.6'.
 	self assert: 4 asPDF pdfSource = '4'.
 	self assert: -0.002 asPDF pdfSource = '-0.002'.
-	self assert: 0 asPDF pdfSource = '0'
+	self assert: 0.123456789 asPDF pdfSource = '0.12346'.
+	self assert: 0.00000123 asPDF pdfSource = '0'.
 %
 method: SimpleObjectTests
 testRead
@@ -11012,7 +11066,7 @@ testRead
 	self assert: (File readTesterOn: '34.5') readObject = 34.5 asPDF.
 	self assert: (File readTesterOn: '-3.62') readObject = -3.62 asPDF.
 	self assert: (File readTesterOn: '+123.6') readObject = 123.6 asPDF.
-	self assert: (File readTesterOn: '4.') readObject = 4.0 asPDF.
+	self assert: (File readTesterOn: '4.') readObject printString = '4'.
 	self assert: (File readTesterOn: '-.002') readObject = -0.002 asPDF.
 	self assert: (File readTesterOn: '0.0') readObject = 0 asPDF.
 	self assert: (File readTesterOn: '/') readObject = #'' asPDF.
@@ -11149,6 +11203,12 @@ testASCII85
 	D]i,"
 	Ebo80
 	~>') internal = 'Hello World!'.
+	self assert: ((PDF classAt: #ASCII85Decode) external: '
+	87cUR
+	D]i,"
+	Ebo80
+	~
+      >') internal = 'Hello World!'.
 %
 method: StreamTests
 testASCIIHex
@@ -11211,71 +11271,36 @@ testEncodingError
 %
 method: StreamTests
 testFlate
-
+	self assert: ((PDF classAt: #FlateDecode) internal: (PDF classAt: #Filter) exampleString) external = (PDF classAt: #FlateDecode) exampleEncodedString.
+	self assert: ((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedString) internal = (PDF classAt: #Filter) exampleString.
 	self
-		assert: ((PDF classAt: #FlateDecode)
-				internal: (PDF classAt: #Filter) exampleString) external
-				= (PDF classAt: #FlateDecode) exampleEncodedString.
+		should: [
+		((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringNoHeader) internal]
+		raise: Exception.
+	[
+	((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringNoHeader) internal] on: Exception do: [:ex |
+			self assert: ex description = 'UserDefinedError: Only DEFLATE (8) is permitted as compression method'].
 	self
-		assert: ((PDF classAt: #FlateDecode)
-				external: (PDF classAt: #FlateDecode) exampleEncodedString) internal
-				= (PDF classAt: #Filter) exampleString.
-	self should: 
-			[((PDF classAt: #FlateDecode)
-				external: (PDF classAt: #FlateDecode) exampleEncodedStringNoHeader)
-					internal]
+		should: [
+		((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringNoChecksum) internal]
 		raise: Exception.
-	
-	[((PDF classAt: #FlateDecode)
-		external: (PDF classAt: #FlateDecode) exampleEncodedStringNoHeader)
-			internal]
-			on: Exception
-			do: 
-				[:ex |
-				self assert: ex description
-							= 'UserDefinedError: Only DEFLATE (8) is permitted as compression method'].
-	self should: 
-			[((PDF classAt: #FlateDecode)
-				external: (PDF classAt: #FlateDecode) exampleEncodedStringNoChecksum)
-					internal]
+	[
+	((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringNoChecksum) internal] on: Exception do: [:ex |
+			self assert: ex description = 'UserDefinedError: the ADLER32 checksum is not correct'].
+	self
+		should: [
+		((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongChecksum) internal]
 		raise: Exception.
-	
-	[((PDF classAt: #FlateDecode)
-		external: (PDF classAt: #FlateDecode) exampleEncodedStringNoChecksum)
-			internal]
-			on: Exception
-			do: 
-				[:ex |
-				self assert: ex description
-							= 'UserDefinedError: the ADLER32 checksum is not correct'].
-	self should: 
-			[((PDF classAt: #FlateDecode)
-				external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongChecksum)
-					internal]
+	[
+	((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongChecksum) internal] on: Exception do: [:ex |
+			self assert: ex description = 'UserDefinedError: the ADLER32 checksum is not correct'].
+	self
+		should: [
+		((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongHeader) internal]
 		raise: Exception.
-	
-	[((PDF classAt: #FlateDecode)
-		external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongChecksum)
-			internal]
-			on: Exception
-			do: 
-				[:ex |
-				self assert: ex description
-							= 'UserDefinedError: the ADLER32 checksum is not correct'].
-	self should: 
-			[((PDF classAt: #FlateDecode)
-				external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongHeader)
-					internal]
-		raise: Exception.
-	
-	[((PDF classAt: #FlateDecode)
-		external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongHeader)
-			internal]
-			on: Exception
-			do: 
-				[:ex |
-				self assert: ex description
-							= 'UserDefinedError: the checksum of the header is not correct']
+	[
+	((PDF classAt: #FlateDecode) external: (PDF classAt: #FlateDecode) exampleEncodedStringWrongHeader) internal] on: Exception do: [:ex |
+			self assert: ex description = 'UserDefinedError: the checksum of the header is not correct']
 %
 method: StreamTests
 testMultipleDecodingErrors
@@ -11786,12 +11811,11 @@ testTextstringUnicode
 category: 'tests'
 method: TrailerTests
 testCreationDate
-
 	| trailer |
 	trailer := (PDF classAt: #Trailer)
-				with: #Size -> 4
-				with: #Root -> (PDF Dictionary with: #Type -> #Catalog) newReference
-				with: #Info -> (PDF classAt: #DocumentInformation) empty newReference.
+		with: #Size -> 4
+		with: #Root -> (PDF Dictionary with: #Type -> #Catalog) newReference
+		with: #Info -> (PDF classAt: #DocumentInformation) empty newReference.
 	self assert: (trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: trailer Size = 4 asPDF.
 	self assert: trailer Info class = (PDF classAt: #DocumentInformation).
@@ -11802,8 +11826,7 @@ testCreationDate
 	trailer Info at: #ModDate put: (Timestamp d: 6 m: 2 y: 2012) asLocal.
 	self assert: trailer Info CreationDate class = (PDF classAt: #Date).
 	"the FileIdentifier cannot be tested with timestamps, since they are written timezone specific"
-	self assert: (trailer hashForFilename: 'test.pdf' andSize: 100) class
-				= PDF String
+	self assert: (trailer hashForFilename: 'test.pdf' andSize: 100) class = PDF String
 %
 method: TrailerTests
 testMD5Hash
@@ -11896,7 +11919,7 @@ method: TypecheckingTests
 testArraySubsumption
 	self assert: ((Array with: PDF Dictionary new) asPDF compliesTo: (ArrayType onSymbol: #Dictionary)).
 	self deny: ((Array with: PDF Stream new) asPDF compliesTo: (ArrayType onSymbol: #Dictionary)).
-	self deny: ((Array with: (PDF classAt: #Names) new) asPDF compliesTo: (ArrayType onSymbol: #Dictionary)).
+	self assert: ((Array with: (PDF classAt: #Names) new) asPDF compliesTo: (ArrayType onSymbol: #Dictionary)).
 	self assert: ((Array
 		with: PDF Dictionary new
 		with: PDF Dictionary new
@@ -11960,8 +11983,8 @@ testClassSubsumption
 	self assert: (PDF Dictionary new compliesTo: (ObjectType onSymbol: #Dictionary)).
 	self assert: (TypedDictionary new compliesTo: (ObjectType onSymbol: #Dictionary)).
 	self deny: (PDF Stream new compliesTo: (ObjectType onSymbol: #Dictionary)).
-	self deny: ((PDF classAt: #Names) new compliesTo: (ObjectType onSymbol: #Dictionary)).
-	self deny: ((PDF classAt: #NameTree) new compliesTo: (ObjectType onSymbol: #Dictionary)).
+	self assert: ((PDF classAt: #Names) new compliesTo: (ObjectType onSymbol: #Dictionary)).
+	self assert: ((PDF classAt: #NameTree) new compliesTo: (ObjectType onSymbol: #Dictionary)).
 	self assert: ((PDF classAt: #NameTree) new compliesTo: (ObjectType onSymbol: #NameTree)).
 	self assert: (PDF Dictionary new asType: (ObjectType onSymbol: #Names)) class = (PDF classAt: #Names).
 	self deny: ((PDF classAt: #Names) new asType: (ObjectType onSymbol: #Dictionary)) isNil.
@@ -12584,6 +12607,16 @@ testTypingFlowStream
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #LatticeFormGouraudShadedMesh)).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #FunctionBasedShading)).
 %
+method: TypingTests
+testTypingImage
+
+	| image stream attributeType |
+	image := ImageXObject depth4Mapped.
+	stream := PDF Stream on: image content internal: image internal.
+	attributeType := ObjectType onSymbol: #XObject.
+	self assert: ((stream typed: (Array with: attributeType)) isKindOf: XObject).
+	self assert: ((stream asType: attributeType) isKindOf: XObject).
+%
 DoIt
 System myUserProfile removeDictionaryAt: 1.
 %
@@ -12904,7 +12937,6 @@ pdfIconMaskImage
 category: '*PDFtalk Demonstrations-actions'
 method: Page
 saveAndShowAs: aFilenameString
-
 	| document dir |
 	document := Document new.
 	document root addPage: self.
@@ -12959,10 +12991,9 @@ demo01_minimalPDF
 	trailer writePDFOn: wst indent: 0.
 	doc writeStartxref: startxref on: wst.
 	fst := GsFile
-				open: (GsFile _expandEnvVariable: 'HOME' isClient: false)
-						, '/demo01_minimalPDF.pdf'
-				mode: 'wb'
-				onClient: false.
+		open: (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/demo01_minimalPDF.pdf'
+		mode: 'wb'
+		onClient: false.
 	[fst nextPutAll: wst contents asByteArray] ensure: [fst close]
 %
 classmethod: PDF
@@ -12973,8 +13004,7 @@ demo01a_normalPDF
 	| document |
 	document := Document new.
 	document root addPage: PDF Page empty.
-	document saveAs: (GsFile _expandEnvVariable: 'HOME' isClient: false)
-				, '/demo01a_normalPDF.pdf'
+	document saveAs: (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/demo01a_normalPDF.pdf'
 %
 classmethod: PDF
 demo02_graphics
@@ -13487,17 +13517,15 @@ demo12_copyPagesToNewPDF
 	| extractedDocument filename targetFilename inputStream |
 	extractedDocument := Document new.
 	"put the specification into the $HOME path on the server"
-	filename := (GsFile _expandEnvVariable: 'HOME' isClient: false)
-				, '/PDF32000_2008.pdf'.
+	filename := (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/PDF32000_2008.pdf'.
 	targetFilename := (filename allButLast: 4) , '[extracted10to20].pdf'.
 	inputStream := GsFile openReadOnServer: filename.
-	
-	[| root |
+	[
+	| root |
 	root := (File readFrom: inputStream) root.
-	10 to: 20
-		do: [:pageNumber | extractedDocument root addPage: (root pageAt: pageNumber)].
-	extractedDocument saveAs: targetFilename]
-			ensure: [inputStream close].
+	10 to: 20 do: [:pageNumber | extractedDocument root addPage: (root pageAt: pageNumber)].
+	extractedDocument saveAs: targetFilename] ensure: [
+			inputStream close].
 	^targetFilename
 %
 classmethod: PDF
@@ -13508,19 +13536,17 @@ demo13_splitPDF
 	| filename inputStream inputPDF pageNumber |
 	filename := self demo12_copyPagesToNewPDF.
 	inputStream := GsFile openReadOnServer: filename.
-	
-	[inputPDF := File readFrom: inputStream.
+	[
+	inputPDF := File readFrom: inputStream.
 	pageNumber := 1.
-	inputPDF root pagesDo: 
-			[:page |
-			| targetFilename onePageDocument |
-			onePageDocument := Document new.
-			onePageDocument root addPage: page.
-			targetFilename := (filename asString allButLast: 4) , '_'
-						, pageNumber printString , '.pdf'.
-			onePageDocument saveAs: targetFilename.
-			pageNumber := pageNumber + 1]]
-			ensure: [inputStream close]
+	inputPDF root pagesDo: [:page |
+		| targetFilename onePageDocument |
+		onePageDocument := Document new.
+		onePageDocument root addPage: page.
+		targetFilename := (filename asString allButLast: 4) , '_' , pageNumber printString , '.pdf'.
+		onePageDocument saveAs: targetFilename.
+		pageNumber := pageNumber + 1]] ensure: [
+			inputStream close]
 %
 classmethod: PDF
 demo14_addAnnotation
@@ -13529,21 +13555,20 @@ demo14_addAnnotation
 	| clone filename |
 	filename := self demo12_copyPagesToNewPDF.
 	clone := (File readFrom: (GsFile openReadOnServer: filename)) asDocument.
-	clone root pagesDo: 
-			[:page |
-			| newAnnotation popupAnnotation popupAnnotationRef |
-			newAnnotation := (PDF classAt: #TextAnnotation) empty.
-			newAnnotation at: #Rect put: (50 @ 500 extent: 200 @ 40).
-			"add some optional attribute"
-			newAnnotation at: #Contents put: 'The text of the annotation'.
-			newAnnotation at: #T put: 'Title of the text annotation'.
-			popupAnnotation := (PDF classAt: #PopupAnnotation) empty.
-			popupAnnotation at: #Rect put: (80 @ 550 extent: 200 @ 100).
-			popupAnnotationRef := popupAnnotation newReference.
-			newAnnotation at: #Popup put: popupAnnotationRef.
-			page at: #Annots
-				put: ((page Annots with: newAnnotation newReference)
-						with: popupAnnotationRef)].
+	clone root pagesDo: [:page |
+		| newAnnotation popupAnnotation popupAnnotationRef |
+		newAnnotation := (PDF classAt: #TextAnnotation) empty.
+		newAnnotation at: #Rect put: (50 @ 500 extent: 200 @ 40).
+		"add some optional attribute"
+		newAnnotation at: #Contents put: 'The text of the annotation'.
+		newAnnotation at: #T put: 'Title of the text annotation'.
+		popupAnnotation := (PDF classAt: #PopupAnnotation) empty.
+		popupAnnotation at: #Rect put: (80 @ 550 extent: 200 @ 100).
+		popupAnnotationRef := popupAnnotation newReference.
+		newAnnotation at: #Popup put: popupAnnotationRef.
+		page
+			at: #Annots
+			put: ((page Annots with: newAnnotation newReference) with: popupAnnotationRef)].
 	clone saveAs: (filename asString allButLast: 4) , '_Annotated.pdf'
 %
 classmethod: PDF

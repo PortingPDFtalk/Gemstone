@@ -1,4 +1,4 @@
-# Created 12. Oktober 2017 um 20:40:36 by Gemstone Fileout(1.0.0.36,chaider)
+# Created 25. Mai 2018 um 23:58:30 by Gemstone Fileout(1.0.0.36,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -94,6 +94,60 @@ DoIt
 ColorValue category: 'Values VW stub class'.
 ColorValue comment: 'VisualWorks class'.
 %
+# Define class Value
+DoIt
+Object
+	subclass: 'Value'
+	instVarNames: #()
+	classVars: #(NamedValuesRegistry)
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	Value category: 'Values'.
+	Value comment: 'Value is the abstract root object of values (literal objects).
+All Value classes which have subclasses are considered abstract. Only leaf classes can have instances!
+Literal objects are created immutable with constructors.
+The instance variables are object constants.
+
+Subclasses must implement the following messages:
+	class specification
+		localSpecification'.
+%
+# Define class Printvalue
+DoIt
+Value
+	subclass: 'Printvalue'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	Printvalue category: 'Values'.
+	Printvalue comment: 'A Printvalue holds a representation of a Value to be printed.
+It consists of
+	- classname 	<String>										properly resolved against a target class (#name or #fullName)
+	- arguments 	<SequenceableCollection of: Printargument>		the list of arguments with constructor variable name and a Printvalue
+
+Printvalues are created when printing the source for a Value in the first pass. The second pass takes the Printvalue and produces a nicely indented soure string for the value.'.
+%
+# Define class ArrayPrintvalue
+DoIt
+Printvalue
+	subclass: 'ArrayPrintvalue'
+	instVarNames: #(arguments)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	ArrayPrintvalue category: 'Values'.
+	ArrayPrintvalue comment: 'ArrayPrintvalue is a special Printvalue for sequentiable collections of Values'.
+%
 # Define class Emitter
 DoIt
 Object
@@ -116,41 +170,6 @@ Instance Variables
 	stream	<WriteStream | TextStream>		the output stream
 '.
 %
-# Define class SourceEmitter
-DoIt
-Emitter
-	subclass: 'SourceEmitter'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	SourceEmitter category: 'Values'.
-	SourceEmitter comment: 'SourceEmitter outputs source code.'.
-%
-# Define class Value
-DoIt
-Object
-	subclass: 'Value'
-	instVarNames: #()
-	classVars: #(NamedValuesRegistry)
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	Value category: 'Values'.
-	Value comment: 'Value is the abstract root object of values (literal objects).
-All Value classes which have subclasses are considered abstract. Only leaf classes can have instances!
-Literal objects are created immutable with constructors.
-The instance variables are object constants.
-
-Subclasses must implement the following messages:
-	class specification
-		localSpecification'.
-%
 # Define class Printargument
 DoIt
 Value
@@ -169,6 +188,34 @@ DoIt
 	- value 	<Printvalue>	the print value of the value
 
 With Printvalue it represents the source for a Value'.
+%
+# Define class SourceEmitter
+DoIt
+Emitter
+	subclass: 'SourceEmitter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	SourceEmitter category: 'Values'.
+	SourceEmitter comment: 'SourceEmitter outputs source code.'.
+%
+# Define class Lineemitter
+DoIt
+SourceEmitter
+	subclass: 'Lineemitter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	Lineemitter category: 'Values'.
+	Lineemitter comment: 'Emits source as one line'.
 %
 # Define class TextEmitter
 DoIt
@@ -198,42 +245,6 @@ DoIt
 	TextBlockemitter category: 'Values'.
 	TextBlockemitter comment: 'TextBlockEmitter emits text as indented block'.
 %
-# Define class Printvalue
-DoIt
-Value
-	subclass: 'Printvalue'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	Printvalue category: 'Values'.
-	Printvalue comment: 'A Printvalue holds a representation of a Value to be printed.
-It consists of
-	- classname 	<String>										properly resolved against a target class (#name or #fullName)
-	- arguments 	<SequenceableCollection of: Printargument>		the list of arguments with constructor variable name and a Printvalue
-
-Printvalues are created when printing the source for a Value in the first pass. The second pass takes the Printvalue and produces a nicely indented soure string for the value.'.
-%
-# Define class LiteralPrintvalue
-DoIt
-Printvalue
-	subclass: 'LiteralPrintvalue'
-	instVarNames: #(string)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	LiteralPrintvalue category: 'Values'.
-	LiteralPrintvalue comment: 'LiteralPrintvalue is a Printvalue for literals.
-
-Instance Variables:
-	string	<String>	the representation as a string'.
-%
 # Define class ValuePrinter
 DoIt
 Object
@@ -256,98 +267,6 @@ Instance Variables:
 
 '.
 %
-# Define class Blockemitter
-DoIt
-SourceEmitter
-	subclass: 'Blockemitter'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	Blockemitter category: 'Values'.
-	Blockemitter comment: 'Emits source as indented block'.
-%
-# Define class OrderedDictionary
-DoIt
-Dictionary
-	indexableSubclass: 'OrderedDictionary'
-	instVarNames: #(order)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	OrderedDictionary category: 'Values'.
-	OrderedDictionary comment: 'OrderedDictionary preserves the order in which the entries were added.
-
-Warning: This is not a real ordered Dictionary, because it only supports enough for Values.
-
-Instance Variables:
-	order	<SequenceableCollection of: Object>		the ordered keys'.
-%
-# Define class Lineemitter
-DoIt
-SourceEmitter
-	subclass: 'Lineemitter'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	Lineemitter category: 'Values'.
-	Lineemitter comment: 'Emits source as one line'.
-%
-# Define class DictionaryPrintvalue
-DoIt
-Printvalue
-	subclass: 'DictionaryPrintvalue'
-	instVarNames: #(arguments isOrdered)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	DictionaryPrintvalue category: 'Values'.
-	DictionaryPrintvalue comment: 'DictionaryPrintvalue is used for printing Dictionaries
-
-Instance Variables:
-	arguments	<SequenceableCollection of DictionaryPrintargument>	the Printarguments for each entry'.
-%
-# Define class TextLineemitter
-DoIt
-TextEmitter
-	subclass: 'TextLineemitter'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	TextLineemitter category: 'Values'.
-	TextLineemitter comment: 'TextLineEmitter emits text as one line'.
-%
-# Define class ArrayPrintvalue
-DoIt
-Printvalue
-	subclass: 'ArrayPrintvalue'
-	instVarNames: #(arguments)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkLibrary
-%
-DoIt
-	ArrayPrintvalue category: 'Values'.
-	ArrayPrintvalue comment: 'ArrayPrintvalue is a special Printvalue for sequentiable collections of Values'.
-%
 # Define class ValuePrintvalue
 DoIt
 Printvalue
@@ -368,6 +287,59 @@ Instance Variables:
 
 '.
 %
+# Define class DictionaryPrintvalue
+DoIt
+Printvalue
+	subclass: 'DictionaryPrintvalue'
+	instVarNames: #(arguments isOrdered)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	DictionaryPrintvalue category: 'Values'.
+	DictionaryPrintvalue comment: 'DictionaryPrintvalue is used for printing Dictionaries
+
+Instance Variables:
+	arguments	<SequenceableCollection of DictionaryPrintargument>	the Printarguments for each entry'.
+%
+# Define class LiteralPrintvalue
+DoIt
+Printvalue
+	subclass: 'LiteralPrintvalue'
+	instVarNames: #(string)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	LiteralPrintvalue category: 'Values'.
+	LiteralPrintvalue comment: 'LiteralPrintvalue is a Printvalue for literals.
+
+Instance Variables:
+	string	<String>	the representation as a string'.
+%
+# Define class OrderedDictionary
+DoIt
+Dictionary
+	indexableSubclass: 'OrderedDictionary'
+	instVarNames: #(order)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	OrderedDictionary category: 'Values'.
+	OrderedDictionary comment: 'OrderedDictionary preserves the order in which the entries were added.
+
+Warning: This is not a real ordered Dictionary, because it only supports enough for Values.
+
+Instance Variables:
+	order	<SequenceableCollection of: Object>		the ordered keys'.
+%
 # Define class DictionaryPrintargument
 DoIt
 Printargument
@@ -382,6 +354,34 @@ DoIt
 	DictionaryPrintargument category: 'Values'.
 	DictionaryPrintargument comment: 'DictionaryPrintargument holds the Printvalues for key and value of an entry in a dictionary.
 Both key and value can be Values'.
+%
+# Define class TextLineemitter
+DoIt
+TextEmitter
+	subclass: 'TextLineemitter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	TextLineemitter category: 'Values'.
+	TextLineemitter comment: 'TextLineEmitter emits text as one line'.
+%
+# Define class Blockemitter
+DoIt
+SourceEmitter
+	subclass: 'Blockemitter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkLibrary
+%
+DoIt
+	Blockemitter category: 'Values'.
+	Blockemitter comment: 'Emits source as indented block'.
 %
 category: 'instance creation'
 classmethod: ArrayPrintvalue
@@ -810,7 +810,6 @@ associationsDo: aBlock
 category: 'dictionary removing'
 method: OrderedDictionary
 removeKey: aKey otherwise: defaultValue
-
 	| return |
 	return := super removeKey: aKey otherwise: defaultValue.
 	self order remove: aKey ifAbsent: nil.
@@ -818,7 +817,6 @@ removeKey: aKey otherwise: defaultValue
 %
 method: OrderedDictionary
 removeAssociation: anAssociation otherwise: defaultValue
-
 	| return |
 	return := super removeAssociation: anAssociation otherwise: defaultValue.
 	self order remove: anAssociation key ifAbsent: nil.
@@ -845,12 +843,10 @@ keysAndValuesDo: oneArgumentBlock
 %
 method: OrderedDictionary
 keysDo: aBlock
-
 	self keys do: aBlock
 %
 method: OrderedDictionary
 valuesDo: aBlock
-
 	self keysDo: [:key | aBlock value: (self at: key)]
 %
 category: 'printing'
@@ -865,13 +861,11 @@ printvalueWith: printer
 category: 'private'
 method: OrderedDictionary
 addNewAssociation: anAssociation hash: aHashVal
-
 	self order addLast: anAssociation key.
 	^super addNewAssociation: anAssociation hash: aHashVal
 %
 method: OrderedDictionary
 rebuild
-
 	| original return |
 	original := self order copy.
 	return := super rebuild.
@@ -1035,9 +1029,8 @@ emitArraySourceFor: anArray
 %
 method: TextEmitter
 emitBold: aString
-
-	self stream withAttributes: (Array with: TextEmphasis bold)
-		do: [self stream nextPutAll: aString]
+	self stream withAttributes: (Array with: TextEmphasis bold) do: [
+		self stream nextPutAll: aString]
 %
 method: TextEmitter
 emitClass: aString
@@ -1329,23 +1322,14 @@ fromBytes: threeBytes
 %
 classmethod: ColorValue
 fromBytesRed: redByte green: greenByte blue: blueByte
-
-	^self
-		red: redByte / 255
-		green: greenByte / 255
-		blue: blueByte / 255
+	^self red: redByte / 255 green: greenByte / 255 blue: blueByte / 255
 %
 classmethod: ColorValue
 fromColor: aColor
-
-	^self
-		r: aColor red
-		g: aColor green
-		b: aColor blue
+	^self r: aColor red g: aColor green b: aColor blue
 %
 classmethod: ColorValue
 red: r green: g blue: b
-
 	^self r: r g: g b: b
 %
 category: '*Values-named values'
@@ -1361,48 +1345,39 @@ namedValueNames
 %
 classmethod: ColorValue
 black
-
 	^super black asColorValue
 %
 classmethod: ColorValue
 white
-
 	^super white asColorValue
 %
 classmethod: ColorValue
 red
-
 	^super red asColorValue
 %
 classmethod: ColorValue
 green
-
 	^super green asColorValue
 %
 classmethod: ColorValue
 blue
-
 	^super blue asColorValue
 %
 classmethod: ColorValue
 cyan
-
 	^super cyan asColorValue
 %
 classmethod: ColorValue
 magenta
-
 	^super magenta asColorValue
 %
 classmethod: ColorValue
 yellow
-
 	^super yellow asColorValue
 %
 category: '*Values-converting'
 method: ColorValue
 asByteArray
-
 	^ByteArray
 		with: (self red * 255) truncated
 		with: (self green * 255) truncated
@@ -1424,7 +1399,6 @@ rgbIndex
 %
 method: ColorValue
 asColorValue
-
 	^self
 %
 category: '*Values-printing'
@@ -1441,7 +1415,6 @@ printvalueWith: printer
 %
 method: ColorValue
 printOn: aStream
-
 	aStream nextPutAll: self asSource
 %
 category: '*Values-testing'
@@ -1488,7 +1461,6 @@ d: dayInteger m: monthInteger y: yearInteger h: hoursInteger m: minutesInteger
 %
 classmethod: Timestamp
 d: dayInteger m: monthInteger y: yearInteger h: hoursInteger m: minutesInteger s: secondsInteger
-
 	^self
 		year: yearInteger
 		month: monthInteger
@@ -1500,15 +1472,10 @@ d: dayInteger m: monthInteger y: yearInteger h: hoursInteger m: minutesInteger s
 %
 classmethod: Timestamp
 fromDate: aDate andTime: aTime
-
-	^self
-		date: aDate
-		time: aTime
-		offset: Duration zero
+	^self date: aDate time: aTime offset: Duration zero
 %
 classmethod: Timestamp
 epoch
-
 	^self d: 1 m: 1 y: 1901
 %
 category: '*Values-printing'
@@ -1561,20 +1528,19 @@ DoIt
 category: '*Values-printing'
 method: Symbol
 literalString
-
-	self asString isValidIdentifier ifTrue: [^'#' , self asString].
+	self asString isValidIdentifier ifTrue: [
+		^'#' , self asString].
 	^super literalString
 %
 category: '*Values-testing'
 method: Array
 isLiteral
-
-	^(self isMemberOf: Array) and: [self allSatisfy: #isLiteral]
+	^(self isMemberOf: Array) and: [
+	self allSatisfy: #isLiteral]
 %
 category: '*Values-printing'
 method: Array
 literalString
-
 	| wst |
 	wst := String new writeStream.
 	wst nextPutAll: '#('.
@@ -1585,67 +1551,56 @@ literalString
 category: '*Values-printing'
 method: Boolean
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: CharacterCollection
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: SmallInteger
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: LargeInteger
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: Character
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: UndefinedObject
 literalString
-
 	^self printString
 %
 category: '*Values-printing'
 method: BinaryFloat
 literalString
-
 	^self asStringLocaleC
 %
 category: '*Values-printing'
 method: DecimalFloat
 literalString
-
 	^self asStringLocaleC
 %
 category: '*Values-printing'
 method: FixedPoint
 literalString
-
 	^self asStringLocaleC
 %
 category: '*Values-printing'
 method: ScaledDecimal
 literalString
-
 	^self asStringLocaleC
 %
 category: '*Values-converting'
 method: Color
 asColorValue
-
 	^ColorValue fromColor: self
 %
 category: '*Values-accessing'
@@ -1654,7 +1609,8 @@ nameRelativeTo: targetClass
 	"<String>"
 	"self nameRelativeTo: Object"
 
-	(targetClass isInScope: self) ifTrue: [^self name asString].
+	(targetClass isInScope: self) ifTrue: [
+		^self name asString].
 	^self nameAccessExpression: self namespacePath
 %
 method: Class
@@ -1663,23 +1619,26 @@ definitionDictionary
 	symbol dictionary in which the receiver is defined or nil if the receiver is in the scope of the ProfileUsers symbolDict"
 
 	| symlist |
-	self namespacePath isEmpty ifTrue: [^nil].
+	self namespacePath isEmpty ifTrue: [
+		^nil].
 	symlist := GsSession currentSession.
-	self namespacePath do: 
-			[:symbol |
-			symlist := (symlist resolveSymbol: symbol)
-						ifNotNil: [:assoc | SymbolList with: assoc value]
-						ifNil: [^nil]].
+	self namespacePath do: [:symbol |
+		symlist := (symlist resolveSymbol: symbol)
+			ifNotNil: [:assoc |
+			SymbolList with: assoc value]
+			ifNil: [
+			^nil]].
 	^symlist
 %
 method: Class
 nameAccessExpression: aPath
 	"<String>"
 
-	aPath isEmpty ifTrue: [^self name asString].
-	aPath size = 1 ifTrue: [^aPath first asString].
-	^'(' , (self nameAccessExpression: (aPath allButLast: 1)) , ' at: '
-		, aPath last printString , ')'
+	aPath isEmpty ifTrue: [
+		^self name asString].
+	aPath size = 1 ifTrue: [
+		^aPath first asString].
+	^'(' , (self nameAccessExpression: (aPath allButLast: 1)) , ' at: ' , aPath last printString , ')'
 %
 method: Class
 namespacePath
@@ -1690,7 +1649,6 @@ namespacePath
 %
 method: Class
 namespacePath: anArrayOfSymbols
-
 	self namespacePathsAtClasses at: self put: anArrayOfSymbols
 %
 category: '*Values-testing'
@@ -1700,11 +1658,9 @@ isInScope: aClass
 	true if aClass is visible by the receiver - aClass can be used in the source without namespace qualifier.
 	false when aClass cannot be seen by the receiver - use the fullName"
 
-	self definitionDictionary
-		ifNotNil: 
-			[:symlist |
-			(symlist resolveSymbol: aClass name)
-				ifNotNil: [:entity | ^entity value == aClass]].
+	self definitionDictionary ifNotNil: [:symlist |
+		(symlist resolveSymbol: aClass name) ifNotNil: [:entity |
+			^entity value == aClass]].
 	^(GsSession currentSession resolveSymbol: aClass name) notNil
 %
 category: '*Values-instance creation'
@@ -1732,7 +1688,6 @@ printvalueWith: printer
 category: '*Values-dictionary testing'
 method: Dictionary
 isEqualValue: anObject
-
 	^self = anObject
 %
 category: '*Values-printing'
@@ -1843,7 +1798,6 @@ asSourceFor: targetClass
 %
 method: Object
 printvalueWith: printer
-
 	^LiteralPrintvalue string: (self literalString ifNil: [self printString])
 %
 method: Object
@@ -1856,25 +1810,22 @@ literalString
 category: '*Values-accessing'
 method: Object
 namespacePathsAtClasses
-
 	^PDFtalkLibrary at: #namespacePathsAtClasses
 %
 category: '*Values-testing'
 method: Object
 isLiteral
-
 	^self literalString notNil
 %
 category: '*Values-actions'
 method: Object
 beImmutable
-
 	^self immediateInvariant
 %
 method: Object
 beMutable
 	"do nothing on Gemstone"
-	
+
 %
 category: '*Values-printing'
 method: Point
@@ -1914,9 +1865,7 @@ h: hoursInteger m: minutesInteger
 %
 classmethod: Time
 h: hoursInteger m: minutesInteger s: secondsInteger
-
-	^self
-		fromSeconds: hoursInteger * 3600 + (minutesInteger * 60) + secondsInteger
+	^self fromSeconds: hoursInteger * 3600 + (minutesInteger * 60) + secondsInteger
 %
 classmethod: Time
 zero
@@ -1993,10 +1942,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk'.
+	dict at: #padded put: true.
 	dict at: #parcelName put: 'PDFtalk'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'Compression-ZLib') #(#name 'MD5') #(#name 'Values' #componentType #package)).
 	dict at: #prerequisiteParcels put: #(#('Compression-ZLib' '') #('MD5' '') #('Values' '')).
-	dict at: #storeVersion put: '2.0.0.37'.
+	dict at: #storeVersion put: '2.0.4.4'.
+	dict at: #version put: '(2.0.4.3,chaider)'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -2029,7 +1980,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Basics'.
-	dict at: #storeVersion put: '2.0.0.14'.
+	dict at: #storeVersion put: '2.0.1.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -2076,6 +2027,51 @@ DoIt
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
+# Define class Writer
+DoIt
+WriteStream
+	subclass: 'Writer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Writer category: 'PDFtalk Basics'.
+	Writer comment: 'A stream to write PDF objects to a byte stream'.
+	Writer namespacePath: #(#PDFtalk).
+%
+# Define class Error
+DoIt
+Error
+	subclass: 'Error'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Error category: 'PDFtalk Basics'.
+	Error comment: 'Super class of all exceptions thrown by the PDF code'.
+	Error namespacePath: #(#PDFtalk).
+%
+# Define class FileError
+DoIt
+Error
+	subclass: 'FileError'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FileError category: 'PDFtalk Basics'.
+	FileError comment: 'Error in the PDF file structure'.
+	FileError namespacePath: #(#PDFtalk).
+%
 # Define class Version
 DoIt
 Magnitude
@@ -2092,22 +2088,20 @@ DoIt
 Each released version has one subclass with specific features.'.
 	Version namespacePath: #(#PDFtalk).
 %
-# Define class PDF
+# Define class TypeError
 DoIt
-Object
-	subclass: 'PDF'
+Error
+	subclass: 'TypeError'
 	instVarNames: #()
-	classVars: #(MacRomanEncoder PDFDocEncoder PDFSpecification PDFSpecificationFilenameString StandardEncoder WinAnsiEncoder)
-	classInstVars: #(types)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	PDF category: 'PDFtalk Basics'.
-	PDF comment: 'Global class for utilities used from anywhere.
-
-There are no instances; all functionality is implemented as class methods.'.
-	PDF namespacePath: #(#PDFtalk).
+	TypeError category: 'PDFtalk Basics'.
+	TypeError comment: 'signals a type mismatch'.
+	TypeError namespacePath: #(#PDFtalk).
 %
 # Define class PDFEncoder
 DoIt
@@ -2144,21 +2138,6 @@ Use String>>fromPdfHexString to convert from PDF to Smalltalk
 Use String>>asPdfHexString to convert from Smalltalk to PDF'.
 	HexStringEncoder namespacePath: #(#PDFtalk).
 %
-# Define class Error
-DoIt
-Error
-	subclass: 'Error'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Error category: 'PDFtalk Basics'.
-	Error comment: 'Super class of all exceptions thrown by the PDF code'.
-	Error namespacePath: #(#PDFtalk).
-%
 # Define class Unsupported
 DoIt
 Error
@@ -2174,21 +2153,22 @@ DoIt
 	Unsupported comment: 'Unsupported is raised when a feature of the PDF specification is not (yet) supported'.
 	Unsupported namespacePath: #(#PDFtalk).
 %
-# Define class ReadError
+# Define class PDF
 DoIt
-Error
-	subclass: 'ReadError'
+Object
+	subclass: 'PDF'
 	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
+	classVars: #(MacRomanEncoder PDFDocEncoder PDFSpecification PDFSpecificationFilenameString StandardEncoder WinAnsiEncoder)
+	classInstVars: #(types)
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	ReadError category: 'PDFtalk Basics'.
-	ReadError comment: 'Syntax error while reading a PDF.
-The parameter contains the position in the PDF file where the error occured'.
-	ReadError namespacePath: #(#PDFtalk).
+	PDF category: 'PDFtalk Basics'.
+	PDF comment: 'Global class for utilities used from anywhere.
+
+There are no instances; all functionality is implemented as class methods.'.
+	PDF namespacePath: #(#PDFtalk).
 %
 # Define class StringEncoder
 DoIt
@@ -2207,54 +2187,6 @@ DoIt
 Use String>>fromPdfString to convert from PDF to Smalltalk
 Use String>>asPdfString to convert from Smalltalk to PDF'.
 	StringEncoder namespacePath: #(#PDFtalk).
-%
-# Define class FileError
-DoIt
-Error
-	subclass: 'FileError'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FileError category: 'PDFtalk Basics'.
-	FileError comment: 'Error in the PDF file structure'.
-	FileError namespacePath: #(#PDFtalk).
-%
-# Define class NameEncoder
-DoIt
-PDFEncoder
-	subclass: 'NameEncoder'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NameEncoder category: 'PDFtalk Basics'.
-	NameEncoder comment: 'A de- and en-coder for PDF Names (see PDF 32000_2008.pdf p.17)
-
-Use String>>fromPdfName to convert from PDF to Smalltalk
-Use String>>asPdfName to convert from Smalltalk to PDF'.
-	NameEncoder namespacePath: #(#PDFtalk).
-%
-# Define class TypeError
-DoIt
-Error
-	subclass: 'TypeError'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TypeError category: 'PDFtalk Basics'.
-	TypeError comment: 'signals a type mismatch'.
-	TypeError namespacePath: #(#PDFtalk).
 %
 # Define class CharacterMap
 DoIt
@@ -2276,10 +2208,10 @@ DoIt
 Unusual name to not conflict with VW ByteCharacterEncoder which was used before and provides some of its services'.
 	CharacterMap namespacePath: #(#PDFtalk).
 %
-# Define class Writer
+# Define class ReadError
 DoIt
-WriteStream
-	subclass: 'Writer'
+Error
+	subclass: 'ReadError'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -2287,9 +2219,28 @@ WriteStream
 	inDictionary: PDFtalk
 %
 DoIt
-	Writer category: 'PDFtalk Basics'.
-	Writer comment: 'A stream to write PDF objects to a byte stream'.
-	Writer namespacePath: #(#PDFtalk).
+	ReadError category: 'PDFtalk Basics'.
+	ReadError comment: 'Syntax error while reading a PDF.
+The parameter contains the position in the PDF file where the error occured'.
+	ReadError namespacePath: #(#PDFtalk).
+%
+# Define class NameEncoder
+DoIt
+PDFEncoder
+	subclass: 'NameEncoder'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NameEncoder category: 'PDFtalk Basics'.
+	NameEncoder comment: 'A de- and en-coder for PDF Names (see PDF 32000_2008.pdf p.17)
+
+Use String>>fromPdfName to convert from PDF to Smalltalk
+Use String>>asPdfName to convert from Smalltalk to PDF'.
+	NameEncoder namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -2297,7 +2248,6 @@ System myUserProfile removeDictionaryAt: 1.
 category: 'accessing'
 classmethod: ByteReadStream
 systemIsBigEndian
-
 	^System gemIsBigEndian
 %
 category: 'instance creation'
@@ -2449,7 +2399,8 @@ nextOrError: anInteger
 
 	| answer |
 	answer := self next: anInteger.
-	answer size < anInteger ifTrue: [^EndOfStream signal].
+	answer size < anInteger ifTrue: [
+		^EndOfStream signal].
 	^answer
 %
 method: ByteReadStream
@@ -2499,7 +2450,6 @@ nextUnsignedShort
 category: 'accessing'
 classmethod: ByteWriteStream
 systemIsBigEndian
-
 	^System gemIsBigEndian
 %
 category: 'instance creation'
@@ -2635,13 +2585,11 @@ DoIt
 category: '*PDFtalk Basics-accessing'
 method: Behavior
 instanceBehavior
-
 	^self theNonMetaClass
 %
 category: '*PDFtalk Basics-testing'
 method: AbstractException
 isSignalledException
-
 	^true
 %
 category: '*PDFtalk Basics-PDF'
@@ -2659,7 +2607,6 @@ pdfNumeric
 %
 classmethod: Character
 illegalCode
-
 	^16rFFFF
 %
 category: '*PDFtalk Basics-testing'
@@ -2779,7 +2726,6 @@ _gs_newSignal: aString
 %
 classmethod: Error
 newSignal: aString
-
 	^(self new)
 		messageText: aString;
 		yourself
@@ -2796,11 +2742,8 @@ description
 	"<String>"
 
 	| result |
-	self messageText
-		ifNotNil: 
-			[:something |
-			result := [something asString] onException: Error
-						do: [:ex | ex return: nil]].
+	self messageText ifNotNil: [:something |
+		result := [something asString] onException: Error do: [:ex | ex return: nil]].
 	^result ifNil: [self asString]
 %
 category: 'reading'
@@ -2833,7 +2776,6 @@ nextHexFrom: aStream
 %
 method: HexStringEncoder
 unknownHexCharacter: aCharacter
-
 	(OutOfRange new)
 		messageText: aCharacter printString , ' is not a hexadecimal character';
 		arg: aCharacter;
@@ -3391,10 +3333,8 @@ nextPut: aCharacter
 %
 method: StringEncoder
 noEncodingFor: aCharacter
-
 	(OutOfRange new)
-		messageText: 'No character available for character value '
-					, aCharacter asInteger printString;
+		messageText: 'No character available for character value ' , aCharacter asInteger printString;
 		arg: aCharacter;
 		signal.
 	^Character illegalCode asCharacter
@@ -3573,7 +3513,6 @@ nextPutString: aPDFString
 category: 'accessing'
 method: Writer
 position
-
 	^self positionA
 %
 DoIt
@@ -3610,7 +3549,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Typing'.
-	dict at: #storeVersion put: '2.0.0.25'.
+	dict at: #storeVersion put: '2.0.4.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -3671,43 +3610,6 @@ The elements of the NameTree are checked and specialized with the type
 '.
 	NameTreeType namespacePath: #(#PDFtalk).
 %
-# Define class ArrayType
-DoIt
-AttributeType
-	subclass: 'ArrayType'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ArrayType category: 'PDFtalk Typing'.
-	ArrayType comment: 'This type matches a uniform array of attribute values of the same type.
-
-The elements of the array are checked and specialized with the type'.
-	ArrayType namespacePath: #(#PDFtalk).
-%
-# Define class ObjectType
-DoIt
-AttributeType
-	subclass: 'ObjectType'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ObjectType category: 'PDFtalk Typing'.
-	ObjectType comment: 'This type matches concrete types of attribute values.
-
-#subsumes: aPDFObject answers:
-
-true, if the type of aPDFObject is the identical to the type of the receiver
-true, if the type is a subtype of the receiver''s type'.
-	ObjectType namespacePath: #(#PDFtalk).
-%
 # Define class UndefinedType
 DoIt
 AttributeType
@@ -3738,10 +3640,29 @@ DoIt
 	DirectType comment: 'This type matches a concrete PDF object - no Reference.'.
 	DirectType namespacePath: #(#PDFtalk).
 %
-# Define class IndirectType
+# Define class Type
+DoIt
+Object
+	subclass: 'Type'
+	instVarNames: #(typeDefinition implementingClass supertype subtypes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Type category: 'PDFtalk Typing'.
+	Type comment: 'The concrete type object used as node in the PDF type hierarchy
+
+Includes the PDFTypeDefinition, the implementing Smalltalk class and the subtypes which are collected when the hierarchy is assembled.
+
+Type should be isomorph to Class in order to show the hierarchy in the browser.'.
+	Type namespacePath: #(#PDFtalk).
+%
+# Define class ArrayType
 DoIt
 AttributeType
-	subclass: 'IndirectType'
+	subclass: 'ArrayType'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -3749,9 +3670,11 @@ AttributeType
 	inDictionary: PDFtalk
 %
 DoIt
-	IndirectType category: 'PDFtalk Typing'.
-	IndirectType comment: 'This type matches a Reference to a PDF object - the object cannot be direct.'.
-	IndirectType namespacePath: #(#PDFtalk).
+	ArrayType category: 'PDFtalk Typing'.
+	ArrayType comment: 'This type matches a uniform array of attribute values of the same type.
+
+The elements of the array are checked and specialized with the type'.
+	ArrayType namespacePath: #(#PDFtalk).
 %
 # Define class TypeMismatch
 DoIt
@@ -3768,6 +3691,21 @@ DoIt
 	TypeMismatch comment: 'TypeMismatch is a wrapper around a PDF object with the wrong type'.
 	TypeMismatch namespacePath: #(#PDFtalk).
 %
+# Define class IndirectType
+DoIt
+AttributeType
+	subclass: 'IndirectType'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	IndirectType category: 'PDFtalk Typing'.
+	IndirectType comment: 'This type matches a Reference to a PDF object - the object cannot be direct.'.
+	IndirectType namespacePath: #(#PDFtalk).
+%
 # Define class Objecttype
 DoIt
 Object
@@ -3783,6 +3721,26 @@ DoIt
 	Objecttype comment: 'Subclasses stand for abstract PDF types which have specializations somewhere in the class hierarchy
 '.
 	Objecttype namespacePath: #(#PDFtalk).
+%
+# Define class ObjectType
+DoIt
+AttributeType
+	subclass: 'ObjectType'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectType category: 'PDFtalk Typing'.
+	ObjectType comment: 'This type matches concrete types of attribute values.
+
+#subsumes: aPDFObject answers:
+
+true, if the type of aPDFObject is the identical to the type of the receiver
+true, if the type is a subtype of the receiver''s type'.
+	ObjectType namespacePath: #(#PDFtalk).
 %
 # Define class PDFTypeDefinition
 DoIt
@@ -3804,25 +3762,6 @@ The type definition is accessed by the #pdfTypeDefinition class method which ret
 The PDF type hierarchy is a tree similar to but independent of the Smalltalk class hierarchy.'.
 	PDFTypeDefinition namespacePath: #(#PDFtalk).
 %
-# Define class Type
-DoIt
-Object
-	subclass: 'Type'
-	instVarNames: #(typeDefinition implementingClass supertype subtypes)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Type category: 'PDFtalk Typing'.
-	Type comment: 'The concrete type object used as node in the PDF type hierarchy
-
-Includes the PDFTypeDefinition, the implementing Smalltalk class and the subtypes which are collected when the hierarchy is assembled.
-
-Type should be isomorph to Class in order to show the hierarchy in the browser.'.
-	Type namespacePath: #(#PDFtalk).
-%
 DoIt
 System myUserProfile removeDictionaryAt: 1.
 %
@@ -3838,7 +3777,6 @@ DoIt
 category: '*PDFtalk Typing-finding'
 classmethod: Pragma
 allInMethod: aMethod
-
 	^aMethod pragmas
 %
 category: '*PDFtalk Typing-accessing'
@@ -4561,6 +4499,8 @@ specialized: aPDFObject
 	returns a new instance of the receiver with the contents of aPDFObject"
 
 	| matchingTypes |
+	(aPDFObject pdfType isTypeOf: self) ifTrue: [
+		^aPDFObject].
 	matchingTypes := self allTerminalSubtypes select: [:type | aPDFObject canBeExemplarOf: type].
 	matchingTypes isEmpty ifTrue: [
 		^nil].
@@ -4618,14 +4558,10 @@ method: TypeMismatch
 isPDF
 	^myObject isPDF
 %
-method: TypeMismatch
-isTypeMismatch
-	^true
-%
 category: 'typing'
 method: TypeMismatch
-typed: listOfAttributeTypes 
-	^self error: 'wrong type'
+typed: listOfAttributeTypes
+	^self
 %
 category: 'writing'
 method: TypeMismatch
@@ -4666,9 +4602,12 @@ classmethod: PDF
 allObjectClasses
 	"assumes that all subclasses are defined in namespaces PDFtalk or Globals"
 
-	^(ClassOrganizer _newWithRoot: Object
-		symbolList: (SymbolList with: PDFtalk with: Globals))
-			allSubclassesOf: Object
+	^(ClassOrganizer
+		_newWithRoot: Object
+		symbolList: (SymbolList
+			with: PDFtalk
+			with: Globals)
+		env: 0) allSubclassesOf: Object
 %
 classmethod: PDF
 newTypeHierarchy
@@ -4766,52 +4705,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Basic Objects'.
-	dict at: #storeVersion put: '2.0.0.24'.
+	dict at: #storeVersion put: '2.0.2.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
 %
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
-%
-# Define class NativeValue
-DoIt
-Value
-	subclass: 'NativeValue'
-	instVarNames: #(content)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NativeValue category: 'PDFtalk Basic Objects'.
-	NativeValue comment: 'A PDF value.
-
-Abstract superclass of all PDF values, i.e. objects which do not change after creation.
-The sister class hierarchy contains PDF Objects.
-
-A PDF value wraps a corresponding Smalltalk value which is held in the instvar #content.
-
-Values are created with: #on:'.
-	NativeValue namespacePath: #(#PDFtalk).
-%
-# Define class Name
-DoIt
-NativeValue
-	subclass: 'Name'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Name category: 'PDFtalk Basic Objects'.
-	Name comment: 'PDF Name object as defined in PDF 32000_2008.pdf pp. 17.
-
-A name is represented by a Symbol, for browsing references'.
-	Name namespacePath: #(#PDFtalk).
 %
 # Define class Entity
 DoIt
@@ -4854,10 +4754,10 @@ Many PDFObjects have the same class name as normal Smalltalk objects - Do not co
 The creation of these objects is done by a PDF.File with a PDF.Reader.'.
 	PDFObject namespacePath: #(#PDFtalk).
 %
-# Define class PDFDictionary
+# Define class PDFArray
 DoIt
 PDFObject
-	subclass: 'PDFDictionary'
+	subclass: 'PDFArray'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -4865,14 +4765,36 @@ PDFObject
 	inDictionary: PDFtalk
 %
 DoIt
-	PDFDictionary category: 'PDFtalk Basic Objects'.
-	PDFDictionary comment: 'PDF Dictionary object as defined in PDF 32000_2008.pdf pp. 18.
+	PDFArray category: 'PDFtalk Basic Objects'.
+	PDFArray comment: 'PDF Array object as defined in PDF 32000_2008.pdf, section 7.3.6, pp. 18.
 
-Dictionaries use PDFNames as keys. Internally the implementation uses Symbols as keys for efficency.
-The keys must be symbols.
-Dictionaries hold PDF objects only. Any object put into it will be converted to its corresponding PDF object.
-Dictionaries always answer PDF objects.'.
-	PDFDictionary namespacePath: #(#PDFtalk).
+An array object is a one-dimensional collection of objects arranged sequentially.
+Unlike arrays in many other computer languages, PDF arrays may be heterogeneous; that is, an array’s elements may be any combination of numbers, strings, dictionaries, or any other objects, including other arrays.
+An array may have zero elements.
+'.
+	PDFArray namespacePath: #(#PDFtalk).
+%
+# Define class NativeValue
+DoIt
+Value
+	subclass: 'NativeValue'
+	instVarNames: #(content)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NativeValue category: 'PDFtalk Basic Objects'.
+	NativeValue comment: 'A PDF value.
+
+Abstract superclass of all PDF values, i.e. objects which do not change after creation.
+The sister class hierarchy contains PDF Objects.
+
+A PDF value wraps a corresponding Smalltalk value which is held in the instvar #content.
+
+Values are created with: #on:'.
+	NativeValue namespacePath: #(#PDFtalk).
 %
 # Define class Number
 DoIt
@@ -4891,6 +4813,24 @@ DoIt
 Real objects represent mathematical real numbers.
 The range and precision of numbers may be limited by the internal representations used in the computer on which the conforming reader is running.'.
 	Number namespacePath: #(#PDFtalk).
+%
+# Define class Integer
+DoIt
+Number
+	subclass: 'Integer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Integer category: 'PDFtalk Basic Objects'.
+	Integer comment: 'PDF Number object as defined in PDF 32000_2008.pdf p. 14.
+
+An integer shall be written as one or more decimal digits optionally preceded by a sign.
+The value shall be interpreted as a signed decimal integer and shall be converted to an integer object.'.
+	Integer namespacePath: #(#PDFtalk).
 %
 # Define class PDFString
 DoIt
@@ -4929,10 +4869,10 @@ In a Contents stream, strings exist only in text object with a specific font. Th
 Strings can be represented as Bytestring (in ()) or as hexadecimal string (in <>).'.
 	PDFString namespacePath: #(#PDFtalk).
 %
-# Define class ContentString
+# Define class Textstring
 DoIt
 PDFString
-	subclass: 'ContentString'
+	subclass: 'Textstring'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -4940,16 +4880,22 @@ PDFString
 	inDictionary: PDFtalk
 %
 DoIt
-	ContentString category: 'PDFtalk Basic Objects'.
-	ContentString comment: 'PDF String in a stream as defined in PDF 32000_2008.pdf pp. 650.
+	Textstring category: 'PDFtalk Basic Objects'.
+	Textstring comment: 'PDF Text String object as defined in PDF 32000_2008.pdf pp. 86.
 
-Strings in contents streams have the imlementation limit of 32767 bytes'.
-	ContentString namespacePath: #(#PDFtalk).
+The text string type shall be used for character strings that contain information intended to be human-readable, such as text annotations, bookmark names, article names, document information, and so forth.
+
+	NOTE 1		Text string type is a subtype of string type and represents data encoded using specific conventions.
+
+The text string type shall be used for character strings that shall be encoded in either PDFDocEncoding or the UTF-16BE Unicode character encoding scheme.
+
+The value should be shown with PDFDocEncoding'.
+	Textstring namespacePath: #(#PDFtalk).
 %
-# Define class AsciiString
+# Define class UTF16Textstring
 DoIt
-PDFString
-	subclass: 'AsciiString'
+Textstring
+	subclass: 'UTF16Textstring'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -4957,9 +4903,81 @@ PDFString
 	inDictionary: PDFtalk
 %
 DoIt
-	AsciiString category: 'PDFtalk Basic Objects'.
-	AsciiString comment: 'The bytes are all in the ASCII range'.
-	AsciiString namespacePath: #(#PDFtalk).
+	UTF16Textstring category: 'PDFtalk Basic Objects'.
+	UTF16Textstring comment: 'PDF Text String object as defined in PDF 32000_2008.pdf pp. 86.
+
+For text strings encoded in Unicode, the first two bytes shall be 254 followed by 255.
+These two bytes represent the Unicode byte order marker, U+FEFF, indicating that the string is encoded in the UTF-16BE (big-endian) encoding scheme specified in the Unicode standard.
+
+The value should be shown with UTF-16BEEncoding'.
+	UTF16Textstring namespacePath: #(#PDFtalk).
+%
+# Define class Reference
+DoIt
+Entity
+	subclass: 'Reference'
+	instVarNames: #(number generation referent)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Reference category: 'PDFtalk Basic Objects'.
+	Reference comment: 'PDF Reference to an indirect object as defined in PDF 32000_2008.pdf pp. 21.'.
+	Reference namespacePath: #(#PDFtalk).
+%
+# Define class PDFDictionary
+DoIt
+PDFObject
+	subclass: 'PDFDictionary'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PDFDictionary category: 'PDFtalk Basic Objects'.
+	PDFDictionary comment: 'PDF Dictionary object as defined in PDF 32000_2008.pdf pp. 18.
+
+Dictionaries use PDFNames as keys. Internally the implementation uses Symbols as keys for efficency.
+The keys must be symbols.
+Dictionaries hold PDF objects only. Any object put into it will be converted to its corresponding PDF object.
+Dictionaries always answer PDF objects.'.
+	PDFDictionary namespacePath: #(#PDFtalk).
+%
+# Define class EncodedString
+DoIt
+PDFString
+	subclass: 'EncodedString'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EncodedString category: 'PDFtalk Basic Objects'.
+	EncodedString comment: 'A byte string with a specific encoder'.
+	EncodedString namespacePath: #(#PDFtalk).
+%
+# Define class Name
+DoIt
+NativeValue
+	subclass: 'Name'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Name category: 'PDFtalk Basic Objects'.
+	Name comment: 'PDF Name object as defined in PDF 32000_2008.pdf pp. 17.
+
+A name is represented by a Symbol, for browsing references'.
+	Name namespacePath: #(#PDFtalk).
 %
 # Define class PDFDate
 DoIt
@@ -4997,10 +5015,10 @@ EXAMPLE
 For example, December 23, 1998, at 7:52 PM, U.S. Pacific Standard Time, is represented by the string D:199812231952-08''00'.
 	PDFDate namespacePath: #(#PDFtalk).
 %
-# Define class Textstring
+# Define class AsciiString
 DoIt
 PDFString
-	subclass: 'Textstring'
+	subclass: 'AsciiString'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -5008,52 +5026,9 @@ PDFString
 	inDictionary: PDFtalk
 %
 DoIt
-	Textstring category: 'PDFtalk Basic Objects'.
-	Textstring comment: 'PDF Text String object as defined in PDF 32000_2008.pdf pp. 86.
-
-The text string type shall be used for character strings that contain information intended to be human-readable, such as text annotations, bookmark names, article names, document information, and so forth.
-
-	NOTE 1		Text string type is a subtype of string type and represents data encoded using specific conventions.
-
-The text string type shall be used for character strings that shall be encoded in either PDFDocEncoding or the UTF-16BE Unicode character encoding scheme.
-
-The value should be shown with PDFDocEncoding'.
-	Textstring namespacePath: #(#PDFtalk).
-%
-# Define class EncodedString
-DoIt
-PDFString
-	subclass: 'EncodedString'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EncodedString category: 'PDFtalk Basic Objects'.
-	EncodedString comment: 'A byte string with a specific encoder'.
-	EncodedString namespacePath: #(#PDFtalk).
-%
-# Define class PDFArray
-DoIt
-PDFObject
-	subclass: 'PDFArray'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFArray category: 'PDFtalk Basic Objects'.
-	PDFArray comment: 'PDF Array object as defined in PDF 32000_2008.pdf, section 7.3.6, pp. 18.
-
-An array object is a one-dimensional collection of objects arranged sequentially.
-Unlike arrays in many other computer languages, PDF arrays may be heterogeneous; that is, an array’s elements may be any combination of numbers, strings, dictionaries, or any other objects, including other arrays.
-An array may have zero elements.
-'.
-	PDFArray namespacePath: #(#PDFtalk).
+	AsciiString category: 'PDFtalk Basic Objects'.
+	AsciiString comment: 'The bytes are all in the ASCII range'.
+	AsciiString namespacePath: #(#PDFtalk).
 %
 # Define class Real
 DoIt
@@ -5073,24 +5048,6 @@ A real value shall be written as one or more decimal digits with an optional sig
 The value shall be interpreted as a real number and shall be converted to a real object.'.
 	Real namespacePath: #(#PDFtalk).
 %
-# Define class Integer
-DoIt
-Number
-	subclass: 'Integer'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Integer category: 'PDFtalk Basic Objects'.
-	Integer comment: 'PDF Number object as defined in PDF 32000_2008.pdf p. 14.
-
-An integer shall be written as one or more decimal digits optionally preceded by a sign.
-The value shall be interpreted as a signed decimal integer and shall be converted to an integer object.'.
-	Integer namespacePath: #(#PDFtalk).
-%
 # Define class TypedDictionary
 DoIt
 PDFDictionary
@@ -5106,10 +5063,10 @@ DoIt
 	TypedDictionary comment: 'Super class of all dictionaries with a ''Type'' key'.
 	TypedDictionary namespacePath: #(#PDFtalk).
 %
-# Define class UTF16Textstring
+# Define class ContentString
 DoIt
-Textstring
-	subclass: 'UTF16Textstring'
+PDFString
+	subclass: 'ContentString'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -5117,29 +5074,11 @@ Textstring
 	inDictionary: PDFtalk
 %
 DoIt
-	UTF16Textstring category: 'PDFtalk Basic Objects'.
-	UTF16Textstring comment: 'PDF Text String object as defined in PDF 32000_2008.pdf pp. 86.
+	ContentString category: 'PDFtalk Basic Objects'.
+	ContentString comment: 'PDF String in a stream as defined in PDF 32000_2008.pdf pp. 650.
 
-For text strings encoded in Unicode, the first two bytes shall be 254 followed by 255.
-These two bytes represent the Unicode byte order marker, U+FEFF, indicating that the string is encoded in the UTF-16BE (big-endian) encoding scheme specified in the Unicode standard.
-
-The value should be shown with UTF-16BEEncoding'.
-	UTF16Textstring namespacePath: #(#PDFtalk).
-%
-# Define class Reference
-DoIt
-Entity
-	subclass: 'Reference'
-	instVarNames: #(number generation referent)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Reference category: 'PDFtalk Basic Objects'.
-	Reference comment: 'PDF Reference to an indirect object as defined in PDF 32000_2008.pdf pp. 21.'.
-	Reference namespacePath: #(#PDFtalk).
+Strings in contents streams have the imlementation limit of 32767 bytes'.
+	ContentString namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -5161,24 +5100,20 @@ DoIt
 category: '*PDFtalk Basic Objects-converting'
 method: BinaryFloat
 asPDF
-
 	^(PDFtalk at: #Real) on: self asFloat
 %
 category: '*PDFtalk Basic Objects-converting'
 method: SmallFraction
 asPDF
-
 	^(PDFtalk at: #Real) on: self asFloat
 %
 category: '*PDFtalk Basic Objects-converting'
 method: CharacterCollection
 asPDF
-
 	^PDF String fromPdf: self
 %
 method: CharacterCollection
 tokensBasedOn: aCharacter
-
 	^self subStrings: aCharacter
 %
 category: '*PDFtalk Basic Objects-accessing'
@@ -5215,6 +5150,72 @@ category: '*PDFtalk Basic Objects-converting'
 method: Integer
 asPDF
 	^(PDFtalk at: #Number) on: self
+%
+category: '*PDFtalk Basic Objects-printing'
+method: Integer
+writeDecimalDigitsOn: aStream
+	self >= 10 ifTrue: [
+		self // 10 writeDecimalDigitsOn: aStream].
+	aStream nextPut: ($0 asInteger + (self \\ 10)) asCharacter
+%
+method: Integer
+writePDFOn: aStream indent: anInteger
+	self negative ifTrue: [
+		aStream nextPut: $-.
+		^self negated writeDecimalDigitsOn: aStream].
+	self writeDecimalDigitsOn: aStream
+%
+category: '*PDFtalk Basic Objects-printing'
+method: Number
+pdfEpsilon
+	"Nonzero real values closest to the next integer (approximate).
+Values closer than these are automatically converted to the integer."
+	"Float fmin is 1.4013e-45"
+ 
+	^1.175d-38
+%
+method: Number
+pdfSignificantDecimals
+	"Number of significant decimal digits of precision in fractional part (approximate)."
+
+	^5
+%
+method: Number
+writeFractionDecimalsOn: aStream
+	| tenfold digit |
+	self strictlyPositive ifFalse: [
+		^self].
+	tenfold := self * 10.
+	digit := tenfold truncated.
+	aStream nextPut: ($0 asInteger + digit) asCharacter.
+	tenfold - digit writeFractionDecimalsOn: aStream
+%
+method: Number
+writePDFOn: aStream indent: anInteger
+	| integer fraction rounded precision |
+	self abs < self pdfEpsilon ifTrue: [
+		aStream nextPut: $0.
+		^self].
+	self negative ifTrue: [
+		| wst string |
+		wst := String new writeStream.
+		self negated writePDFOn: wst indent: 0.
+		string := wst contents.
+		string = '0' ifTrue: [
+			aStream nextPut: $0.
+			^self].
+		aStream nextPut: $-.
+		aStream nextPutAll: string.
+		^self].
+	integer := self truncated.
+	integer writePDFOn: aStream indent: anInteger.
+	fraction := self - integer.
+	precision := 10 raisedTo: self pdfSignificantDecimals.
+	rounded := (fraction * precision) rounded.
+	rounded strictlyPositive ifFalse: [
+		^self].
+	aStream nextPut: $..
+	rounded / precision writeFractionDecimalsOn: aStream
 %
 category: '*PDFtalk Basic Objects-accessing'
 classmethod: Object
@@ -5325,27 +5326,10 @@ isDirect
 	^true
 %
 method: Object
-isName
-	"stupid - method should go"
-	
-	^false
-%
-method: Object
-isOperator
-	"stupid - method should go"
-	
-	^false
-%
-method: Object
 isPDF
 	"<Boolean>
 	true if the receiver is a PDF.Object"
 
-	^false
-%
-method: Object
-isPDFArray
-	"horrible method - should go"
 	^false
 %
 method: Object
@@ -5357,16 +5341,11 @@ isSameReference: anObject
 	^false
 %
 method: Object
-isTypeMismatch
-	^false
-%
-method: Object
 refersTo: aPDFReference
 	^false
 %
 method: Object
 isSignalledException
-
 	^false
 %
 category: '*PDFtalk Basic Objects-tracing'
@@ -5634,10 +5613,6 @@ canBeExemplarOf: aType
 	
 	^aType implementingClass isClassForName: self
 %
-method: Name
-isName
-	^true
-%
 category: 'writing'
 method: Name
 writePDFOn: aStream indent: integer
@@ -5744,13 +5719,13 @@ pdfTypeDefinition
 %
 category: 'instance creation'
 classmethod: Number
-on: anInteger
+on: aNumber
 	"<PDF.Integer | PDF.Real>"
 
-	((anInteger between: Integer minValue and: Integer maxValue) and: [
-	anInteger isInteger]) ifTrue: [
-			^Integer content: anInteger].
-	^Real on: anInteger
+	((aNumber between: Integer minValue and: Integer maxValue) and: [
+	aNumber isInteger]) ifTrue: [
+			^Integer content: aNumber].
+	^Real on: aNumber
 %
 classmethod: Number
 onInteger: anInteger
@@ -5775,8 +5750,8 @@ nonNegativeInteger
 %
 category: 'writing'
 method: Number
-writePDFOn: aStream indent: integer
-	aStream nextPutAll: self asSmalltalkValue printString
+writePDFOn: aStream indent: anInteger
+	self asSmalltalkValue writePDFOn: aStream indent: anInteger
 %
 category: 'accessing'
 classmethod: PDFArray
@@ -5977,10 +5952,6 @@ hasRequiredAttributes
 	^self attributesRequired allSatisfy: [:pragma |
 		pragma arguments first between: 1 and: self size]
 %
-method: PDFArray
-isPDFArray
-	^true
-%
 category: 'tracing'
 method: PDFArray
 tracedReferences: visitedReferences do: oneArgumentBlock
@@ -6064,17 +6035,15 @@ dateFrom: rst
 %
 classmethod: PDFDate
 fromPdf: aByteString
-
 	| timestamp rst date time |
 	rst := (aByteString allButFirst: 2) readStream.
 	date := self dateFrom: rst.
 	time := self timeFrom: rst.
 	timestamp := Timestamp fromDate: date andTime: time.
-	(rst atEnd or: [('Z+-' includes: rst peek) not])
-		ifFalse: 
-			[| duration |
-			duration := Duration
-						minutes: (self timezoneOffsetMinutesFor: rst next from: rst).
+	(rst atEnd or: [
+	('Z+-' includes: rst peek) not]) ifFalse: [
+			| duration |
+			duration := Duration minutes: (self timezoneOffsetMinutesFor: rst next from: rst).
 			timestamp := timestamp asLocal - duration].
 	^self content: timestamp
 %
@@ -6141,16 +6110,16 @@ asUTC
 	wst nextPutAll: (timestamp dayOfMonth printPaddedWith: $0 to: 2 base: 10).
 	wst nextPutAll: (timestamp hour printPaddedWith: $0 to: 2 base: 10).
 	wst nextPutAll: (timestamp minute printPaddedWith: $0 to: 2 base: 10).
-	wst
-		nextPutAll: (timestamp second rounded printPaddedWith: $0 to: 2 base: 10).
+	wst nextPutAll: (timestamp second rounded printPaddedWith: $0 to: 2 base: 10).
 	secondsDiference := TimeZone current offset asSeconds.
-	wst nextPut: (secondsDiference negative ifTrue: [$-] ifFalse: [$+]).
+	wst nextPut: (secondsDiference negative
+		ifTrue: [$-]
+		ifFalse: [$+]).
 	diffTime := Time fromSeconds: secondsDiference.
 	wst nextPutAll: (diffTime hours printPaddedWith: $0 to: 2 base: 10).
 	wst nextPut: $'.
-	diffTime minutes isZero
-		ifFalse: 
-			[wst nextPutAll: (diffTime minutes printPaddedWith: $0 to: 2 base: 10)].
+	diffTime minutes isZero ifFalse: [
+		wst nextPutAll: (diffTime minutes printPaddedWith: $0 to: 2 base: 10)].
 	^wst contents
 %
 method: PDFDate
@@ -6284,8 +6253,7 @@ classesForAttributes
 	"<SequenceableCollection of: Dictionary class>
 	all super classes which may have attributes from the top to self"
 
-	^(self class allSuperclasses reverse allButLast: self topClassLevel)
-		reverse , (Array with: self class)
+	^(self class allSuperclasses reverse allButLast: self topClassLevel) reverse , (Array with: self class)
 %
 method: PDFDictionary
 content
@@ -6667,7 +6635,6 @@ attributeVersion: anAttributePragma
 %
 method: PDFObject
 hasTag: aSymbol in: aMethod
-
 	^aMethod pragmas anySatisfy: [:pragma | pragma keyword = aSymbol]
 %
 method: PDFObject
@@ -6689,12 +6656,10 @@ method: PDFObject
 tagAt: aSymbol in: aMethod ifAbsent: aBlock
 	"<Message>"
 
-	^aMethod pragmas detect: [:pragma | pragma keyword = aSymbol]
-		ifNone: aBlock
+	^aMethod pragmas detect: [:pragma | pragma keyword = aSymbol] ifNone: aBlock
 %
 method: PDFObject
 tagsIn: aMethod withSelector: aSymbol
-
 	^aMethod pragmas select: [:attribute | attribute keyword = aSymbol]
 %
 category: 'comparing'
@@ -6977,24 +6942,6 @@ on: aFloat
 	(aFloat between: self epsilon negated and: self epsilon) ifTrue: [
 		^Integer on: 0].
 	^self content: aFloat asFloat
-%
-category: 'accessing'
-method: Real
-vwMinPrintWithoutExponent
-	"<Float>
-	the smallest numer VisualWorks prints without exponent (9.999e-4).
-	0.001
-	0.0009999
-	Temporary workaround until we have a proper number writer"
-
-	^0.001
-%
-category: 'writing'
-method: Real
-writePDFOn: aStream indent: integer
-	self asSmalltalkValue abs < self vwMinPrintWithoutExponent ifTrue: [
-		^aStream nextPut: $0].
-	aStream nextPutAll: self asSmalltalkValue asSource
 %
 category: 'accessing'
 classmethod: Reference
@@ -7314,7 +7261,6 @@ fromPdf: aByteString
 category: 'converting'
 method: UTF16Textstring
 asString
-
 	| rst wst |
 	rst := ByteReadStream bigEndianOn: self content.
 	wst := WriteStream on: Unicode16 new.
@@ -7381,7 +7327,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Streams'.
-	dict at: #storeVersion put: '2.0.0.22'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -7389,36 +7335,10 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class Filter
+# Define class ZipFilterParameter
 DoIt
-Entity
-	subclass: 'Filter'
-	instVarNames: #(internal external)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Filter category: 'PDFtalk Streams'.
-	Filter comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 22.
-
-A de-/en-coder for the contents of PDF Streams.
-
-A filter has two buffers:
-	external: 	The encoded contents as read from an external source.
-				This is written to a file or used as #internal to the next filter.
-	internal: 	The decoded contents as used internally by the system or as #external by the next filter.
-
-A new filter is created with either the external or the internal content.
-The other buffer is filled lazy on demand.
-Any error is stored in the corresponding buffer.'.
-	Filter namespacePath: #(#PDFtalk).
-%
-# Define class CCITTFaxDecode
-DoIt
-Filter
-	subclass: 'CCITTFaxDecode'
+PDFDictionary
+	subclass: 'ZipFilterParameter'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7426,11 +7346,39 @@ Filter
 	inDictionary: PDFtalk
 %
 DoIt
-	CCITTFaxDecode category: 'PDFtalk Streams'.
-	CCITTFaxDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 30.
+	ZipFilterParameter category: 'PDFtalk Streams'.
+	ZipFilterParameter comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 7.4.4.3, pp. 27.
 
-Decompresses data encoded using the CCITT facsimile standard, reproducing the original data (typically monochrome image data at 1 bit per pixel).'.
-	CCITTFaxDecode namespacePath: #(#PDFtalk).
+The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
+NOTE
+	Most of these parameters are related to techniques that reduce the size of compressed sampled images (rectangular arrays of colour values).
+For example, image data typically changes very little from sample to sample.
+Therefore, subtracting the values of adjacent samples (a process called differencing), and encoding the differences rather than the raw sample values, can reduce the size of the output data.
+Furthermore, when the image data contains several colour components (red-green-blue or cyan-magenta-yellow-black) per sample, taking the difference between the values of corresponding components in adjacent samples, rather than between different colour components in the same sample, often reduces the output data size'.
+	ZipFilterParameter namespacePath: #(#PDFtalk).
+%
+# Define class LZWFilterParameter
+DoIt
+ZipFilterParameter
+	subclass: 'LZWFilterParameter'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LZWFilterParameter category: 'PDFtalk Streams'.
+	LZWFilterParameter comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 7.4.4.3, pp. 27.
+
+The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
+NOTE
+	Most of these parameters are related to techniques that reduce the size of compressed sampled images (rectangular arrays of colour values).
+For example, image data typically changes very little from sample to sample.
+Therefore, subtracting the values of adjacent samples (a process called differencing), and encoding the differences rather than the raw sample values, can reduce the size of the output data.
+Furthermore, when the image data contains several colour components (red-green-blue or cyan-magenta-yellow-black) per sample, taking the difference between the values of corresponding components in adjacent samples, rather than between different colour components in the same sample, often reduces the output data size
+'.
+	LZWFilterParameter namespacePath: #(#PDFtalk).
 %
 # Define class Predictor
 DoIt
@@ -7466,10 +7414,10 @@ DoIt
 A nice description can be found at http://www.libpng.org/pub/png/book/LCH-png-chapter.pdf'.
 	PNGPredictor namespacePath: #(#PDFtalk).
 %
-# Define class PaethPredictor
+# Define class UpPredictor
 DoIt
 PNGPredictor
-	subclass: 'PaethPredictor'
+	subclass: 'UpPredictor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7477,75 +7425,50 @@ PNGPredictor
 	inDictionary: PDFtalk
 %
 DoIt
-	PaethPredictor category: 'PDFtalk Streams'.
-	PaethPredictor comment: 'Each byte is replaced with the difference between it and the Paeth predictor of the corresponding bytes to its left, above it, and to its upper left.'.
-	PaethPredictor namespacePath: #(#PDFtalk).
+	UpPredictor category: 'PDFtalk Streams'.
+	UpPredictor comment: 'Each byte is replaced with the difference between it and the byte above it (in the previous row, as it was before filtering).'.
+	UpPredictor namespacePath: #(#PDFtalk).
 %
-# Define class RunLengthDecode
+# Define class PDFStream
 DoIt
-Filter
-	subclass: 'RunLengthDecode'
-	instVarNames: #()
+PDFDictionary
+	subclass: 'PDFStream'
+	instVarNames: #(filter internal external encrypted)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	RunLengthDecode category: 'PDFtalk Streams'.
-	RunLengthDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 29.
+	PDFStream category: 'PDFtalk Streams'.
+	PDFStream comment: 'PDF Stream object as defined in PDF 32000_2008.pdf pp. 19.'.
+	PDFStream namespacePath: #(#PDFtalk).
+%
+# Define class Filter
+DoIt
+Entity
+	subclass: 'Filter'
+	instVarNames: #(internal external)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Filter category: 'PDFtalk Streams'.
+	Filter comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 22.
 
-Decompresses data encoded using a byte-oriented run-length encoding algorithm, reproducing the original text or binary data
-(typically monochrome image data, or any data that contains frequent long runs of a single byte value).'.
-	RunLengthDecode namespacePath: #(#PDFtalk).
-%
-# Define class AveragePredictor
-DoIt
-PNGPredictor
-	subclass: 'AveragePredictor'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AveragePredictor category: 'PDFtalk Streams'.
-	AveragePredictor comment: 'Each byte is replaced with the difference between it and the average of the corresponding bytes to its left and above it, truncating any fractional part.'.
-	AveragePredictor namespacePath: #(#PDFtalk).
-%
-# Define class JBIG2Decode
-DoIt
-Filter
-	subclass: 'JBIG2Decode'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	JBIG2Decode category: 'PDFtalk Streams'.
-	JBIG2Decode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 31.
+A de-/en-coder for the contents of PDF Streams.
 
-Decompresses data encoded using the JBIG2 standard, reproducing the original monochrome (1 bit per pixel) image data (or an approximation of that data).'.
-	JBIG2Decode namespacePath: #(#PDFtalk).
-%
-# Define class TIFFPredictor
-DoIt
-Predictor
-	subclass: 'TIFFPredictor'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TIFFPredictor category: 'PDFtalk Streams'.
-	TIFFPredictor comment: 'The TIFF predictor is not implemented, since it applies mostly to images which is not my focus.
-See the TIFF specification (http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf) section 14, Horizontal Differencing, for details.'.
-	TIFFPredictor namespacePath: #(#PDFtalk).
+A filter has two buffers:
+	external: 	The encoded contents as read from an external source.
+				This is written to a file or used as #internal to the next filter.
+	internal: 	The decoded contents as used internally by the system or as #external by the next filter.
+
+A new filter is created with either the external or the internal content.
+The other buffer is filled lazy on demand.
+Any error is stored in the corresponding buffer.'.
+	Filter namespacePath: #(#PDFtalk).
 %
 # Define class Crypt
 DoIt
@@ -7564,10 +7487,10 @@ DoIt
 Decrypts data encrypted by a security handler, reproducing the data as it was before encryption.'.
 	Crypt namespacePath: #(#PDFtalk).
 %
-# Define class DCTDecode
+# Define class CCITTFaxDecode
 DoIt
 Filter
-	subclass: 'DCTDecode'
+	subclass: 'CCITTFaxDecode'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7575,48 +7498,11 @@ Filter
 	inDictionary: PDFtalk
 %
 DoIt
-	DCTDecode category: 'PDFtalk Streams'.
-	DCTDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 34.
+	CCITTFaxDecode category: 'PDFtalk Streams'.
+	CCITTFaxDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 30.
 
-Decompresses data encoded using a DCT (discrete cosine transform) technique based on the JPEG standard, reproducing image sample data that approximates the original data.'.
-	DCTDecode namespacePath: #(#PDFtalk).
-%
-# Define class SubPredictor
-DoIt
-PNGPredictor
-	subclass: 'SubPredictor'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SubPredictor category: 'PDFtalk Streams'.
-	SubPredictor comment: 'Each byte is replaced with the difference between it and the ``corresponding byte'''' to its left.'.
-	SubPredictor namespacePath: #(#PDFtalk).
-%
-# Define class ZipFilterParameter
-DoIt
-PDFDictionary
-	subclass: 'ZipFilterParameter'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ZipFilterParameter category: 'PDFtalk Streams'.
-	ZipFilterParameter comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 7.4.4.3, pp. 27.
-
-The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
-NOTE
-	Most of these parameters are related to techniques that reduce the size of compressed sampled images (rectangular arrays of colour values).
-For example, image data typically changes very little from sample to sample.
-Therefore, subtracting the values of adjacent samples (a process called differencing), and encoding the differences rather than the raw sample values, can reduce the size of the output data.
-Furthermore, when the image data contains several colour components (red-green-blue or cyan-magenta-yellow-black) per sample, taking the difference between the values of corresponding components in adjacent samples, rather than between different colour components in the same sample, often reduces the output data size'.
-	ZipFilterParameter namespacePath: #(#PDFtalk).
+Decompresses data encoded using the CCITT facsimile standard, reproducing the original data (typically monochrome image data at 1 bit per pixel).'.
+	CCITTFaxDecode namespacePath: #(#PDFtalk).
 %
 # Define class ASCIIFilter
 DoIt
@@ -7635,10 +7521,10 @@ DoIt
 This class implements no functionality but serves only for structuring purposes.'.
 	ASCIIFilter namespacePath: #(#PDFtalk).
 %
-# Define class ASCII85Decode
+# Define class ASCIIHexDecode
 DoIt
 ASCIIFilter
-	subclass: 'ASCII85Decode'
+	subclass: 'ASCIIHexDecode'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7646,11 +7532,11 @@ ASCIIFilter
 	inDictionary: PDFtalk
 %
 DoIt
-	ASCII85Decode category: 'PDFtalk Streams'.
-	ASCII85Decode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 25.
+	ASCIIHexDecode category: 'PDFtalk Streams'.
+	ASCIIHexDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 24.
 
-Decodes data encoded in an ASCII base-85 representation, reproducing the original binary data.'.
-	ASCII85Decode namespacePath: #(#PDFtalk).
+Decodes data encoded in an ASCII hexadecimal representation, reproducing the original binary data.'.
+	ASCIIHexDecode namespacePath: #(#PDFtalk).
 %
 # Define class NoPredictor
 DoIt
@@ -7667,25 +7553,10 @@ DoIt
 	NoPredictor comment: 'Each byte is unchanged.'.
 	NoPredictor namespacePath: #(#PDFtalk).
 %
-# Define class PDFStream
+# Define class AveragePredictor
 DoIt
-PDFDictionary
-	subclass: 'PDFStream'
-	instVarNames: #(filter internal external encrypted)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFStream category: 'PDFtalk Streams'.
-	PDFStream comment: 'PDF Stream object as defined in PDF 32000_2008.pdf pp. 19.'.
-	PDFStream namespacePath: #(#PDFtalk).
-%
-# Define class LZWFilterParameter
-DoIt
-ZipFilterParameter
-	subclass: 'LZWFilterParameter'
+PNGPredictor
+	subclass: 'AveragePredictor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7693,17 +7564,42 @@ ZipFilterParameter
 	inDictionary: PDFtalk
 %
 DoIt
-	LZWFilterParameter category: 'PDFtalk Streams'.
-	LZWFilterParameter comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 7.4.4.3, pp. 27.
+	AveragePredictor category: 'PDFtalk Streams'.
+	AveragePredictor comment: 'Each byte is replaced with the difference between it and the average of the corresponding bytes to its left and above it, truncating any fractional part.'.
+	AveragePredictor namespacePath: #(#PDFtalk).
+%
+# Define class TIFFPredictor
+DoIt
+Predictor
+	subclass: 'TIFFPredictor'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TIFFPredictor category: 'PDFtalk Streams'.
+	TIFFPredictor comment: 'The TIFF predictor is not implemented, since it applies mostly to images which is not my focus.
+See the TIFF specification (http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf) section 14, Horizontal Differencing, for details.'.
+	TIFFPredictor namespacePath: #(#PDFtalk).
+%
+# Define class DCTDecode
+DoIt
+Filter
+	subclass: 'DCTDecode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DCTDecode category: 'PDFtalk Streams'.
+	DCTDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 34.
 
-The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
-NOTE
-	Most of these parameters are related to techniques that reduce the size of compressed sampled images (rectangular arrays of colour values).
-For example, image data typically changes very little from sample to sample.
-Therefore, subtracting the values of adjacent samples (a process called differencing), and encoding the differences rather than the raw sample values, can reduce the size of the output data.
-Furthermore, when the image data contains several colour components (red-green-blue or cyan-magenta-yellow-black) per sample, taking the difference between the values of corresponding components in adjacent samples, rather than between different colour components in the same sample, often reduces the output data size
-'.
-	LZWFilterParameter namespacePath: #(#PDFtalk).
+Decompresses data encoded using a DCT (discrete cosine transform) technique based on the JPEG standard, reproducing image sample data that approximates the original data.'.
+	DCTDecode namespacePath: #(#PDFtalk).
 %
 # Define class ZipFilter
 DoIt
@@ -7721,23 +7617,6 @@ DoIt
 
 This class implements some common state and functionality for Zip-based filters.'.
 	ZipFilter namespacePath: #(#PDFtalk).
-%
-# Define class FlateDecode
-DoIt
-ZipFilter
-	subclass: 'FlateDecode'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FlateDecode category: 'PDFtalk Streams'.
-	FlateDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 25.
-
-Decompresses data encoded using the zlib/deflate compression method, reproducing the original text or binary data.'.
-	FlateDecode namespacePath: #(#PDFtalk).
 %
 # Define class LZWDecode
 DoIt
@@ -7758,6 +7637,23 @@ Decompresses data encoded using the LZW (Lempel-Ziv-Welch) adaptive compression 
 This filter is depreciated and not (initially implemented).'.
 	LZWDecode namespacePath: #(#PDFtalk).
 %
+# Define class JPXDecode
+DoIt
+Filter
+	subclass: 'JPXDecode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	JPXDecode category: 'PDFtalk Streams'.
+	JPXDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 35.
+
+Decompresses data encoded using the wavelet-based JPEG2000 standard, reproducing the original image data.'.
+	JPXDecode namespacePath: #(#PDFtalk).
+%
 # Define class TypedStream
 DoIt
 PDFStream
@@ -7773,10 +7669,10 @@ DoIt
 	TypedStream comment: 'Super class of all streams with a /Type key'.
 	TypedStream namespacePath: #(#PDFtalk).
 %
-# Define class ASCIIHexDecode
+# Define class PaethPredictor
 DoIt
-ASCIIFilter
-	subclass: 'ASCIIHexDecode'
+PNGPredictor
+	subclass: 'PaethPredictor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7784,11 +7680,43 @@ ASCIIFilter
 	inDictionary: PDFtalk
 %
 DoIt
-	ASCIIHexDecode category: 'PDFtalk Streams'.
-	ASCIIHexDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 24.
+	PaethPredictor category: 'PDFtalk Streams'.
+	PaethPredictor comment: 'Each byte is replaced with the difference between it and the Paeth predictor of the corresponding bytes to its left, above it, and to its upper left.'.
+	PaethPredictor namespacePath: #(#PDFtalk).
+%
+# Define class JBIG2Decode
+DoIt
+Filter
+	subclass: 'JBIG2Decode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	JBIG2Decode category: 'PDFtalk Streams'.
+	JBIG2Decode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 31.
 
-Decodes data encoded in an ASCII hexadecimal representation, reproducing the original binary data.'.
-	ASCIIHexDecode namespacePath: #(#PDFtalk).
+Decompresses data encoded using the JBIG2 standard, reproducing the original monochrome (1 bit per pixel) image data (or an approximation of that data).'.
+	JBIG2Decode namespacePath: #(#PDFtalk).
+%
+# Define class FlateDecode
+DoIt
+ZipFilter
+	subclass: 'FlateDecode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FlateDecode category: 'PDFtalk Streams'.
+	FlateDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 25.
+
+Decompresses data encoded using the zlib/deflate compression method, reproducing the original text or binary data.'.
+	FlateDecode namespacePath: #(#PDFtalk).
 %
 # Define class Textstream
 DoIt
@@ -7807,27 +7735,10 @@ DoIt
 A text stream shall be a PDF stream object whose unencoded bytes shall meet the same requirements as a text string with respect to encoding, byte order, and lead bytes.'.
 	Textstream namespacePath: #(#PDFtalk).
 %
-# Define class JPXDecode
-DoIt
-Filter
-	subclass: 'JPXDecode'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	JPXDecode category: 'PDFtalk Streams'.
-	JPXDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 35.
-
-Decompresses data encoded using the wavelet-based JPEG2000 standard, reproducing the original image data.'.
-	JPXDecode namespacePath: #(#PDFtalk).
-%
-# Define class UpPredictor
+# Define class SubPredictor
 DoIt
 PNGPredictor
-	subclass: 'UpPredictor'
+	subclass: 'SubPredictor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -7835,9 +7746,44 @@ PNGPredictor
 	inDictionary: PDFtalk
 %
 DoIt
-	UpPredictor category: 'PDFtalk Streams'.
-	UpPredictor comment: 'Each byte is replaced with the difference between it and the byte above it (in the previous row, as it was before filtering).'.
-	UpPredictor namespacePath: #(#PDFtalk).
+	SubPredictor category: 'PDFtalk Streams'.
+	SubPredictor comment: 'Each byte is replaced with the difference between it and the ``corresponding byte'''' to its left.'.
+	SubPredictor namespacePath: #(#PDFtalk).
+%
+# Define class ASCII85Decode
+DoIt
+ASCIIFilter
+	subclass: 'ASCII85Decode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ASCII85Decode category: 'PDFtalk Streams'.
+	ASCII85Decode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 25.
+
+Decodes data encoded in an ASCII base-85 representation, reproducing the original binary data.'.
+	ASCII85Decode namespacePath: #(#PDFtalk).
+%
+# Define class RunLengthDecode
+DoIt
+Filter
+	subclass: 'RunLengthDecode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	RunLengthDecode category: 'PDFtalk Streams'.
+	RunLengthDecode comment: 'PDF Filter as defined in PDF 32000_2008.pdf pp. 29.
+
+Decompresses data encoded using a byte-oriented run-length encoding algorithm, reproducing the original text or binary data
+(typically monochrome image data, or any data that contains frequent long runs of a single byte value).'.
+	RunLengthDecode namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8012,6 +7958,7 @@ nextEncodedGroupFrom: aReadStream
 			| char |
 			char := aReadStream next.
 			(char = 16r7E asCharacter and: [
+			[aReadStream peek isPdfWhitespace] whileTrue: [aReadStream next].
 			aReadStream peek = 16r3E asCharacter]) ifTrue: [
 					aReadStream setToEnd.
 					^wst contents].
@@ -8135,10 +8082,11 @@ subclassNamed: aSymbol
 	assumes that all subclasses are defined in namespace #{PDFtalk}"
 
 	| classOrganizer |
-	classOrganizer := ClassOrganizer _newWithRoot: Filter
-				symbolList: (SymbolList with: PDFtalk).
-	^(classOrganizer allSubclassesOf: Filter)
-		detect: [:subclass | subclass name = aSymbol]
+	classOrganizer := ClassOrganizer
+		_newWithRoot: Filter
+		symbolList: (SymbolList with: PDFtalk)
+		env: 0.
+	^(classOrganizer allSubclassesOf: Filter) detect: [:subclass | subclass name = aSymbol]
 %
 category: 'instance creation'
 classmethod: Filter
@@ -8267,20 +8215,20 @@ decompressedBytes: aByteArray
 	| rst header1 header2 compressed uncompressed footer |
 	rst := ByteReadStream bigEndianOn: aByteArray.
 	header1 := rst next.
-	(header1 bitAnd: 16rF) = 8
-		ifFalse: [^self error: 'Only DEFLATE (8) is permitted as compression method'].
-	(header1 bitShift: -4) > 7
-		ifTrue: [^self error: 'A window size is too big for this compression method'].
+	(header1 bitAnd: 16rF) = 8 ifFalse: [
+		^self error: 'Only DEFLATE (8) is permitted as compression method'].
+	(header1 bitShift: -4) > 7 ifTrue: [
+		^self error: 'A window size is too big for this compression method'].
 	header2 := rst next.
-	(header2 bitAnd: 2r100000) isZero
-		ifFalse: [^self error: 'preset dictionaries are not supported'].
-	(header1 * 256 + header2 rem: 31) isZero
-		ifFalse: [^self error: 'the checksum of the header is not correct'].
+	(header2 bitAnd: 2r100000) isZero ifFalse: [
+		^self error: 'preset dictionaries are not supported'].
+	(header1 * 256 + header2 rem: 31) isZero ifFalse: [
+		^self error: 'the checksum of the header is not correct'].
 	compressed := rst next: aByteArray size - 6.
 	uncompressed := compressed _decompressBytes.
 	footer := rst nextUnsignedLong.
-	footer = (CZstream adler32: uncompressed initialCrc: 1)
-		ifFalse: [^self error: 'the ADLER32 checksum is not correct'].
+	footer = (CZstream adler32: uncompressed initialCrc: 1) ifFalse: [
+		^self error: 'the ADLER32 checksum is not correct'].
 	^uncompressed
 %
 category: 'accessing'
@@ -8360,7 +8308,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #LZWFilterParameter
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.4.4.3'
 		documentation: 'The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
 NOTE
@@ -8591,9 +8539,9 @@ filterNames
 
 	| filterAttr |
 	filterAttr := self Filter.
-	filterAttr isName ifTrue: [
-		^Array with: filterAttr].
-	^filterAttr content
+	(filterAttr isKindOf: PDF Array) ifTrue: [
+		^filterAttr content].
+	^Array with: filterAttr
 %
 method: PDFStream
 internal
@@ -8805,10 +8753,11 @@ subclassFor: anInteger
 	"assumes that all subclasses are defined in namespace #{PDFtalk}"
 
 	| classOrganizer |
-	classOrganizer := ClassOrganizer _newWithRoot: PNGPredictor
-				symbolList: (SymbolList with: PDFtalk).
-	^(classOrganizer subclassesOf: PNGPredictor)
-		detect: [:subclass | subclass type = anInteger]
+	classOrganizer := ClassOrganizer
+		_newWithRoot: PNGPredictor
+		symbolList: (SymbolList with: PDFtalk)
+		env: 0.
+	^(classOrganizer subclassesOf: PNGPredictor) detect: [:subclass | subclass type = anInteger]
 %
 category: 'accessing'
 method: PNGPredictor
@@ -8894,7 +8843,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Textstream
-		supertype: #Object
+		supertype: #Stream
 		version: 5
 		section: '7.9.3'
 		documentation: 'A text stream shall be a PDF stream object whose unencoded bytes shall meet the same requirements as a text string with respect to encoding, byte order, and lead bytes.'
@@ -9163,7 +9112,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ZipFilterParameter
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.4.4.3'
 		documentation: 'The LZWDecode and FlateDecode filters shall accept optional parameters to control the decoding process.
 NOTE
@@ -9249,7 +9198,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Data Structures'.
-	dict at: #storeVersion put: '2.0.0.11'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -9257,10 +9206,10 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class Function
+# Define class OptionalContentUsage
 DoIt
-Objecttype
-	subclass: 'Function'
+PDFDictionary
+	subclass: 'OptionalContentUsage'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9268,18 +9217,19 @@ Objecttype
 	inDictionary: PDFtalk
 %
 DoIt
-	Function category: 'PDFtalk Data Structures'.
-	Function comment: 'PDF Function Dictionary as defined in PDF 32000_2008.pdf pp. 92.
+	OptionalContentUsage category: 'PDFtalk Data Structures'.
+	OptionalContentUsage comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
 
-PDF is not a programming language, and a PDF file is not a program.
-However, PDF provides several types of function objects (PDF 1.2) that represent parameterized classes of functions, including mathematical formulas and sampled representations with arbitrary resolution.
-'.
-	Function namespacePath: #(#PDFtalk).
+Optional content groups are typically constructed to control the visibility of graphic objects that are related in some way.
+Objects can be related in several ways; for example, a group may contain content in a particular language or content suitable for viewing at a particular magnification.
+
+An optional content group’s usage dictionary (the value of the Usage entry in an optional content group dictionary) shall contain information describing the nature of the content controlled by the group'.
+	OptionalContentUsage namespacePath: #(#PDFtalk).
 %
-# Define class Identity
+# Define class NumberTree
 DoIt
-Name
-	subclass: 'Identity'
+PDFDictionary
+	subclass: 'NumberTree'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9287,9 +9237,61 @@ Name
 	inDictionary: PDFtalk
 %
 DoIt
-	Identity category: 'PDFtalk Data Structures'.
-	Identity comment: 'the identity function'.
-	Identity namespacePath: #(#PDFtalk).
+	NumberTree category: 'PDFtalk Data Structures'.
+	NumberTree comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
+
+A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
+The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
+	NumberTree namespacePath: #(#PDFtalk).
+%
+# Define class NameTree
+DoIt
+PDFDictionary
+	subclass: 'NameTree'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NameTree category: 'PDFtalk Data Structures'.
+	NameTree comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
+
+A name tree serves a similar purpose to a dictionary—associating keys and values—but by different means.
+A name tree differs from a dictionary in the following important ways:
+	• Unlike the keys in a dictionary, which are name objects, those in a name tree are strings.
+	• The keys are ordered.
+	• The values associated with the keys may be objects of any type.
+	Stream objects shall be specified by indirect object references.
+	The dictionary, array, and string objects should be specified by indirect object references, and other PDF objects (nulls, numbers, booleans, and names) should be specified as direct objects.
+	• The data structure can represent an arbitrarily large collection of key-value pairs, which can be looked up efficiently without requiring the entire data structure to be read from the PDF file. (In contrast, a dictionary can be subject to an implementation limit on the number of entries it can contain.)
+
+A name tree shall be constructed of nodes, each of which shall be a dictionary object.
+The nodes shall be of three kinds, depending on the specific entries they contain.
+The tree shall always have exactly one root node, which shall contain a single entry: either Kids or Names but not both.
+If the root node has a Names entry, it shall be the only node in the tree.
+If it has a Kids entry, each of the remaining nodes shall be either an intermediate node, that shall contain a Limits entry and a Kids entry, or a leaf node, that shall contain a Limits entry and a Names entry.'.
+	NameTree namespacePath: #(#PDFtalk).
+%
+# Define class NameTreeLeaf
+DoIt
+NameTree
+	subclass: 'NameTreeLeaf'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NameTreeLeaf category: 'PDFtalk Data Structures'.
+	NameTreeLeaf comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
+
+The Names entries in the leaf (or root) nodes shall contain the tree’s keys and their associated values, arranged in key-value pairs and shall be sorted lexically in ascending order by key.
+Shorter keys shall appear before longer ones beginning with the same byte sequence.
+Any encoding of the keys may be used as long as it is self-consistent; keys shall be compared for equality on a simple byte-by-byte basis.'.
+	NameTreeLeaf namespacePath: #(#PDFtalk).
 %
 # Define class FunctionStream
 DoIt
@@ -9327,6 +9329,122 @@ Type 0 functions use a sequence of sample values (contained in a stream) to prov
 The samples are organized as an m-dimensional table in which each entry has n components.'.
 	SampledFunction namespacePath: #(#PDFtalk).
 %
+# Define class OptionalContentUsageLanguage
+DoIt
+PDFDictionary
+	subclass: 'OptionalContentUsageLanguage'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OptionalContentUsageLanguage category: 'PDFtalk Data Structures'.
+	OptionalContentUsageLanguage comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
+
+A dictionary specifying the language of the content controlled by this optional content group.
+It may contain the following two entries:
+	Lang (required) 		A text string that specifies a language and possibly a locale. For example, es-MX represents Mexican Spanish.
+	Preferred (optional) 	A name whose values shall be either ON or OFF. Default value: OFF. It shall be used by conforming readers when there is a partial match but no exact match between the system language and the language strings in all usage dictionaries'.
+	OptionalContentUsageLanguage namespacePath: #(#PDFtalk).
+%
+# Define class OptionalContentUsageApplication
+DoIt
+PDFDictionary
+	subclass: 'OptionalContentUsageApplication'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OptionalContentUsageApplication category: 'PDFtalk Data Structures'.
+	OptionalContentUsageApplication comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 233.
+
+A usage application dictionary specifies the rules for which usage entries shall be used by conforming readers to automatically manipulate the state of optional content groups, which groups shall be affected, and under which circumstances.
+
+Usage application dictionaries shall only be used by interactive conforming readers, and shall not be used by applications that use PDF as final form output'.
+	OptionalContentUsageApplication namespacePath: #(#PDFtalk).
+%
+# Define class OptionalContentUsageCreatorInfo
+DoIt
+PDFDictionary
+	subclass: 'OptionalContentUsageCreatorInfo'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OptionalContentUsageCreatorInfo category: 'PDFtalk Data Structures'.
+	OptionalContentUsageCreatorInfo comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
+
+A dictionary used by the creating application to store application-specific data associated with this optional content group.
+It shall contain two required entries:
+	Creator 		A text string specifying the application that created the group.
+	Subtype 	A name defining the type of content controlled by the group. Suggested values include but shall not be limited to Artwork, for graphic-design or publishing applications, and Technical, for technical designs such as building plans or schematics.
+
+Additional entries may be included to present information relevant to the creating application or related applications'.
+	OptionalContentUsageCreatorInfo namespacePath: #(#PDFtalk).
+%
+# Define class FunctionDictionary
+DoIt
+PDFDictionary
+	subclass: 'FunctionDictionary'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FunctionDictionary category: 'PDFtalk Data Structures'.
+	FunctionDictionary comment: 'PDF Function Dictionary as defined in PDF 32000_2008.pdf section 7.10, pp. 92.
+
+PDF is not a programming language, and a PDF file is not a program.
+However, PDF provides several types of function objects (PDF 1.2) that represent parameterized classes of functions, including mathematical formulas and sampled representations with arbitrary resolution.
+'.
+	FunctionDictionary namespacePath: #(#PDFtalk).
+%
+# Define class StichingFunction
+DoIt
+FunctionDictionary
+	subclass: 'StichingFunction'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StichingFunction category: 'PDFtalk Data Structures'.
+	StichingFunction comment: 'PDF Function as defined in PDF 32000_2008.pdf pp. 96.
+
+Type 3 functions define a stitching of the subdomains of several 1-input functions to produce a single new 1-input function.
+Since the resulting stitching function is a 1-input function, the domain is given by a two-element array, [Domain0 Domain1].'.
+	StichingFunction namespacePath: #(#PDFtalk).
+%
+# Define class NumberTreeLeaf
+DoIt
+NumberTree
+	subclass: 'NumberTreeLeaf'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NumberTreeLeaf category: 'PDFtalk Data Structures'.
+	NumberTreeLeaf comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
+
+A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
+The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
+	NumberTreeLeaf namespacePath: #(#PDFtalk).
+%
 # Define class PostScriptCalculatorFunction
 DoIt
 FunctionStream
@@ -9357,10 +9475,10 @@ The following types of errors can occur (among others):
 	• An undefined result (for example, dividing by 0)'.
 	PostScriptCalculatorFunction namespacePath: #(#PDFtalk).
 %
-# Define class OptionalContentUsageApplication
+# Define class OptionalContentGroup
 DoIt
-PDFDictionary
-	subclass: 'OptionalContentUsageApplication'
+TypedDictionary
+	subclass: 'OptionalContentGroup'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9368,18 +9486,17 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	OptionalContentUsageApplication category: 'PDFtalk Data Structures'.
-	OptionalContentUsageApplication comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 233.
+	OptionalContentGroup category: 'PDFtalk Data Structures'.
+	OptionalContentGroup comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.2.1, pp. 222.
 
-A usage application dictionary specifies the rules for which usage entries shall be used by conforming readers to automatically manipulate the state of optional content groups, which groups shall be affected, and under which circumstances.
-
-Usage application dictionaries shall only be used by interactive conforming readers, and shall not be used by applications that use PDF as final form output'.
-	OptionalContentUsageApplication namespacePath: #(#PDFtalk).
+An optional content group is a dictionary representing a collection of graphics that can be made visible or invisible dynamically by users of conforming readers.
+The graphics belonging to such a group may reside anywhere in the document: they need not be consecutive in drawing order, nor even belong to the same content stream'.
+	OptionalContentGroup namespacePath: #(#PDFtalk).
 %
-# Define class NumberTree
+# Define class OptionalContentConfiguration
 DoIt
 PDFDictionary
-	subclass: 'NumberTree'
+	subclass: 'OptionalContentConfiguration'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9387,17 +9504,18 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	NumberTree category: 'PDFtalk Data Structures'.
-	NumberTree comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
+	OptionalContentConfiguration category: 'PDFtalk Data Structures'.
+	OptionalContentConfiguration comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.3, pp. 229.
 
-A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
-The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
-	NumberTree namespacePath: #(#PDFtalk).
+The D and Configs entries in a OptionalContentProperties are configuration dictionaries, which represent different presentations of a document’s optional content groups for use by conforming readers.
+The D configuration dictionary shall be used to specify the initial state of the optional content groups when a document is first opened.
+Configs lists other configurations that may be used under particular circumstances'.
+	OptionalContentConfiguration namespacePath: #(#PDFtalk).
 %
-# Define class FunctionDictionary
+# Define class Identity
 DoIt
-PDFDictionary
-	subclass: 'FunctionDictionary'
+Name
+	subclass: 'Identity'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9405,18 +9523,51 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	FunctionDictionary category: 'PDFtalk Data Structures'.
-	FunctionDictionary comment: 'PDF Function Dictionary as defined in PDF 32000_2008.pdf section 7.10, pp. 92.
+	Identity category: 'PDFtalk Data Structures'.
+	Identity comment: 'the identity function'.
+	Identity namespacePath: #(#PDFtalk).
+%
+# Define class OptionalContentProperties
+DoIt
+PDFDictionary
+	subclass: 'OptionalContentProperties'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OptionalContentProperties category: 'PDFtalk Data Structures'.
+	OptionalContentProperties comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.2, pp. 228.
+
+The optional OCProperties entry in the document catalog shall contain, when present, the optional content properties dictionary, which contains a list of all the optional content groups in the document, as well as information about the default and alternate configurations for optional content.
+This dictionary shall be present if the file contains any optional content; if it is missing, a conforming reader shall ignore any optional content structures in the document'.
+	OptionalContentProperties namespacePath: #(#PDFtalk).
+%
+# Define class Function
+DoIt
+Objecttype
+	subclass: 'Function'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Function category: 'PDFtalk Data Structures'.
+	Function comment: 'PDF Function Dictionary as defined in PDF 32000_2008.pdf pp. 92.
 
 PDF is not a programming language, and a PDF file is not a program.
 However, PDF provides several types of function objects (PDF 1.2) that represent parameterized classes of functions, including mathematical formulas and sampled representations with arbitrary resolution.
 '.
-	FunctionDictionary namespacePath: #(#PDFtalk).
+	Function namespacePath: #(#PDFtalk).
 %
-# Define class NameTree
+# Define class NumberTreeNode
 DoIt
-PDFDictionary
-	subclass: 'NameTree'
+NumberTree
+	subclass: 'NumberTreeNode'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9424,29 +9575,34 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	NameTree category: 'PDFtalk Data Structures'.
-	NameTree comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
+	NumberTreeNode category: 'PDFtalk Data Structures'.
+	NumberTreeNode comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
 
-A name tree serves a similar purpose to a dictionary—associating keys and values—but by different means.
-A name tree differs from a dictionary in the following important ways:
-	• Unlike the keys in a dictionary, which are name objects, those in a name tree are strings.
-	• The keys are ordered.
-	• The values associated with the keys may be objects of any type.
-	Stream objects shall be specified by indirect object references.
-	The dictionary, array, and string objects should be specified by indirect object references, and other PDF objects (nulls, numbers, booleans, and names) should be specified as direct objects.
-	• The data structure can represent an arbitrarily large collection of key-value pairs, which can be looked up efficiently without requiring the entire data structure to be read from the PDF file. (In contrast, a dictionary can be subject to an implementation limit on the number of entries it can contain.)
-
-A name tree shall be constructed of nodes, each of which shall be a dictionary object.
-The nodes shall be of three kinds, depending on the specific entries they contain.
-The tree shall always have exactly one root node, which shall contain a single entry: either Kids or Names but not both.
-If the root node has a Names entry, it shall be the only node in the tree.
-If it has a Kids entry, each of the remaining nodes shall be either an intermediate node, that shall contain a Limits entry and a Kids entry, or a leaf node, that shall contain a Limits entry and a Names entry.'.
-	NameTree namespacePath: #(#PDFtalk).
+A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
+The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
+	NumberTreeNode namespacePath: #(#PDFtalk).
 %
-# Define class StichingFunction
+# Define class NameTreeNode
+DoIt
+NameTree
+	subclass: 'NameTreeNode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NameTreeNode category: 'PDFtalk Data Structures'.
+	NameTreeNode comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
+
+The Kids entries in the root and intermediate nodes define the tree’s structure by identifying the immediate children of each node.'.
+	NameTreeNode namespacePath: #(#PDFtalk).
+%
+# Define class ExponentialInterpolationFunction
 DoIt
 FunctionDictionary
-	subclass: 'StichingFunction'
+	subclass: 'ExponentialInterpolationFunction'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -9454,12 +9610,12 @@ FunctionDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	StichingFunction category: 'PDFtalk Data Structures'.
-	StichingFunction comment: 'PDF Function as defined in PDF 32000_2008.pdf pp. 96.
+	ExponentialInterpolationFunction category: 'PDFtalk Data Structures'.
+	ExponentialInterpolationFunction comment: 'PDF Function as defined in PDF 32000_2008.pdf pp. 96.
 
-Type 3 functions define a stitching of the subdomains of several 1-input functions to produce a single new 1-input function.
-Since the resulting stitching function is a 1-input function, the domain is given by a two-element array, [Domain0 Domain1].'.
-	StichingFunction namespacePath: #(#PDFtalk).
+Type 2 functions include a set of parameters that define an exponential interpolation of one input value and n output values:
+	f(x) = y0, ..., yn-1'.
+	ExponentialInterpolationFunction namespacePath: #(#PDFtalk).
 %
 # Define class Rectangle
 DoIt
@@ -9488,213 +9644,6 @@ specifying the lower-left x, lower-left y, upper-right x, and upper-right y coor
 The other two corners of the rectangle are then assumed to have coordinates (llx, ury) and (urx, lly).
 '.
 	Rectangle namespacePath: #(#PDFtalk).
-%
-# Define class ExponentialInterpolationFunction
-DoIt
-FunctionDictionary
-	subclass: 'ExponentialInterpolationFunction'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ExponentialInterpolationFunction category: 'PDFtalk Data Structures'.
-	ExponentialInterpolationFunction comment: 'PDF Function as defined in PDF 32000_2008.pdf pp. 96.
-
-Type 2 functions include a set of parameters that define an exponential interpolation of one input value and n output values:
-	f(x) = y0, ..., yn-1'.
-	ExponentialInterpolationFunction namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentConfiguration
-DoIt
-PDFDictionary
-	subclass: 'OptionalContentConfiguration'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentConfiguration category: 'PDFtalk Data Structures'.
-	OptionalContentConfiguration comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.3, pp. 229.
-
-The D and Configs entries in a OptionalContentProperties are configuration dictionaries, which represent different presentations of a document’s optional content groups for use by conforming readers.
-The D configuration dictionary shall be used to specify the initial state of the optional content groups when a document is first opened.
-Configs lists other configurations that may be used under particular circumstances'.
-	OptionalContentConfiguration namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentUsageCreatorInfo
-DoIt
-PDFDictionary
-	subclass: 'OptionalContentUsageCreatorInfo'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentUsageCreatorInfo category: 'PDFtalk Data Structures'.
-	OptionalContentUsageCreatorInfo comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
-
-A dictionary used by the creating application to store application-specific data associated with this optional content group.
-It shall contain two required entries:
-	Creator 		A text string specifying the application that created the group.
-	Subtype 	A name defining the type of content controlled by the group. Suggested values include but shall not be limited to Artwork, for graphic-design or publishing applications, and Technical, for technical designs such as building plans or schematics.
-
-Additional entries may be included to present information relevant to the creating application or related applications'.
-	OptionalContentUsageCreatorInfo namespacePath: #(#PDFtalk).
-%
-# Define class NameTreeNode
-DoIt
-NameTree
-	subclass: 'NameTreeNode'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NameTreeNode category: 'PDFtalk Data Structures'.
-	NameTreeNode comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
-
-The Kids entries in the root and intermediate nodes define the tree’s structure by identifying the immediate children of each node.'.
-	NameTreeNode namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentProperties
-DoIt
-PDFDictionary
-	subclass: 'OptionalContentProperties'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentProperties category: 'PDFtalk Data Structures'.
-	OptionalContentProperties comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.2, pp. 228.
-
-The optional OCProperties entry in the document catalog shall contain, when present, the optional content properties dictionary, which contains a list of all the optional content groups in the document, as well as information about the default and alternate configurations for optional content.
-This dictionary shall be present if the file contains any optional content; if it is missing, a conforming reader shall ignore any optional content structures in the document'.
-	OptionalContentProperties namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentUsageLanguage
-DoIt
-PDFDictionary
-	subclass: 'OptionalContentUsageLanguage'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentUsageLanguage category: 'PDFtalk Data Structures'.
-	OptionalContentUsageLanguage comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
-
-A dictionary specifying the language of the content controlled by this optional content group.
-It may contain the following two entries:
-	Lang (required) 		A text string that specifies a language and possibly a locale. For example, es-MX represents Mexican Spanish.
-	Preferred (optional) 	A name whose values shall be either ON or OFF. Default value: OFF. It shall be used by conforming readers when there is a partial match but no exact match between the system language and the language strings in all usage dictionaries'.
-	OptionalContentUsageLanguage namespacePath: #(#PDFtalk).
-%
-# Define class NumberTreeLeaf
-DoIt
-NumberTree
-	subclass: 'NumberTreeLeaf'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NumberTreeLeaf category: 'PDFtalk Data Structures'.
-	NumberTreeLeaf comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
-
-A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
-The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
-	NumberTreeLeaf namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentUsage
-DoIt
-PDFDictionary
-	subclass: 'OptionalContentUsage'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentUsage category: 'PDFtalk Data Structures'.
-	OptionalContentUsage comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.4.4, pp. 232.
-
-Optional content groups are typically constructed to control the visibility of graphic objects that are related in some way.
-Objects can be related in several ways; for example, a group may contain content in a particular language or content suitable for viewing at a particular magnification.
-
-An optional content group’s usage dictionary (the value of the Usage entry in an optional content group dictionary) shall contain information describing the nature of the content controlled by the group'.
-	OptionalContentUsage namespacePath: #(#PDFtalk).
-%
-# Define class NameTreeLeaf
-DoIt
-NameTree
-	subclass: 'NameTreeLeaf'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NameTreeLeaf category: 'PDFtalk Data Structures'.
-	NameTreeLeaf comment: 'PDF Name Trees as defined in PDF 32000_2008.pdf pp. 88.
-
-The Names entries in the leaf (or root) nodes shall contain the tree’s keys and their associated values, arranged in key-value pairs and shall be sorted lexically in ascending order by key.
-Shorter keys shall appear before longer ones beginning with the same byte sequence.
-Any encoding of the keys may be used as long as it is self-consistent; keys shall be compared for equality on a simple byte-by-byte basis.'.
-	NameTreeLeaf namespacePath: #(#PDFtalk).
-%
-# Define class OptionalContentGroup
-DoIt
-TypedDictionary
-	subclass: 'OptionalContentGroup'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OptionalContentGroup category: 'PDFtalk Data Structures'.
-	OptionalContentGroup comment: 'PDF Optional Content as defined in PDF 32000_2008.pdf section 8.11.2.1, pp. 222.
-
-An optional content group is a dictionary representing a collection of graphics that can be made visible or invisible dynamically by users of conforming readers.
-The graphics belonging to such a group may reside anywhere in the document: they need not be consecutive in drawing order, nor even belong to the same content stream'.
-	OptionalContentGroup namespacePath: #(#PDFtalk).
-%
-# Define class NumberTreeNode
-DoIt
-NumberTree
-	subclass: 'NumberTreeNode'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NumberTreeNode category: 'PDFtalk Data Structures'.
-	NumberTreeNode comment: 'PDF Number Trees as defined in PDF 32000_2008.pdf pp. 91.
-
-A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
-The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'.
-	NumberTreeNode namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -9912,7 +9861,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #NameTree
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.9.6'
 		documentation: 'A name tree serves a similar purpose to a dictionary—associating keys and values—but by different means.
 A name tree differs from a dictionary in the following important ways:
@@ -10008,7 +9957,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #NumberTree
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.9.7'
 		documentation: 'A number tree is similar to a name tree (see NameTree), except that its keys shall be integers instead of strings and shall be sorted in ascending numerical order.
 The entries in the leaf (or root) nodes containing the key-value pairs shall be named Nums instead of Names as in a name tree.'
@@ -10054,7 +10003,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentConfiguration
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.3'
 		documentation: 'The D and Configs entries in a OptionalContentProperties are configuration dictionaries, which represent different presentations of a document’s optional content groups for use by conforming readers.
@@ -10178,7 +10127,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentGroup
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.2'
 		documentation: 'An optional content group is a dictionary representing a collection of graphics that can be made visible or invisible dynamically by users of conforming readers.
@@ -10229,7 +10178,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentProperties
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.2'
 		documentation: 'The optional OCProperties entry in the document catalog shall contain, when present, the optional content properties dictionary, which contains a list of all the optional content groups in the document, as well as information about the default and alternate configurations for optional content.
@@ -10263,7 +10212,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentUsage
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.4'
 		documentation: 'Optional content groups are typically constructed to control the visibility of graphic objects that are related in some way.
@@ -10350,7 +10299,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentUsageApplication
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.4'
 		documentation: 'A usage application dictionary specifies the rules for which usage entries shall be used by conforming readers to automatically manipulate the state of optional content groups, which groups shall be affected, and under which circumstances.
@@ -10392,7 +10341,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentUsageCreatorInfo
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.4'
 		documentation: 'A dictionary used by the creating application to store application-specific data associated with this optional content group.
@@ -10423,7 +10372,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OptionalContentUsageLanguage
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '8.11.4.4'
 		documentation: 'A dictionary specifying the language of the content controlled by this optional content group.
@@ -10701,7 +10650,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Parsing'.
-	dict at: #storeVersion put: '2.0.0.11'.
+	dict at: #storeVersion put: '2.0.2.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -10757,6 +10706,21 @@ Indirect objects are expected to have number, generation and #obj and #endobj ta
 Only the file parser knows about streams'.
 	FileParser namespacePath: #(#PDFtalk).
 %
+# Define class EncryptedFileParser
+DoIt
+FileParser
+	subclass: 'EncryptedFileParser'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EncryptedFileParser category: 'PDFtalk Parsing'.
+	EncryptedFileParser comment: 'This parser reads PDF objects from an encrypted file.'.
+	EncryptedFileParser namespacePath: #(#PDFtalk).
+%
 # Define class ObjectStreamParser
 DoIt
 ObjectParser
@@ -10773,23 +10737,71 @@ DoIt
 Indirect objects are expected NOT to have number, generation and #obj and #endobj tags.'.
 	ObjectStreamParser namespacePath: #(#PDFtalk).
 %
-# Define class EncryptedFileParser
-DoIt
-FileParser
-	subclass: 'EncryptedFileParser'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EncryptedFileParser category: 'PDFtalk Parsing'.
-	EncryptedFileParser comment: 'This parser reads PDF objects from an encrypted file.'.
-	EncryptedFileParser namespacePath: #(#PDFtalk).
-%
 DoIt
 System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+	| package policy |
+	package := GsPackageLibrary createPackageNamed: #SessionMethods.
+	GsPackageLibrary installPackage: package.
+	policy := GsPackagePolicy current.
+	policy homeSymbolDict: FileInSymbolDictionary.
+	policy externalSymbolList: (GsSession currentSession symbolList asArray copyWithout: FileInSymbolDictionary).
+	policy enable.
+%
+category: '*PDFtalk Parsing-reading'
+classmethod: Number
+readDigitsFrom: aStream
+	"<SequenceableCollection on: Integer[0..9]>
+	read all decimal digits off aStream"
+
+	| wst zeroCode |
+	wst := Array new writeStream.
+	zeroCode := $0 asInteger.
+	[aStream atEnd] whileFalse: [
+		(aStream peek between: $0 and: $9)
+			ifTrue: [
+			wst nextPut: aStream next asInteger - zeroCode]
+			ifFalse: [
+			^wst contents]].
+	^wst contents
+%
+classmethod: Number
+readPDFNumberFrom: aStream
+	"<Number>
+	the sign has been consumed already"
+
+	| integer digits numerator denominator |
+	integer := (self readDigitsFrom: aStream) inject: 0 into: [:number :digit | number * 10 + digit].
+	(aStream peekFor: $.) ifFalse: [
+		^integer].
+	digits := self readDigitsFrom: aStream.
+	numerator := digits inject: 0 into: [:number :digit | number * 10 + digit].
+	denominator := 10 raisedTo: digits size.
+	^integer + (numerator / denominator)
+%
+classmethod: Number
+readPDFSyntaxFrom: aStream
+	"<Number>
+	a decimal number"
+
+	| negative number |
+	aStream peekFor: $+.
+	negative := aStream peekFor: $-.
+	number := self readPDFNumberFrom: aStream.
+	negative ifTrue: [
+		^number negated].
+	^number
+%
+DoIt
+	| dict policy |
+	dict := SymbolDictionary new.
+	dict at: #UNWRITABLE put: dict.
+	dict immediateInvariant.
+	policy := GsPackagePolicy current.
+	policy homeSymbolDict: dict.
+	policy externalSymbolList: Array new.
+	policy enable.
 %
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
@@ -11000,19 +11012,18 @@ savePosition
 category: 'initialize-release'
 method: ObjectParser
 initializeStream: aBinaryStream
-
 	super initializeStream: aBinaryStream.
 	accessLock := CriticalSection new
 %
 category: 'reading'
 method: ObjectParser
 readNumberOrReference: numericToken with: aFile
-	| aNumber pos |
-	aNumber := self readNumber: numericToken.
+	| number pos |
+	number := self readNumber: numericToken.
 	pos := self position.
-	^(self readReferenceOrNilStartingWith: aNumber with: aFile) ifNil: [
+	^(self readReferenceOrNilStartingWith: number with: aFile) ifNil: [
 		self position: pos.
-		aNumber]
+		number]
 %
 method: ObjectParser
 readReferenceOrNilStartingWith: aNumber with: aFile
@@ -11370,11 +11381,12 @@ readName
 %
 method: Parser
 readNumber: token
-
 	| numstr |
 	numstr := token.
-	numstr first == $+ ifTrue: [numstr := token allButFirst: 1].
-	(token includes: $.) ifTrue: [^(Float fromStringLocaleC: numstr) asPDF].
+	numstr first == $+ ifTrue: [
+		numstr := token allButFirst: 1].
+	(token includes: $.) ifTrue: [
+		^(Float fromStringLocaleC: numstr) asPDF].
 	^numstr asNumber asPDF
 %
 method: Parser
@@ -11426,17 +11438,17 @@ method: Parser
 skipToEol
 	"skip all characters up to and including EndOfLine"
 
-	[self atEnd] whileFalse: 
-			[| int |
-			int := self stream next asInteger.
-			(#(10 13) includes: int)
-				ifTrue: 
-					[(int == 13 and: [self stream peek = 10]) ifTrue: [self stream next].
-					^self]]
+	[self atEnd] whileFalse: [
+		| int |
+		int := self stream next asInteger.
+		(#(10 13) includes: int) ifTrue: [
+			(int == 13 and: [
+			self stream peek = 10]) ifTrue: [
+					self stream next].
+			^self]]
 %
 method: Parser
 upTo: aCharacter
-
 	^(self stream upTo: aCharacter) asString
 %
 category: 'testing'
@@ -11479,7 +11491,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Colour'.
-	dict at: #storeVersion put: '2.0.0.19'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -11527,172 +11539,6 @@ Instance Variables
 %
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
-%
-# Define class DeviceNColourSpaceAttributes
-DoIt
-PDFDictionary
-	subclass: 'DeviceNColourSpaceAttributes'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceNColourSpaceAttributes category: 'PDFtalk Colour'.
-	DeviceNColourSpaceAttributes comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
-
-The optional attributes parameter shall be a dictionary containing additional information about the components of colour space that conforming readers may use.
-Conforming readers need not use the alternateSpace and tintTransform parameters, and may instead use custom blending algorithms, along with other information provided in the attributes dictionary if present. (If the value of the Subtype entry in the attributes dictionary is NChannel, such information shall be present.)
-However, alternateSpace and tintTransform shall always be provided for conforming readers that want to use them or do not support PDF 1.6.
-'.
-	DeviceNColourSpaceAttributes namespacePath: #(#PDFtalk).
-%
-# Define class SpecialColourSpace
-DoIt
-PDFArray
-	subclass: 'SpecialColourSpace'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SpecialColourSpace category: 'PDFtalk Colour'.
-	SpecialColourSpace comment: 'PDF Special Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6, pp. 155.
-
-Special colour spaces add features or properties to an underlying colour space. 
-There are four special colour space families: Pattern, Indexed, Separation, and DeviceN.'.
-	SpecialColourSpace namespacePath: #(#PDFtalk).
-%
-# Define class DeviceN
-DoIt
-SpecialColourSpace
-	subclass: 'DeviceN'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceN category: 'PDFtalk Colour'.
-	DeviceN comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 159.
-
-DeviceN colour spaces (PDF 1.3) may contain an arbitrary number of colour components.'.
-	DeviceN namespacePath: #(#PDFtalk).
-%
-# Define class CalRGBColourSpaceDictionary
-DoIt
-PDFDictionary
-	subclass: 'CalRGBColourSpaceDictionary'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CalRGBColourSpaceDictionary category: 'PDFtalk Colour'.
-	CalRGBColourSpaceDictionary comment: 'PDF CalRGB Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.3, pp. 146.
-
-A CalRGB colour space is a CIE-based ABC colour space with only one transformation stage instead of two. 
-In this type of space, A, B, and C represent calibrated red, green, and blue colour values. 
-These three colour components shall be in the range 0.0 to 1.0; 
-component values falling outside that range shall be adjusted to the nearest valid value without error indication. 
-The decoding functions are gamma functions whose coefficients shall be specified by the Gamma entry in the colour space dictionary. 
-The transformation matrix shall be defined by the dictionary’s Matrix entry. 
-Since there is no second transformation stage, “Decode LMN” and “Matrix LMN” shall be implicitly taken to be identity transformations.
-'.
-	CalRGBColourSpaceDictionary namespacePath: #(#PDFtalk).
-%
-# Define class ICCProfileStream
-DoIt
-PDFStream
-	subclass: 'ICCProfileStream'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ICCProfileStream category: 'PDFtalk Colour'.
-	ICCProfileStream comment: 'PDF ICCBased Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.5, pp. 149.
-
-ICCBased colour spaces (PDF 1.3) shall be based on a cross-platform colour profile as defined by the International Color Consortium (ICC).
-Unlike the CalGray, CalRGB, and Lab colour spaces, which are characterized by entries in the colour space dictionary, an ICCBased colour space shall be characterized by a sequence of bytes in a standard format.'.
-	ICCProfileStream namespacePath: #(#PDFtalk).
-%
-# Define class DeviceColourSpace
-DoIt
-Name
-	subclass: 'DeviceColourSpace'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceColourSpace category: 'PDFtalk Colour'.
-	DeviceColourSpace comment: 'PDF Device Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.4, pp. 142.
-
-The device colour spaces enable a page description to specify colour values that are directly related to their representation on an output device. 
-Colour values in these spaces map directly (or by simple conversions) to the application of device colorants, such as quantities of ink or intensities of display phosphors. 
-This enables a conforming writer to control colours precisely for a particular device, but the results might not be consistent from one device to another.
-
-Output devices form colours either by adding light sources together or by subtracting light from an illuminating source. 
-Computer displays and film recorders typically add colours; printing inks typically subtract them. 
-These two ways of forming colours give rise to two complementary methods of colour specification, called additive and subtractive colour. 
-The most widely used forms of these two types of colour specification are known as RGB and CMYK, respectively, 
-for the names of the primary colours on which they are based. 
-They correspond to the following device colour spaces:
-	•	DeviceGray controls the intensity of achromatic light, on a scale from black to white.
-	•	DeviceRGB controls the intensities of red, green, and blue light, the three additive primary colours used in displays.
-	•	DeviceCMYK controls the concentrations of cyan, magenta, yellow, and black inks, the four subtractive process colours used in printing.
-
-NOTE
-Although the notion of explicit colour spaces is a PDF 1.1 feature, 
-the operators for specifying colours in the device colour spaces—G, g, RG, rg, K, and k—are available in all versions of PDF. 
-Beginning with PDF 1.2, colours specified in device colour spaces can optionally be remapped systematically into other colour spaces.
-
-In the transparent imaging model (PDF 1.4), the use of device colour spaces is subject to special treatment 
-within a transparency group whose group colour space is CIE-based. 
-In particular, the device colour space operators should be used only if device colour spaces have 
-been remapped to CIE-based spaces by means of the default colour space mechanism. 
-Otherwise, the results are implementation-dependent and unpredictable.'.
-	DeviceColourSpace namespacePath: #(#PDFtalk).
-%
-# Define class DeviceCMYK
-DoIt
-DeviceColourSpace
-	subclass: 'DeviceCMYK'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceCMYK category: 'PDFtalk Colour'.
-	DeviceCMYK comment: 'PDF DeviceCMYK Colour Space as defined in PDF 32000_2008.pdf, section 8.6.4.4, pp. 143.
-
-The DeviceCMYK colour space allows colours to be specified according to the subtractive CMYK (cyan-magenta-yellow-black) model typical of printers and other paper-based output devices. The four components in a DeviceCMYK colour value shall represent the concentrations of these process colorants. Each component shall be a number in the range 0.0 to 1.0, where 0.0 shall denote the complete absence of a process colorant and 1.0 shall denote maximum concentration (absorbs as much as possible of the additive primary).
-
-NOTE
-As much as the reflective colours (CMYK) decrease reflection with increased ink values and radiant colours (RGB) increases the intensity of colours with increased values the values work in an opposite manner.
-
-EXAMPLE
-The following shows alternative ways to select the DeviceCMYK colour space and a specific colour within that space for stroking operations.
-	/DeviceCMYK CS 					% Set DeviceCMYK colour space
-	cyan magenta yellow black SC 		% Set colour
-	cyan magenta yellow black K 		% Set both in one operation
-The CS and SC operators shall select the current stroking colour space and current stroking colour separately; K shall set them in combination. 
-The cs, sc, and k operators shall perform the same functions for nonstroking operations. 
-Setting either current colour space to DeviceCMYK shall initialize the cyan, magenta, and yellow components of the corresponding current colour to 0.0 and the black component to 1.0.'.
-	DeviceCMYK namespacePath: #(#PDFtalk).
 %
 # Define class CIEColourSpace
 DoIt
@@ -11748,10 +11594,10 @@ NOTE 3		The model and terminology used here—CIE-based ABC (above) and CIE-base
 			PDF supports specific useful cases of CIE-based ABC and CIE-based A spaces; most others can be represented as ICCBased spaces.'.
 	CIEColourSpace namespacePath: #(#PDFtalk).
 %
-# Define class CalRGB
+# Define class ICCBased
 DoIt
 CIEColourSpace
-	subclass: 'CalRGB'
+	subclass: 'ICCBased'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -11759,22 +11605,19 @@ CIEColourSpace
 	inDictionary: PDFtalk
 %
 DoIt
-	CalRGB category: 'PDFtalk Colour'.
-	CalRGB comment: 'PDF CalRGB Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.3, pp. 146.
+	ICCBased category: 'PDFtalk Colour'.
+	ICCBased comment: 'PDF ICCBased Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.5, pp. 149.
 
-A CalRGB colour space is a CIE-based ABC colour space with only one transformation stage instead of two. 
-In this type of space, A, B, and C represent calibrated red, green, and blue colour values. 
-These three colour components shall be in the range 0.0 to 1.0; 
-component values falling outside that range shall be adjusted to the nearest valid value without error indication. 
-The decoding functions are gamma functions whose coefficients shall be specified by the Gamma entry in the colour space dictionary. 
-The transformation matrix shall be defined by the dictionary’s Matrix entry. 
-Since there is no second transformation stage, “Decode LMN” and “Matrix LMN” shall be implicitly taken to be identity transformations.'.
-	CalRGB namespacePath: #(#PDFtalk).
+ICCBased colour spaces (PDF 1.3) shall be based on a cross-platform colour profile as defined by the International Color Consortium (ICC). 
+Unlike the CalGray, CalRGB, and Lab colour spaces, which are characterized by entries in the colour space dictionary, 
+an ICCBased colour space shall be characterized by a sequence of bytes in a standard format. 
+Details of the profile format can be found in the ICC specification.'.
+	ICCBased namespacePath: #(#PDFtalk).
 %
-# Define class LabColourSpaceDictionary
+# Define class DeviceColourSpace
 DoIt
-PDFDictionary
-	subclass: 'LabColourSpaceDictionary'
+Name
+	subclass: 'DeviceColourSpace'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -11782,87 +11625,34 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	LabColourSpaceDictionary category: 'PDFtalk Colour'.
-	LabColourSpaceDictionary comment: 'PDF Lab Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.4, pp. 148.
+	DeviceColourSpace category: 'PDFtalk Colour'.
+	DeviceColourSpace comment: 'PDF Device Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.4, pp. 142.
 
-A Lab colour space is a CIE-based ABC colour space with two transformation stages. 
-In this type of space, A, B, and C represent the L*, a*, and b* components of a CIE 1976 L*a*b* space. 
-The range of the first (L*) component shall be 0 to 100; 
-the ranges of the second and third (a* and b*) components shall be defined by the Range entry in the colour space dictionary.
-'.
-	LabColourSpaceDictionary namespacePath: #(#PDFtalk).
-%
-# Define class CalGray
-DoIt
-CIEColourSpace
-	subclass: 'CalGray'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CalGray category: 'PDFtalk Colour'.
-	CalGray comment: 'PDF CalGray Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.2, pp. 145.
+The device colour spaces enable a page description to specify colour values that are directly related to their representation on an output device. 
+Colour values in these spaces map directly (or by simple conversions) to the application of device colorants, such as quantities of ink or intensities of display phosphors. 
+This enables a conforming writer to control colours precisely for a particular device, but the results might not be consistent from one device to another.
 
-A CalGray colour space (PDF 1.1) is a special case of a single-component CIE-based colour space, known as a CIE-based A colour space. 
-This type of space is the one-dimensional (and usually achromatic) analog of CIE-based ABC spaces. 
-Colour values in a CIE-based A space shall have a single component, arbitrarily named A.'.
-	CalGray namespacePath: #(#PDFtalk).
-%
-# Define class DeviceRGB
-DoIt
-DeviceColourSpace
-	subclass: 'DeviceRGB'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceRGB category: 'PDFtalk Colour'.
-	DeviceRGB comment: 'PDF DeviceRGB Colour Space as defined in PDF 32000_2008.pdf, section 8.6.4.3, pp. 143.
+Output devices form colours either by adding light sources together or by subtracting light from an illuminating source. 
+Computer displays and film recorders typically add colours; printing inks typically subtract them. 
+These two ways of forming colours give rise to two complementary methods of colour specification, called additive and subtractive colour. 
+The most widely used forms of these two types of colour specification are known as RGB and CMYK, respectively, 
+for the names of the primary colours on which they are based. 
+They correspond to the following device colour spaces:
+	•	DeviceGray controls the intensity of achromatic light, on a scale from black to white.
+	•	DeviceRGB controls the intensities of red, green, and blue light, the three additive primary colours used in displays.
+	•	DeviceCMYK controls the concentrations of cyan, magenta, yellow, and black inks, the four subtractive process colours used in printing.
 
-Colours in the DeviceRGB colour space shall be specified according to the additive RGB (red-green-blue) colour model, 
-in which colour values shall be defined by three components representing the intensities of the additive primary colorants red, green, and blue. 
-Each component shall be specified by a number in the range 0.0 to 1.0, 
-where 0.0 shall denote the complete absence of a primary component and 1.0 shall denote maximum intensity.
+NOTE
+Although the notion of explicit colour spaces is a PDF 1.1 feature, 
+the operators for specifying colours in the device colour spaces—G, g, RG, rg, K, and k—are available in all versions of PDF. 
+Beginning with PDF 1.2, colours specified in device colour spaces can optionally be remapped systematically into other colour spaces.
 
-EXAMPLE
-This example shows alternative ways to select the DeviceRGB colour space and a specific colour within that space for stroking operations.
-	/DeviceRGB CS 	% Set DeviceRGB colour space
-	red green blue SC 	% Set colour
-	red green blue RG 	% Set both in one operation
-The CS and SC operators shall select the current stroking colour space and current stroking colour separately; RG shall set them in combination. 
-The cs, sc, and rg operators shall perform the same functions for nonstroking operations. 
-Setting either current colour space to DeviceRGB shall initialize the red, green, and blue components of the corresponding current colour to 0.0.'.
-	DeviceRGB namespacePath: #(#PDFtalk).
-%
-# Define class UncolouredPattern
-DoIt
-SpecialColourSpace
-	subclass: 'UncolouredPattern'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	UncolouredPattern category: 'PDFtalk Colour'.
-	UncolouredPattern comment: 'PDF Uncoloured Tiling Patterns as defined in PDF 32000_2008.pdf, section 8.7.3.3, pp. 178.
-
-An uncoloured tiling pattern is a pattern that has no inherent colour: the colour shall be specified separately whenever the pattern is used.
-It provides a way to tile different regions of the page with pattern cells having the same shape but different colours.
-This type of pattern shall be identified by a pattern type of 1 and a paint type of 2 in the pattern dictionary.
-The pattern’s content stream shall not explicitly specify any colours; it may paint an image mask but no other kind of image.
-
-A Pattern colour space representing an uncoloured tiling pattern shall have a parameter: an object identifying the underlying colour space in which the actual colour of the pattern shall be specified.
-The underlying colour space shall be given as the second element of the array that defines the Pattern colour space.
-'.
-	UncolouredPattern namespacePath: #(#PDFtalk).
+In the transparent imaging model (PDF 1.4), the use of device colour spaces is subject to special treatment 
+within a transparency group whose group colour space is CIE-based. 
+In particular, the device colour space operators should be used only if device colour spaces have 
+been remapped to CIE-based spaces by means of the default colour space mechanism. 
+Otherwise, the results are implementation-dependent and unpredictable.'.
+	DeviceColourSpace namespacePath: #(#PDFtalk).
 %
 # Define class DeviceGray
 DoIt
@@ -11892,10 +11682,10 @@ The CS and SC operators shall select the current stroking colour space and curre
 Setting either current colour space to DeviceGray shall initialize the corresponding current colour to 0.0.'.
 	DeviceGray namespacePath: #(#PDFtalk).
 %
-# Define class DeviceNMixingHints
+# Define class DeviceCMYK
 DoIt
-PDFDictionary
-	subclass: 'DeviceNMixingHints'
+DeviceColourSpace
+	subclass: 'DeviceCMYK'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -11903,12 +11693,108 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	DeviceNMixingHints category: 'PDFtalk Colour'.
-	DeviceNMixingHints comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
+	DeviceCMYK category: 'PDFtalk Colour'.
+	DeviceCMYK comment: 'PDF DeviceCMYK Colour Space as defined in PDF 32000_2008.pdf, section 8.6.4.4, pp. 143.
 
-Provides information about the characteristics of colorants that may be used in blending calculations when the actual colorants are not available on the target device.
-Conforming readers need not use this information'.
-	DeviceNMixingHints namespacePath: #(#PDFtalk).
+The DeviceCMYK colour space allows colours to be specified according to the subtractive CMYK (cyan-magenta-yellow-black) model typical of printers and other paper-based output devices. The four components in a DeviceCMYK colour value shall represent the concentrations of these process colorants. Each component shall be a number in the range 0.0 to 1.0, where 0.0 shall denote the complete absence of a process colorant and 1.0 shall denote maximum concentration (absorbs as much as possible of the additive primary).
+
+NOTE
+As much as the reflective colours (CMYK) decrease reflection with increased ink values and radiant colours (RGB) increases the intensity of colours with increased values the values work in an opposite manner.
+
+EXAMPLE
+The following shows alternative ways to select the DeviceCMYK colour space and a specific colour within that space for stroking operations.
+	/DeviceCMYK CS 					% Set DeviceCMYK colour space
+	cyan magenta yellow black SC 		% Set colour
+	cyan magenta yellow black K 		% Set both in one operation
+The CS and SC operators shall select the current stroking colour space and current stroking colour separately; K shall set them in combination. 
+The cs, sc, and k operators shall perform the same functions for nonstroking operations. 
+Setting either current colour space to DeviceCMYK shall initialize the cyan, magenta, and yellow components of the corresponding current colour to 0.0 and the black component to 1.0.'.
+	DeviceCMYK namespacePath: #(#PDFtalk).
+%
+# Define class SpecialColourSpace
+DoIt
+PDFArray
+	subclass: 'SpecialColourSpace'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SpecialColourSpace category: 'PDFtalk Colour'.
+	SpecialColourSpace comment: 'PDF Special Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6, pp. 155.
+
+Special colour spaces add features or properties to an underlying colour space. 
+There are four special colour space families: Pattern, Indexed, Separation, and DeviceN.'.
+	SpecialColourSpace namespacePath: #(#PDFtalk).
+%
+# Define class DeviceNColourSpaceAttributes
+DoIt
+PDFDictionary
+	subclass: 'DeviceNColourSpaceAttributes'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DeviceNColourSpaceAttributes category: 'PDFtalk Colour'.
+	DeviceNColourSpaceAttributes comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
+
+The optional attributes parameter shall be a dictionary containing additional information about the components of colour space that conforming readers may use.
+Conforming readers need not use the alternateSpace and tintTransform parameters, and may instead use custom blending algorithms, along with other information provided in the attributes dictionary if present. (If the value of the Subtype entry in the attributes dictionary is NChannel, such information shall be present.)
+However, alternateSpace and tintTransform shall always be provided for conforming readers that want to use them or do not support PDF 1.6.
+'.
+	DeviceNColourSpaceAttributes namespacePath: #(#PDFtalk).
+%
+# Define class UncolouredPattern
+DoIt
+SpecialColourSpace
+	subclass: 'UncolouredPattern'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	UncolouredPattern category: 'PDFtalk Colour'.
+	UncolouredPattern comment: 'PDF Uncoloured Tiling Patterns as defined in PDF 32000_2008.pdf, section 8.7.3.3, pp. 178.
+
+An uncoloured tiling pattern is a pattern that has no inherent colour: the colour shall be specified separately whenever the pattern is used.
+It provides a way to tile different regions of the page with pattern cells having the same shape but different colours.
+This type of pattern shall be identified by a pattern type of 1 and a paint type of 2 in the pattern dictionary.
+The pattern’s content stream shall not explicitly specify any colours; it may paint an image mask but no other kind of image.
+
+A Pattern colour space representing an uncoloured tiling pattern shall have a parameter: an object identifying the underlying colour space in which the actual colour of the pattern shall be specified.
+The underlying colour space shall be given as the second element of the array that defines the Pattern colour space.
+'.
+	UncolouredPattern namespacePath: #(#PDFtalk).
+%
+# Define class CalRGB
+DoIt
+CIEColourSpace
+	subclass: 'CalRGB'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CalRGB category: 'PDFtalk Colour'.
+	CalRGB comment: 'PDF CalRGB Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.3, pp. 146.
+
+A CalRGB colour space is a CIE-based ABC colour space with only one transformation stage instead of two. 
+In this type of space, A, B, and C represent calibrated red, green, and blue colour values. 
+These three colour components shall be in the range 0.0 to 1.0; 
+component values falling outside that range shall be adjusted to the nearest valid value without error indication. 
+The decoding functions are gamma functions whose coefficients shall be specified by the Gamma entry in the colour space dictionary. 
+The transformation matrix shall be defined by the dictionary’s Matrix entry. 
+Since there is no second transformation stage, “Decode LMN” and “Matrix LMN” shall be implicitly taken to be identity transformations.'.
+	CalRGB namespacePath: #(#PDFtalk).
 %
 # Define class ColourSpace
 DoIt
@@ -11946,10 +11832,10 @@ The families fall into three broad categories:
 '.
 	ColourSpace namespacePath: #(#PDFtalk).
 %
-# Define class Pattern
+# Define class DeviceN
 DoIt
-Name
-	subclass: 'Pattern'
+SpecialColourSpace
+	subclass: 'DeviceN'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -11957,12 +11843,46 @@ Name
 	inDictionary: PDFtalk
 %
 DoIt
-	Pattern category: 'PDFtalk Colour'.
-	Pattern comment: 'PDF Pattern Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.2, pp. 156.
+	DeviceN category: 'PDFtalk Colour'.
+	DeviceN comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 159.
 
-A Pattern colour space (PDF 1.2) specifies that an area is to be painted with a pattern rather than a single colour. 
-The pattern shall be either a tiling pattern (type 1) or a shading pattern (type 2).'.
-	Pattern namespacePath: #(#PDFtalk).
+DeviceN colour spaces (PDF 1.3) may contain an arbitrary number of colour components.'.
+	DeviceN namespacePath: #(#PDFtalk).
+%
+# Define class DeviceNProcessDictionary
+DoIt
+PDFDictionary
+	subclass: 'DeviceNProcessDictionary'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DeviceNProcessDictionary category: 'PDFtalk Colour'.
+	DeviceNProcessDictionary comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
+
+A dictionary that describes the process colour space whose components are included in the DeviceN colour space'.
+	DeviceNProcessDictionary namespacePath: #(#PDFtalk).
+%
+# Define class DeviceNMixingHints
+DoIt
+PDFDictionary
+	subclass: 'DeviceNMixingHints'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DeviceNMixingHints category: 'PDFtalk Colour'.
+	DeviceNMixingHints comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
+
+Provides information about the characteristics of colorants that may be used in blending calculations when the actual colorants are not available on the target device.
+Conforming readers need not use this information'.
+	DeviceNMixingHints namespacePath: #(#PDFtalk).
 %
 # Define class CalGrayColourSpaceDictionary
 DoIt
@@ -11983,10 +11903,10 @@ This type of space is the one-dimensional (and usually achromatic) analog of CIE
 Colour values in a CIE-based A space shall have a single component, arbitrarily named A.'.
 	CalGrayColourSpaceDictionary namespacePath: #(#PDFtalk).
 %
-# Define class Indexed
+# Define class CalRGBColourSpaceDictionary
 DoIt
-SpecialColourSpace
-	subclass: 'Indexed'
+PDFDictionary
+	subclass: 'CalRGBColourSpaceDictionary'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -11994,13 +11914,18 @@ SpecialColourSpace
 	inDictionary: PDFtalk
 %
 DoIt
-	Indexed category: 'PDFtalk Colour'.
-	Indexed comment: 'PDF Indexed Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.3, pp. 156.
+	CalRGBColourSpaceDictionary category: 'PDFtalk Colour'.
+	CalRGBColourSpaceDictionary comment: 'PDF CalRGB Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.3, pp. 146.
 
-An Indexed colour space specifies that an area is to be painted using a colour map or colour table of arbitrary colours in some other space. 
-A conforming reader shall treat each sample value as an index into the colour table and shall use the colour value it finds there. 
-This technique can considerably reduce the amount of data required to represent a sampled image.'.
-	Indexed namespacePath: #(#PDFtalk).
+A CalRGB colour space is a CIE-based ABC colour space with only one transformation stage instead of two. 
+In this type of space, A, B, and C represent calibrated red, green, and blue colour values. 
+These three colour components shall be in the range 0.0 to 1.0; 
+component values falling outside that range shall be adjusted to the nearest valid value without error indication. 
+The decoding functions are gamma functions whose coefficients shall be specified by the Gamma entry in the colour space dictionary. 
+The transformation matrix shall be defined by the dictionary’s Matrix entry. 
+Since there is no second transformation stage, “Decode LMN” and “Matrix LMN” shall be implicitly taken to be identity transformations.
+'.
+	CalRGBColourSpaceDictionary namespacePath: #(#PDFtalk).
 %
 # Define class Lab
 DoIt
@@ -12022,10 +11947,10 @@ The range of the first (L*) component shall be 0 to 100;
 the ranges of the second and third (a* and b*) components shall be defined by the Range entry in the colour space dictionary.'.
 	Lab namespacePath: #(#PDFtalk).
 %
-# Define class ICCBased
+# Define class CalGray
 DoIt
 CIEColourSpace
-	subclass: 'ICCBased'
+	subclass: 'CalGray'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -12033,31 +11958,13 @@ CIEColourSpace
 	inDictionary: PDFtalk
 %
 DoIt
-	ICCBased category: 'PDFtalk Colour'.
-	ICCBased comment: 'PDF ICCBased Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.5, pp. 149.
+	CalGray category: 'PDFtalk Colour'.
+	CalGray comment: 'PDF CalGray Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.2, pp. 145.
 
-ICCBased colour spaces (PDF 1.3) shall be based on a cross-platform colour profile as defined by the International Color Consortium (ICC). 
-Unlike the CalGray, CalRGB, and Lab colour spaces, which are characterized by entries in the colour space dictionary, 
-an ICCBased colour space shall be characterized by a sequence of bytes in a standard format. 
-Details of the profile format can be found in the ICC specification.'.
-	ICCBased namespacePath: #(#PDFtalk).
-%
-# Define class DeviceNProcessDictionary
-DoIt
-PDFDictionary
-	subclass: 'DeviceNProcessDictionary'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DeviceNProcessDictionary category: 'PDFtalk Colour'.
-	DeviceNProcessDictionary comment: 'PDF DeviceN Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.5, pp. 161.
-
-A dictionary that describes the process colour space whose components are included in the DeviceN colour space'.
-	DeviceNProcessDictionary namespacePath: #(#PDFtalk).
+A CalGray colour space (PDF 1.1) is a special case of a single-component CIE-based colour space, known as a CIE-based A colour space. 
+This type of space is the one-dimensional (and usually achromatic) analog of CIE-based ABC spaces. 
+Colour values in a CIE-based A space shall have a single component, arbitrarily named A.'.
+	CalGray namespacePath: #(#PDFtalk).
 %
 # Define class Separation
 DoIt
@@ -12078,6 +11985,111 @@ for isolating the control of individual colour components of a device colour spa
 When such a space is the current colour space, the current colour shall be a single-component value, 
 called a tint, that controls the application of the given colorant or colour components only.'.
 	Separation namespacePath: #(#PDFtalk).
+%
+# Define class Pattern
+DoIt
+Name
+	subclass: 'Pattern'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Pattern category: 'PDFtalk Colour'.
+	Pattern comment: 'PDF Pattern Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.2, pp. 156.
+
+A Pattern colour space (PDF 1.2) specifies that an area is to be painted with a pattern rather than a single colour. 
+The pattern shall be either a tiling pattern (type 1) or a shading pattern (type 2).'.
+	Pattern namespacePath: #(#PDFtalk).
+%
+# Define class LabColourSpaceDictionary
+DoIt
+PDFDictionary
+	subclass: 'LabColourSpaceDictionary'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LabColourSpaceDictionary category: 'PDFtalk Colour'.
+	LabColourSpaceDictionary comment: 'PDF Lab Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.4, pp. 148.
+
+A Lab colour space is a CIE-based ABC colour space with two transformation stages. 
+In this type of space, A, B, and C represent the L*, a*, and b* components of a CIE 1976 L*a*b* space. 
+The range of the first (L*) component shall be 0 to 100; 
+the ranges of the second and third (a* and b*) components shall be defined by the Range entry in the colour space dictionary.
+'.
+	LabColourSpaceDictionary namespacePath: #(#PDFtalk).
+%
+# Define class DeviceRGB
+DoIt
+DeviceColourSpace
+	subclass: 'DeviceRGB'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DeviceRGB category: 'PDFtalk Colour'.
+	DeviceRGB comment: 'PDF DeviceRGB Colour Space as defined in PDF 32000_2008.pdf, section 8.6.4.3, pp. 143.
+
+Colours in the DeviceRGB colour space shall be specified according to the additive RGB (red-green-blue) colour model, 
+in which colour values shall be defined by three components representing the intensities of the additive primary colorants red, green, and blue. 
+Each component shall be specified by a number in the range 0.0 to 1.0, 
+where 0.0 shall denote the complete absence of a primary component and 1.0 shall denote maximum intensity.
+
+EXAMPLE
+This example shows alternative ways to select the DeviceRGB colour space and a specific colour within that space for stroking operations.
+	/DeviceRGB CS 	% Set DeviceRGB colour space
+	red green blue SC 	% Set colour
+	red green blue RG 	% Set both in one operation
+The CS and SC operators shall select the current stroking colour space and current stroking colour separately; RG shall set them in combination. 
+The cs, sc, and rg operators shall perform the same functions for nonstroking operations. 
+Setting either current colour space to DeviceRGB shall initialize the red, green, and blue components of the corresponding current colour to 0.0.'.
+	DeviceRGB namespacePath: #(#PDFtalk).
+%
+# Define class Indexed
+DoIt
+SpecialColourSpace
+	subclass: 'Indexed'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Indexed category: 'PDFtalk Colour'.
+	Indexed comment: 'PDF Indexed Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.6.3, pp. 156.
+
+An Indexed colour space specifies that an area is to be painted using a colour map or colour table of arbitrary colours in some other space. 
+A conforming reader shall treat each sample value as an index into the colour table and shall use the colour value it finds there. 
+This technique can considerably reduce the amount of data required to represent a sampled image.'.
+	Indexed namespacePath: #(#PDFtalk).
+%
+# Define class ICCProfileStream
+DoIt
+PDFStream
+	subclass: 'ICCProfileStream'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ICCProfileStream category: 'PDFtalk Colour'.
+	ICCProfileStream comment: 'PDF ICCBased Colour Spaces as defined in PDF 32000_2008.pdf, section 8.6.5.5, pp. 149.
+
+ICCBased colour spaces (PDF 1.3) shall be based on a cross-platform colour profile as defined by the International Color Consortium (ICC).
+Unlike the CalGray, CalRGB, and Lab colour spaces, which are characterized by entries in the colour space dictionary, an ICCBased colour space shall be characterized by a sequence of bytes in a standard format.'.
+	ICCProfileStream namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -12279,6 +12291,12 @@ asCmykColor
 	^self
 %
 method: CmykColor
+asColorRef
+	"<Integer>"
+
+	^self asColorValue asColorRef
+%
+method: CmykColor
 asColorValue
 	"<ColorValue>"
 
@@ -12427,6 +12445,17 @@ asCmykColor
 	^CmykColor fromColorValue: self
 %
 method: ColorValue
+asColorRef
+	"^a COLORREF, a long"
+	"like 0x00bbggrr"
+
+	^(ByteReadStream littleEndianOn: (ByteArray
+		with: ((self red * 256) truncated min: 255)
+		with: ((self green * 256) truncated min: 255)
+		with: ((self blue * 256) truncated min: 255)
+		with: 0)) nextLong
+%
+method: ColorValue
 asPDFArray
 	"<Array3 of: Number>
 	Array of 3 numbers between 0.0 (zero intensity) and 1.0 (maximum intensity) suitable for PDF DeviceRGB"
@@ -12491,7 +12520,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #CalGrayColourSpaceDictionary
-		supertype: #Object
+		supertype: #Dictionary
 		version: 1
 		section: '8.6.5.2'
 		documentation: 'A CalGray colour space (PDF 1.1) is a special case of a single-component CIE-based colour space, known as a CIE-based A colour space. 
@@ -12565,7 +12594,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #CalRGBColourSpaceDictionary
-		supertype: #Object
+		supertype: #Dictionary
 		version: 1
 		section: '8.6.5.3'
 		documentation: 'A CalRGB colour space is a CIE-based ABC colour space with only one transformation stage instead of two. 
@@ -13024,7 +13053,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #DeviceNColourSpaceAttributes
-		supertype: #Object
+		supertype: #Dictionary
 		version: 3
 		section: '8.6.6.5'
 		documentation: 'The optional attributes parameter shall be a dictionary containing additional information about the components of colour space that conforming readers may use.
@@ -13076,7 +13105,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #DeviceNMixingHints
-		supertype: #Object
+		supertype: #Dictionary
 		section: '8.6.6.5'
 		documentation: 'Provides information about the characteristics of colorants that may be used in blending calculations when the actual colorants are not available on the target device.
 Conforming readers need not use this information'
@@ -13122,7 +13151,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #DeviceNProcessDictionary
-		supertype: #Object
+		supertype: #Dictionary
 		section: '8.6.6.5'
 		documentation: 'A dictionary that describes the process colour space whose components are included in the DeviceN colour space'
 %
@@ -13302,7 +13331,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ICCProfileStream
-		supertype: #Object
+		supertype: #Stream
 		version: 3
 		section: '8.6.6.5'
 		documentation: 'ICCBased colour spaces shall be based on a cross-platform colour profile as defined by the International Color Consortium (ICC).
@@ -13581,7 +13610,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #LabColourSpaceDictionary
-		supertype: #Object
+		supertype: #Dictionary
 		section: '8.6.5.4'
 		documentation: '
 A Lab colour space is a CIE-based ABC colour space with two transformation stages. 
@@ -13853,7 +13882,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
-	dict at: #storeVersion put: '2.0.0.16'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
@@ -13887,7 +13916,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Fonts Basics'.
-	dict at: #storeVersion put: '2.0.0.13'.
+	dict at: #storeVersion put: '2.0.1.2'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components := (components at:  #'PDFtalk Fonts') at: #codeComponents.
@@ -13909,23 +13938,6 @@ System myUserProfile removeDictionaryAt: 1.
 DoIt
 System myUserProfile insertDictionary: (PDFtalk at: #Fonts) at: 1.
 %
-# Define class Font
-DoIt
-Object
-	subclass: 'Font'
-	instVarNames: #(useAlternativeFont)
-	classVars: #(LoadedFonts)
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	Font category: 'PDFtalk Fonts Basics'.
-	Font comment: 'superclass of all font types
-
-defines the common protocol for all fonts to be used with PDF'.
-	Font namespacePath: #(#PDFtalk #Fonts).
-%
 # Define class FontError
 DoIt
 Error
@@ -13940,6 +13952,21 @@ DoIt
 	FontError category: 'PDFtalk Fonts Basics'.
 	FontError comment: 'errors related to the Fonts functionality'.
 	FontError namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class FontNotFound
+DoIt
+FontError
+	subclass: 'FontNotFound'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	FontNotFound category: 'PDFtalk Fonts Basics'.
+	FontNotFound comment: 'the font was not found in the registry for loaded fonts'.
+	FontNotFound namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class FontBody
 DoIt
@@ -13959,20 +13986,22 @@ Bugfix: afm (Ascii Font Metric) files are processed correctly
 added instvar #fontBBox'.
 	FontBody namespacePath: #(#PDFtalk #Fonts).
 %
-# Define class FontNotFound
+# Define class Font
 DoIt
-FontError
-	subclass: 'FontNotFound'
-	instVarNames: #()
-	classVars: #()
+Object
+	subclass: 'Font'
+	instVarNames: #(useAlternativeFont)
+	classVars: #(LoadedFonts)
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Fonts
 %
 DoIt
-	FontNotFound category: 'PDFtalk Fonts Basics'.
-	FontNotFound comment: 'the font was not found in the registry for loaded fonts'.
-	FontNotFound namespacePath: #(#PDFtalk #Fonts).
+	Font category: 'PDFtalk Fonts Basics'.
+	Font comment: 'superclass of all font types
+
+defines the common protocol for all fonts to be used with PDF'.
+	Font namespacePath: #(#PDFtalk #Fonts).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -14033,9 +14062,12 @@ fontClasses
 	assumes that all subclasses are defined in namespaces #{PDFtalk.Fonts} and #{PDFtalk.Fonts.OpenType}"
 
 	| classOrganizer |
-	classOrganizer := ClassOrganizer _newWithRoot: Font
-				symbolList: (SymbolList with: (PDFtalk at: #Fonts)
-						with: ((PDFtalk at: #Fonts) at: #OpenType)).
+	classOrganizer := ClassOrganizer
+		_newWithRoot: Font
+		symbolList: (SymbolList
+			with: (PDFtalk at: #Fonts)
+			with: ((PDFtalk at: #Fonts) at: #OpenType))
+		env: 0.
 	^(Array with: Font) , (classOrganizer allSubclassesOf: Font)
 %
 classmethod: Font
@@ -14047,12 +14079,11 @@ loadedFonts
 	"((PDFtalk at: #Fonts) at: #Font) loadedFonts"
 	"((PDFtalk at: #Fonts) at: #Font) reloadFonts"
 
-	^LoadedFonts
-		ifNil: 
-			[| dictionary |
-			dictionary := self definedNamedFonts.
-			dictionary values do: #install.
-			LoadedFonts := dictionary]
+	^LoadedFonts ifNil: [
+		| dictionary |
+		dictionary := self definedNamedFonts.
+		dictionary values do: #install.
+		LoadedFonts := dictionary]
 %
 category: 'accessing encoders'
 classmethod: Font
@@ -14078,6 +14109,24 @@ pragmas
 	^#(#font:)
 %
 category: 'accessing'
+method: Font
+characterAt: index
+	"<Character>"
+
+	index = Character illegalCode ifTrue: [
+		^Character illegalCode asCharacter].
+	self fontbody ifNil: [
+		^Character illegalCode asCharacter].
+	^self fontbody encoder decode: index
+%
+method: Font
+characterCodeOf: aCharacter
+	"<Integer [0..255]>"
+
+	self fontbody ifNil: [
+		^Character illegalCode].
+	^self fontbody encoder encode: aCharacter
+%
 method: Font
 characterGlyphs
 	"<SequenceableCollection of: (Glyph | CharacterMetric)>
@@ -14106,6 +14155,12 @@ filename
 	the file name of the Windows font file"
 
 	^self subclassResponsibility
+%
+method: Font
+fontbody
+	"<FontBody | nil>"
+
+	^[FontBody named: self postScriptName] on: LookupError do: [:ex | nil]
 %
 method: Font
 glyphAtUnicode: aUnicodeInteger
@@ -19094,11 +19149,12 @@ tokenLinesFrom: rst
 
 	| list |
 	list := OrderedCollection new.
-	[rst atEnd] whileFalse: 
-			[| line |
-			line := rst nextLine.
-			(line notEmpty and: [(line first = $#) not])
-				ifTrue: [list add: (line tokensBasedOn: $;)]].
+	[rst atEnd] whileFalse: [
+		| line |
+		line := rst nextLine.
+		(line notEmpty and: [
+		(line first = $#) not]) ifTrue: [
+				list add: (line tokensBasedOn: $;)]].
 	^list
 %
 category: 'testing'
@@ -19326,7 +19382,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Fonts Type1'.
-	dict at: #storeVersion put: '2.0.0.12'.
+	dict at: #storeVersion put: '2.0.1.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components := (components at:  #'PDFtalk Fonts') at: #codeComponents.
@@ -19334,291 +19390,6 @@ THE SOFTWARE.'.
 %
 DoIt
 System myUserProfile insertDictionary: (PDFtalk at: #Fonts) at: 1.
-%
-# Define class AdobeFontMetric
-DoIt
-Object
-	subclass: 'AdobeFontMetric'
-	instVarNames: #(font fileFormatVersion comment metricsSets fontName fullName familyName fontBBox weight version notice encodingScheme characterSet characters isBaseFont vVector isFixedV capHeight xHeight ascender descender stdHW stdVW directions charMetricsSize charMetrics trackKern kernPairsSize kernPairs composites)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	AdobeFontMetric category: 'PDFtalk Fonts Type1'.
-	AdobeFontMetric comment: 'AdobeFontMetric represents the contents of an PostScript Type-1 Font Metric file (AFM).
-Only base fonts (Type-1) for now. No composite fonts (Type-0) in ACFM or CID.
-Also no master fonts in AMFM.
-
-All variables are privately set from the file, but publicly read as their proper Smalltalk values.
-
-Reference:
-Adobe Font Metrics File
-Format Specification
-	Version 4.1
-	7 October 1998
-		Adobe Systems Incorporated
-		Adobe Developer Technologies
-		345 Park Avenue
-		San Jose, CA 95110
-		http://partners.adobe.com/
-			PN LPS5004'.
-	AdobeFontMetric namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class FontProgram
-DoIt
-Value
-	subclass: 'FontProgram'
-	instVarNames: #(header contents glyphs trailerExtra)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	FontProgram category: 'PDFtalk Fonts Type1'.
-	FontProgram comment: 'An Adobe Type 1 Font Program
-
-Instances correspond to the contents of an PFA file (or windows PFB file, which has identical content).
-
-Documented in "Adobe Type 1 Font Format", 1990, ISBN 0-201-57044-0
-online at http://partners.adobe.com/public/developer/en/font/T1_SPEC.PDF
-
-Parsing the information from these files is provisorial. Needs a proper PostScript interpreter to do it right.'.
-	FontProgram namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class PostScriptFontMetrics
-DoIt
-Object
-	subclass: 'PostScriptFontMetrics'
-	instVarNames: #(font header extTextMetrics faceName driverInfo extentTable kerningPairs kerningTracks)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	PostScriptFontMetrics category: 'PDFtalk Fonts Type1'.
-	PostScriptFontMetrics comment: 'the Smalltalk value of a .pfm (PostScript Font Metrics) file.
-
-The binary file is used by Windows with a .pfb file to install a Type 1 font.
-
-The implementation saves only the contents fields in values for later use.
-Internal file management data (offsets and counts) are discarted, since they can be reproduced from the contents.
-'.
-	PostScriptFontMetrics namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class DirectionalFontMetric
-DoIt
-Object
-	subclass: 'DirectionalFontMetric'
-	instVarNames: #(underlinePosition underlineThickness italicAngle charWidth isFixedPitch)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	DirectionalFontMetric category: 'PDFtalk Fonts Type1'.
-	DirectionalFontMetric comment: 'DirectionalFontMetric defines metric data specific for a text direction.
-
-Instance Variables:
-	underlinePosition	<Number>	description of underlinePosition
-	underlineThickness	<Number>	description of underlineThickness
-	italicAngle			<Number>	description of italicAngle
-	charWidth			<Point>		description of charWidth
-	isFixedPitch		<Boolean>	description of isFixedPitch'.
-	DirectionalFontMetric namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class AfmParser
-DoIt
-Object
-	subclass: 'AfmParser'
-	instVarNames: #(fontMetric stream stack)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	AfmParser category: 'PDFtalk Fonts Type1'.
-	AfmParser comment: 'factored out from PostScriptFontBody class
-This comment is from PostScriptFontBody class>>parseGenericEntry:stack:modify:
-	Generic parsing algorithm for keeping track of the
-	StartFoo / EndFoo delimiters that we encounter as we
-	parse the file.  Each StartFoo pushes on the stack the
-	name of the EndFoo line that terminates it, and a
-	message selector to use to parse the file until that
-	line is reached.  When the EndFoo line is reached, the
-	stack is popped, and the line checked to make sure
-	that it''s the correct terminator--i.e., that it''s an
-	EndFoo and not an EndBar, if an EndFoo was expected.
-
-	This stack maintenance is all that''s needed for many
-	sections.  If information has to be extracted from a
-	section of the file, a different method selector should
-	be used to parse that part of the file.'.
-	AfmParser namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class Glyphs
-DoIt
-Object
-	subclass: 'Glyphs'
-	instVarNames: #(glyphs font)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	Glyphs category: 'PDFtalk Fonts Type1'.
-	Glyphs comment: 'a container for all glyphs of a font'.
-	Glyphs namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class KernPair
-DoIt
-Object
-	subclass: 'KernPair'
-	instVarNames: #(firstCharacter secondCharacter kerning)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	KernPair category: 'PDFtalk Fonts Type1'.
-	KernPair comment: 'KernPair specifies the kerning between two characters.
-
-Instance Variables:
-	firstCharacter		<Symbol>	description of firstCharacter
-	secondCharacter	<Symbol>	description of secondCharacter
-	kerning				<Point>		description of kerning'.
-	KernPair namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class Type1Font
-DoIt
-Font
-	subclass: 'Type1Font'
-	instVarNames: #(metrics)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	Type1Font category: 'PDFtalk Fonts Type1'.
-	Type1Font comment: 'A Type 1 PostScript font'.
-	Type1Font namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class CustomFont
-DoIt
-Type1Font
-	subclass: 'CustomFont'
-	instVarNames: #(filename program)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	CustomFont category: 'PDFtalk Fonts Type1'.
-	CustomFont comment: 'Non-standard Type 1 font
-
-The metrics and font program are read from the windows .pfm and .pfb files.
-The file name stem is remembered as #filename
-'.
-	CustomFont namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class StandardFont
-DoIt
-Type1Font
-	subclass: 'StandardFont'
-	instVarNames: #(windowsFaceName)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	StandardFont category: 'PDFtalk Fonts Type1'.
-	StandardFont comment: 'the 14 Adobe standard fonts.
-
-The metrics are read from the official .afm.
-There are no font programs for these fonts - they are build-in in PostScript and PDF.
-The corresponding windows font name is remembered as #windowsFaceName
-'.
-	StandardFont namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class FontProgramHeader
-DoIt
-Value
-	subclass: 'FontProgramHeader'
-	instVarNames: #(familyName fontBBox contents)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	FontProgramHeader category: 'PDFtalk Fonts Type1'.
-	FontProgramHeader comment: 'An Adobe Type 1 Font Program ascii header
-
-Instances correspond to the header contents of an PFA file (or windows PFB file, which has identical content).
-
-Documented in "Adobe Type 1 Font Format", 1990, ISBN 0-201-57044-0
-online at http://partners.adobe.com/public/developer/en/font/T1_SPEC.PDF
-
-Parsing the information from these files is provisorial. Needs a proper PostScript interpreter to do it right.'.
-	FontProgramHeader namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class CharacterMetric
-DoIt
-Object
-	subclass: 'CharacterMetric'
-	instVarNames: #(c w n b l)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	CharacterMetric category: 'PDFtalk Fonts Type1'.
-	CharacterMetric comment: 'Each character’s metrics are represented as a list of keys and values separated by semicolons, contained on one line. The characters are sorted by numerically ascending character code. Characters not encoded follow the encoded characters and are identified by character codes of –1. Byte codes for which no character is defined are not listed. Example: A character metric data line might look like this: 
-C 102 ; WX 333 ; N f ; B 20 0 383 682 ; L i fi ; L l fl ;
-This section appears in the AFM file only. It is optional.'.
-	CharacterMetric namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class PairKern
-DoIt
-Value
-	subclass: 'PairKern'
-	instVarNames: #(first second kernAmount)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	PairKern category: 'PDFtalk Fonts Type1'.
-	PairKern comment: 'The kerning between two characters
-
-The KerningPairs table need not be present in a PFM file for a Type-1 font, if it exists it contains etmKernPairs (from the EXTTEXTMETRIC structure) entries. Each of these entries looks as follows:
-
-BYTE kpFirst
-This field contains the first (left) character of the kerning pair.
-
-BYTE kpSecond
-This field contains the second (right) character of the kerning pair.
-
-short kpKernAmount
-This field contains the kerning amount in font units, the value is mostly negative. 
-
-
-The array of KERNPAIR structures is sorted in increasing order by the kpPair.both field.
-kpPair.both
-Specifies a WORD in which the first character in the kerning pair is in the low-order byte and the second character is in the high-order byte'.
-	PairKern namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class KernTrack
 DoIt
@@ -19652,6 +19423,61 @@ short ktMaxAmount
 This field contains the track kerning amount to use for font heights greater or equal ktMaxSize. '.
 	KernTrack namespacePath: #(#PDFtalk #Fonts).
 %
+# Define class Type1Font
+DoIt
+Font
+	subclass: 'Type1Font'
+	instVarNames: #(metrics)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	Type1Font category: 'PDFtalk Fonts Type1'.
+	Type1Font comment: 'A Type 1 PostScript font'.
+	Type1Font namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class StandardFont
+DoIt
+Type1Font
+	subclass: 'StandardFont'
+	instVarNames: #(windowsFaceName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	StandardFont category: 'PDFtalk Fonts Type1'.
+	StandardFont comment: 'the 14 Adobe standard fonts.
+
+The metrics are read from the official .afm.
+There are no font programs for these fonts - they are build-in in PostScript and PDF.
+The corresponding windows font name is remembered as #windowsFaceName
+'.
+	StandardFont namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class KernPair
+DoIt
+Object
+	subclass: 'KernPair'
+	instVarNames: #(firstCharacter secondCharacter kerning)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	KernPair category: 'PDFtalk Fonts Type1'.
+	KernPair comment: 'KernPair specifies the kerning between two characters.
+
+Instance Variables:
+	firstCharacter		<Symbol>	description of firstCharacter
+	secondCharacter	<Symbol>	description of secondCharacter
+	kerning				<Point>		description of kerning'.
+	KernPair namespacePath: #(#PDFtalk #Fonts).
+%
 # Define class ExtTextMetrics
 DoIt
 Value
@@ -19666,6 +19492,94 @@ DoIt
 	ExtTextMetrics category: 'PDFtalk Fonts Type1'.
 	ExtTextMetrics comment: 'This section contains additional informations about the font (orientation, minimum and maximum acceptable size of the font, the cap height, the degree of obliqueness for italic fonts etc.)'.
 	ExtTextMetrics namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class PostScriptFontMetrics
+DoIt
+Object
+	subclass: 'PostScriptFontMetrics'
+	instVarNames: #(font header extTextMetrics faceName driverInfo extentTable kerningPairs kerningTracks)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	PostScriptFontMetrics category: 'PDFtalk Fonts Type1'.
+	PostScriptFontMetrics comment: 'the Smalltalk value of a .pfm (PostScript Font Metrics) file.
+
+The binary file is used by Windows with a .pfb file to install a Type 1 font.
+
+The implementation saves only the contents fields in values for later use.
+Internal file management data (offsets and counts) are discarted, since they can be reproduced from the contents.
+'.
+	PostScriptFontMetrics namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class AfmParser
+DoIt
+Object
+	subclass: 'AfmParser'
+	instVarNames: #(fontMetric stream stack)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	AfmParser category: 'PDFtalk Fonts Type1'.
+	AfmParser comment: 'factored out from PostScriptFontBody class
+This comment is from PostScriptFontBody class>>parseGenericEntry:stack:modify:
+	Generic parsing algorithm for keeping track of the
+	StartFoo / EndFoo delimiters that we encounter as we
+	parse the file.  Each StartFoo pushes on the stack the
+	name of the EndFoo line that terminates it, and a
+	message selector to use to parse the file until that
+	line is reached.  When the EndFoo line is reached, the
+	stack is popped, and the line checked to make sure
+	that it''s the correct terminator--i.e., that it''s an
+	EndFoo and not an EndBar, if an EndFoo was expected.
+
+	This stack maintenance is all that''s needed for many
+	sections.  If information has to be extracted from a
+	section of the file, a different method selector should
+	be used to parse that part of the file.'.
+	AfmParser namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class DirectionalFontMetric
+DoIt
+Object
+	subclass: 'DirectionalFontMetric'
+	instVarNames: #(underlinePosition underlineThickness italicAngle charWidth isFixedPitch)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	DirectionalFontMetric category: 'PDFtalk Fonts Type1'.
+	DirectionalFontMetric comment: 'DirectionalFontMetric defines metric data specific for a text direction.
+
+Instance Variables:
+	underlinePosition	<Number>	description of underlinePosition
+	underlineThickness	<Number>	description of underlineThickness
+	italicAngle			<Number>	description of italicAngle
+	charWidth			<Point>		description of charWidth
+	isFixedPitch		<Boolean>	description of isFixedPitch'.
+	DirectionalFontMetric namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class Glyphs
+DoIt
+Object
+	subclass: 'Glyphs'
+	instVarNames: #(glyphs font)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	Glyphs category: 'PDFtalk Fonts Type1'.
+	Glyphs comment: 'a container for all glyphs of a font'.
+	Glyphs namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class PFMHeader
 DoIt
@@ -19688,6 +19602,148 @@ The implementation saves only the contents fields in values for later use.
 Internal file management data (offsets and counts) are read and written by the enclosing PostScriptFontMetrics.
 '.
 	PFMHeader namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class FontProgramHeader
+DoIt
+Value
+	subclass: 'FontProgramHeader'
+	instVarNames: #(familyName fontBBox contents)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	FontProgramHeader category: 'PDFtalk Fonts Type1'.
+	FontProgramHeader comment: 'An Adobe Type 1 Font Program ascii header
+
+Instances correspond to the header contents of an PFA file (or windows PFB file, which has identical content).
+
+Documented in "Adobe Type 1 Font Format", 1990, ISBN 0-201-57044-0
+online at http://partners.adobe.com/public/developer/en/font/T1_SPEC.PDF
+
+Parsing the information from these files is provisorial. Needs a proper PostScript interpreter to do it right.'.
+	FontProgramHeader namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class AdobeFontMetric
+DoIt
+Object
+	subclass: 'AdobeFontMetric'
+	instVarNames: #(font fileFormatVersion comment metricsSets fontName fullName familyName fontBBox weight version notice encodingScheme characterSet characters isBaseFont vVector isFixedV capHeight xHeight ascender descender stdHW stdVW directions charMetricsSize charMetrics trackKern kernPairsSize kernPairs composites)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	AdobeFontMetric category: 'PDFtalk Fonts Type1'.
+	AdobeFontMetric comment: 'AdobeFontMetric represents the contents of an PostScript Type-1 Font Metric file (AFM).
+Only base fonts (Type-1) for now. No composite fonts (Type-0) in ACFM or CID.
+Also no master fonts in AMFM.
+
+All variables are privately set from the file, but publicly read as their proper Smalltalk values.
+
+Reference:
+Adobe Font Metrics File
+Format Specification
+	Version 4.1
+	7 October 1998
+		Adobe Systems Incorporated
+		Adobe Developer Technologies
+		345 Park Avenue
+		San Jose, CA 95110
+		http://partners.adobe.com/
+			PN LPS5004'.
+	AdobeFontMetric namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class PairKern
+DoIt
+Value
+	subclass: 'PairKern'
+	instVarNames: #(first second kernAmount)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	PairKern category: 'PDFtalk Fonts Type1'.
+	PairKern comment: 'The kerning between two characters
+
+The KerningPairs table need not be present in a PFM file for a Type-1 font, if it exists it contains etmKernPairs (from the EXTTEXTMETRIC structure) entries. Each of these entries looks as follows:
+
+BYTE kpFirst
+This field contains the first (left) character of the kerning pair.
+
+BYTE kpSecond
+This field contains the second (right) character of the kerning pair.
+
+short kpKernAmount
+This field contains the kerning amount in font units, the value is mostly negative. 
+
+
+The array of KERNPAIR structures is sorted in increasing order by the kpPair.both field.
+kpPair.both
+Specifies a WORD in which the first character in the kerning pair is in the low-order byte and the second character is in the high-order byte'.
+	PairKern namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class CharacterMetric
+DoIt
+Object
+	subclass: 'CharacterMetric'
+	instVarNames: #(c w n b l)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	CharacterMetric category: 'PDFtalk Fonts Type1'.
+	CharacterMetric comment: 'Each character’s metrics are represented as a list of keys and values separated by semicolons, contained on one line. The characters are sorted by numerically ascending character code. Characters not encoded follow the encoded characters and are identified by character codes of –1. Byte codes for which no character is defined are not listed. Example: A character metric data line might look like this: 
+C 102 ; WX 333 ; N f ; B 20 0 383 682 ; L i fi ; L l fl ;
+This section appears in the AFM file only. It is optional.'.
+	CharacterMetric namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class FontProgram
+DoIt
+Value
+	subclass: 'FontProgram'
+	instVarNames: #(header contents glyphs trailerExtra)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	FontProgram category: 'PDFtalk Fonts Type1'.
+	FontProgram comment: 'An Adobe Type 1 Font Program
+
+Instances correspond to the contents of an PFA file (or windows PFB file, which has identical content).
+
+Documented in "Adobe Type 1 Font Format", 1990, ISBN 0-201-57044-0
+online at http://partners.adobe.com/public/developer/en/font/T1_SPEC.PDF
+
+Parsing the information from these files is provisorial. Needs a proper PostScript interpreter to do it right.'.
+	FontProgram namespacePath: #(#PDFtalk #Fonts).
+%
+# Define class CustomFont
+DoIt
+Type1Font
+	subclass: 'CustomFont'
+	instVarNames: #(filename program)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	CustomFont category: 'PDFtalk Fonts Type1'.
+	CustomFont comment: 'Non-standard Type 1 font
+
+The metrics and font program are read from the windows .pfm and .pfb files.
+The file name stem is remembered as #filename
+'.
+	CustomFont namespacePath: #(#PDFtalk #Fonts).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -46607,6 +46663,13 @@ filename
 	^self postScriptName
 %
 method: StandardFont
+screenFamilyName
+	"the windows equivalent for a standard font.
+	need to be implemented differently for other OSes"
+
+	^self windowsFaceName
+%
+method: StandardFont
 setWidth
 	^0.5
 %
@@ -46816,52 +46879,6 @@ System myUserProfile removeDictionaryAt: 1.
 DoIt
 System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #CFF) at: 1.
 %
-# Define class Operator
-DoIt
-Value
-	subclass: 'Operator'
-	instVarNames: #(value)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Operator category: 'PDFtalk Fonts CompactFontFormat'.
-	Operator comment: 'an Operator in a CFF DICT'.
-	Operator namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class TwoByteOperator
-DoIt
-Operator
-	subclass: 'TwoByteOperator'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	TwoByteOperator category: 'PDFtalk Fonts CompactFontFormat'.
-	TwoByteOperator comment: 'An Operator encoded with two bytes (first byte is 12)'.
-	TwoByteOperator namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class DictOperator
-DoIt
-Operator
-	subclass: 'DictOperator'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	DictOperator category: 'PDFtalk Fonts CompactFontFormat'.
-	DictOperator comment: 'single byte operator occuring in DICTs
-'.
-	DictOperator namespacePath: #(#PDFtalk #Fonts #CFF).
-%
 # Define class Mapping
 DoIt
 Value
@@ -46877,25 +46894,60 @@ DoIt
 	Mapping comment: 'a Mapping is the superclass of several unrelated but similar structures used for mapping'.
 	Mapping namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class EncodingSupplement
+# Define class Encoding
 DoIt
 Mapping
-	subclass: 'EncodingSupplement'
-	instVarNames: #(glyphsAtCode)
+	subclass: 'Encoding'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: CFF
 %
 DoIt
-	EncodingSupplement category: 'PDFtalk Fonts CompactFontFormat'.
-	EncodingSupplement comment: 'Encoding Supplement
+	Encoding category: 'PDFtalk Fonts CompactFontFormat'.
+	Encoding comment: 'Superclass of the encoding formats'.
+	Encoding namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Encoding0
+DoIt
+Encoding
+	subclass: 'Encoding0'
+	instVarNames: #(codes supplement)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Encoding0 category: 'PDFtalk Fonts CompactFontFormat'.
+	Encoding0 comment: 'Encoding Format 0
 
-A few fonts have multiply-encoded glyphs which are not supported directly by any of the above formats.
-This situation is indicated by setting the high-order bit in the format byte and supplementing the encoding, regardless of format type.
+Each element of the code array represents the encoding for the corresponding glyph.
+This format should be used when the codes are in a fairly random order.'.
+	Encoding0 namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class FontSet
+DoIt
+Object
+	subclass: 'FontSet'
+	instVarNames: #(version fonts)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	FontSet category: 'PDFtalk Fonts CompactFontFormat'.
+	FontSet comment: '"The Compact Font Format Specification", Adobe Technical Note #5176.
 
-Each Supplement describes a single code-to-glyph mapping which provides another encoding for a glyph that has already been mentioned in the main encoding table.'.
-	EncodingSupplement namespacePath: #(#PDFtalk #Fonts #CFF).
+This document describes the specification of a font format that is suitable for compactly representing one or more Type 1 or CID-keyed fonts. 
+Unlike previous Type 1 and CID-keyed font formats, CFF allows multiple fonts to be stored together in a unit called a FontSet. 
+Principal space savings are a result of using a compact binary representation for most of the information, sharing of common data between fonts, and defaulting frequently occurring data.
+
+The CFF format is designed to be used in conjunction with Type 2 charstrings for the character description procedures (see Adobe Technical Note #5177: “The Type 2 Charstring Format”).
+The design supports the embedding of PostScript® language code which permits additional flexibility and extensibility of the format when used in printer environments.'.
+	FontSet namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class Dict
 DoIt
@@ -46934,6 +46986,73 @@ The names of the Top DICT operators are, where possible, the same as the corresp
 Several operators have been derived from FontInfo dict keys but have been grouped together with the Top DICT operators for simplicity.'.
 	TopDict namespacePath: #(#PDFtalk #Fonts #CFF).
 %
+# Define class Index
+DoIt
+Value
+	subclass: 'Index'
+	instVarNames: #(count offSize offset data)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Index category: 'PDFtalk Fonts CompactFontFormat'.
+	Index comment: '5. INDEX Data, pp.10
+
+An INDEX is an array of variable-sized objects. It comprises a header, an offset array, and object data. 
+The offset array specifies offsets within the object data. 
+An object is retrieved by indexing the offset array and fetching the object at the specified offset. 
+The object’s length can be determined by subtracting its offset from the next offset in the offset array. 
+An additional offset is added at the end of the offset array so the length of the last object may be determined. '.
+	Index namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Operator
+DoIt
+Value
+	subclass: 'Operator'
+	instVarNames: #(value)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Operator category: 'PDFtalk Fonts CompactFontFormat'.
+	Operator comment: 'an Operator in a CFF DICT'.
+	Operator namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class TwoByteOperator
+DoIt
+Operator
+	subclass: 'TwoByteOperator'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	TwoByteOperator category: 'PDFtalk Fonts CompactFontFormat'.
+	TwoByteOperator comment: 'An Operator encoded with two bytes (first byte is 12)'.
+	TwoByteOperator namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class TwoByteCharstringOperator
+DoIt
+TwoByteOperator
+	subclass: 'TwoByteCharstringOperator'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	TwoByteCharstringOperator category: 'PDFtalk Fonts CompactFontFormat'.
+	TwoByteCharstringOperator comment: 'two byte operator occuring in CharStrings
+'.
+	TwoByteCharstringOperator namespacePath: #(#PDFtalk #Fonts #CFF).
+%
 # Define class Font
 DoIt
 Object
@@ -46948,6 +47067,97 @@ DoIt
 	Font category: 'PDFtalk Fonts CompactFontFormat'.
 	Font comment: 'A font stored in a font set of a CFF file'.
 	Font namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Type1Font
+DoIt
+Font
+	subclass: 'Type1Font'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Type1Font category: 'PDFtalk Fonts CompactFontFormat'.
+	Type1Font comment: 'A Type-1 font stored in a font set of a CFF file
+'.
+	Type1Font namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class StandardEncoding
+DoIt
+Encoding
+	subclass: 'StandardEncoding'
+	instVarNames: #(name codes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	StandardEncoding category: 'PDFtalk Fonts CompactFontFormat'.
+	StandardEncoding comment: 'A standard encoding vector (Array[256])'.
+	StandardEncoding namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class EncodingSupplement
+DoIt
+Mapping
+	subclass: 'EncodingSupplement'
+	instVarNames: #(glyphsAtCode)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	EncodingSupplement category: 'PDFtalk Fonts CompactFontFormat'.
+	EncodingSupplement comment: 'Encoding Supplement
+
+A few fonts have multiply-encoded glyphs which are not supported directly by any of the above formats.
+This situation is indicated by setting the high-order bit in the format byte and supplementing the encoding, regardless of format type.
+
+Each Supplement describes a single code-to-glyph mapping which provides another encoding for a glyph that has already been mentioned in the main encoding table.'.
+	EncodingSupplement namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Encoding1
+DoIt
+Encoding
+	subclass: 'Encoding1'
+	instVarNames: #(ranges supplement)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Encoding1 category: 'PDFtalk Fonts CompactFontFormat'.
+	Encoding1 comment: 'Encoding Format 1
+
+Each Range1 describes a group of sequential codes.
+For example, the codes 51 52 53 54 55 could be represented by the Range1: 51 4,
+and a perfectly ordered encoding of 256 codes can be described with the Range1: 0 255.
+
+This format is particularly suited to encodings that are well ordered.'.
+	Encoding1 namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Subroutine
+DoIt
+Value
+	subclass: 'Subroutine'
+	instVarNames: #(bytes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Subroutine category: 'PDFtalk Fonts CompactFontFormat'.
+	Subroutine comment: 'Both Type 1 and Type 2 charstrings support the notion of subroutines or subrs.
+A subr is typically a sequence of charstring bytes representing a sub-program that occurs in more than one place in a font’s charstring data.
+This subr may be stored once but referenced many times from within one or more charstrings by the use of the callsubr operator whose operand is the number of the subr to be called.
+The subrs are local to a particular font and cannot be shared between fonts.
+Type 2 charstrings also permit global subrs which function in the same way but are called by the callgsubr operator and may be shared across fonts.'.
+	Subroutine namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class CIDFont
 DoIt
@@ -46976,27 +47186,10 @@ A CFF CIDFont has the CIDFontName in the Name INDEX and a corresponding Top DICT
 There are no predefined charsets for CID fonts.'.
 	CIDFont namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class Range
+# Define class CharstringOperator
 DoIt
-Value
-	subclass: 'Range'
-	instVarNames: #(first nLeft)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Range category: 'PDFtalk Fonts CompactFontFormat'.
-	Range comment: 'A Range encodes consecutive numbers.
-
-For example, the codes 51 52 53 54 55 could be represented by the Range: 51 4, and a perfectly ordered encoding of 256 codes can be described with the Range: 0 255.'.
-	Range namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Encoding
-DoIt
-Mapping
-	subclass: 'Encoding'
+Operator
+	subclass: 'CharstringOperator'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -47004,82 +47197,9 @@ Mapping
 	inDictionary: CFF
 %
 DoIt
-	Encoding category: 'PDFtalk Fonts CompactFontFormat'.
-	Encoding comment: 'Superclass of the encoding formats'.
-	Encoding namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Encoding0
-DoIt
-Encoding
-	subclass: 'Encoding0'
-	instVarNames: #(codes supplement)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Encoding0 category: 'PDFtalk Fonts CompactFontFormat'.
-	Encoding0 comment: 'Encoding Format 0
-
-Each element of the code array represents the encoding for the corresponding glyph.
-This format should be used when the codes are in a fairly random order.'.
-	Encoding0 namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Charstring
-DoIt
-Value
-	subclass: 'Charstring'
-	instVarNames: #(bytes)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Charstring category: 'PDFtalk Fonts CompactFontFormat'.
-	Charstring comment: 'The Type 2 Charstring Format, Adobe Technical Note #5177, 16 March 2000
-
-The Type 2 format provides a method for compact encoding of glyph procedures in an outline font program. 
-Type 2 charstrings must be used in a CFF (Compact Font Format) or OpenType font file to create a complete font program.'.
-	Charstring namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Encoding1
-DoIt
-Encoding
-	subclass: 'Encoding1'
-	instVarNames: #(ranges supplement)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Encoding1 category: 'PDFtalk Fonts CompactFontFormat'.
-	Encoding1 comment: 'Encoding Format 1
-
-Each Range1 describes a group of sequential codes.
-For example, the codes 51 52 53 54 55 could be represented by the Range1: 51 4,
-and a perfectly ordered encoding of 256 codes can be described with the Range1: 0 255.
-
-This format is particularly suited to encodings that are well ordered.'.
-	Encoding1 namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class TwoByteDictOperator
-DoIt
-TwoByteOperator
-	subclass: 'TwoByteDictOperator'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	TwoByteDictOperator category: 'PDFtalk Fonts CompactFontFormat'.
-	TwoByteDictOperator comment: 'two byte operator occuring in DICTs
-'.
-	TwoByteDictOperator namespacePath: #(#PDFtalk #Fonts #CFF).
+	CharstringOperator category: 'PDFtalk Fonts CompactFontFormat'.
+	CharstringOperator comment: 'single byte operator occuring in CharStrings'.
+	CharstringOperator namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class Charset
 DoIt
@@ -47097,72 +47217,6 @@ DoIt
 Each charset is described by a formattype identifier byte followed by format-specific data.
 Three formats are currently defined.'.
 	Charset namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Charset1
-DoIt
-Charset
-	subclass: 'Charset1'
-	instVarNames: #(ranges)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Charset1 category: 'PDFtalk Fonts CompactFontFormat'.
-	Charset1 comment: 'Each Range describes a group of sequential SIDs.
-The number of ranges is not explicitly specified in the font.
-Instead, software utilizing this data simply processes ranges until all glyphs in the font are covered.
-This format is particularly suited to charsets that are well ordered.'.
-	Charset1 namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Header
-DoIt
-Value
-	subclass: 'Header'
-	instVarNames: #(major minor hdrSize offSize)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Header category: 'PDFtalk Fonts CompactFontFormat'.
-	Header comment: '6. Header, pp.11
-
-The binary data begins with a header'.
-	Header namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class TwoByteCharstringOperator
-DoIt
-TwoByteOperator
-	subclass: 'TwoByteCharstringOperator'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	TwoByteCharstringOperator category: 'PDFtalk Fonts CompactFontFormat'.
-	TwoByteCharstringOperator comment: 'two byte operator occuring in CharStrings
-'.
-	TwoByteCharstringOperator namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Operation
-DoIt
-Value
-	subclass: 'Operation'
-	instVarNames: #(operator operands)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	Operation category: 'PDFtalk Fonts CompactFontFormat'.
-	Operation comment: 'a CFF operation with operands and operator'.
-	Operation namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class Charset0
 DoIt
@@ -47182,61 +47236,22 @@ The number of glyphs (nGlyphs) is the value of the count field in the CharString
 (There is one less element in the glyph name array than nGlyphs because the .notdef glyph name is omitted.)'.
 	Charset0 namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class FontSet
-DoIt
-Object
-	subclass: 'FontSet'
-	instVarNames: #(version fonts)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	FontSet category: 'PDFtalk Fonts CompactFontFormat'.
-	FontSet comment: '"The Compact Font Format Specification", Adobe Technical Note #5176.
-
-This document describes the specification of a font format that is suitable for compactly representing one or more Type 1 or CID-keyed fonts. 
-Unlike previous Type 1 and CID-keyed font formats, CFF allows multiple fonts to be stored together in a unit called a FontSet. 
-Principal space savings are a result of using a compact binary representation for most of the information, sharing of common data between fonts, and defaulting frequently occurring data.
-
-The CFF format is designed to be used in conjunction with Type 2 charstrings for the character description procedures (see Adobe Technical Note #5177: “The Type 2 Charstring Format”).
-The design supports the embedding of PostScript® language code which permits additional flexibility and extensibility of the format when used in printer environments.'.
-	FontSet namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class StandardEncoding
-DoIt
-Encoding
-	subclass: 'StandardEncoding'
-	instVarNames: #(name codes)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	StandardEncoding category: 'PDFtalk Fonts CompactFontFormat'.
-	StandardEncoding comment: 'A standard encoding vector (Array[256])'.
-	StandardEncoding namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class Subroutine
+# Define class Header
 DoIt
 Value
-	subclass: 'Subroutine'
-	instVarNames: #(bytes)
+	subclass: 'Header'
+	instVarNames: #(major minor hdrSize offSize)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: CFF
 %
 DoIt
-	Subroutine category: 'PDFtalk Fonts CompactFontFormat'.
-	Subroutine comment: 'Both Type 1 and Type 2 charstrings support the notion of subroutines or subrs.
-A subr is typically a sequence of charstring bytes representing a sub-program that occurs in more than one place in a font’s charstring data.
-This subr may be stored once but referenced many times from within one or more charstrings by the use of the callsubr operator whose operand is the number of the subr to be called.
-The subrs are local to a particular font and cannot be shared between fonts.
-Type 2 charstrings also permit global subrs which function in the same way but are called by the callgsubr operator and may be shared across fonts.'.
-	Subroutine namespacePath: #(#PDFtalk #Fonts #CFF).
+	Header category: 'PDFtalk Fonts CompactFontFormat'.
+	Header comment: '6. Header, pp.11
+
+The binary data begins with a header'.
+	Header namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class CIDTopDict
 DoIt
@@ -47253,41 +47268,39 @@ DoIt
 	CIDTopDict comment: 'Top DICT for CIDFonts'.
 	CIDTopDict namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class Index
+# Define class TwoByteDictOperator
+DoIt
+TwoByteOperator
+	subclass: 'TwoByteDictOperator'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	TwoByteDictOperator category: 'PDFtalk Fonts CompactFontFormat'.
+	TwoByteDictOperator comment: 'two byte operator occuring in DICTs
+'.
+	TwoByteDictOperator namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Charstring
 DoIt
 Value
-	subclass: 'Index'
-	instVarNames: #(count offSize offset data)
+	subclass: 'Charstring'
+	instVarNames: #(bytes)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: CFF
 %
 DoIt
-	Index category: 'PDFtalk Fonts CompactFontFormat'.
-	Index comment: '5. INDEX Data, pp.10
+	Charstring category: 'PDFtalk Fonts CompactFontFormat'.
+	Charstring comment: 'The Type 2 Charstring Format, Adobe Technical Note #5177, 16 March 2000
 
-An INDEX is an array of variable-sized objects. It comprises a header, an offset array, and object data. 
-The offset array specifies offsets within the object data. 
-An object is retrieved by indexing the offset array and fetching the object at the specified offset. 
-The object’s length can be determined by subtracting its offset from the next offset in the offset array. 
-An additional offset is added at the end of the offset array so the length of the last object may be determined. '.
-	Index namespacePath: #(#PDFtalk #Fonts #CFF).
-%
-# Define class StandardCharset
-DoIt
-Charset
-	subclass: 'StandardCharset'
-	instVarNames: #(name glyphs)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: CFF
-%
-DoIt
-	StandardCharset category: 'PDFtalk Fonts CompactFontFormat'.
-	StandardCharset comment: 'A standard charset'.
-	StandardCharset namespacePath: #(#PDFtalk #Fonts #CFF).
+The Type 2 format provides a method for compact encoding of glyph procedures in an outline font program. 
+Type 2 charstrings must be used in a CFF (Compact Font Format) or OpenType font file to create a complete font program.'.
+	Charstring namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 # Define class PrivateDict
 DoIt
@@ -47306,6 +47319,56 @@ DoIt
 The names of the Private DICT operators are, where possible, the same as the corresponding Type 1 dict keys.'.
 	PrivateDict namespacePath: #(#PDFtalk #Fonts #CFF).
 %
+# Define class Operation
+DoIt
+Value
+	subclass: 'Operation'
+	instVarNames: #(operator operands)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Operation category: 'PDFtalk Fonts CompactFontFormat'.
+	Operation comment: 'a CFF operation with operands and operator'.
+	Operation namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Range
+DoIt
+Value
+	subclass: 'Range'
+	instVarNames: #(first nLeft)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Range category: 'PDFtalk Fonts CompactFontFormat'.
+	Range comment: 'A Range encodes consecutive numbers.
+
+For example, the codes 51 52 53 54 55 could be represented by the Range: 51 4, and a perfectly ordered encoding of 256 codes can be described with the Range: 0 255.'.
+	Range namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+# Define class Charset1
+DoIt
+Charset
+	subclass: 'Charset1'
+	instVarNames: #(ranges)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: CFF
+%
+DoIt
+	Charset1 category: 'PDFtalk Fonts CompactFontFormat'.
+	Charset1 comment: 'Each Range describes a group of sequential SIDs.
+The number of ranges is not explicitly specified in the font.
+Instead, software utilizing this data simply processes ranges until all glyphs in the font are covered.
+This format is particularly suited to charsets that are well ordered.'.
+	Charset1 namespacePath: #(#PDFtalk #Fonts #CFF).
+%
 # Define class Charset2
 DoIt
 Charset1
@@ -47322,26 +47385,25 @@ DoIt
 This format is most suitable for fonts with a large well-ordered charset — for example, for Asian CIDFonts.'.
 	Charset2 namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class Type1Font
+# Define class StandardCharset
 DoIt
-Font
-	subclass: 'Type1Font'
-	instVarNames: #()
+Charset
+	subclass: 'StandardCharset'
+	instVarNames: #(name glyphs)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: CFF
 %
 DoIt
-	Type1Font category: 'PDFtalk Fonts CompactFontFormat'.
-	Type1Font comment: 'A Type-1 font stored in a font set of a CFF file
-'.
-	Type1Font namespacePath: #(#PDFtalk #Fonts #CFF).
+	StandardCharset category: 'PDFtalk Fonts CompactFontFormat'.
+	StandardCharset comment: 'A standard charset'.
+	StandardCharset namespacePath: #(#PDFtalk #Fonts #CFF).
 %
-# Define class CharstringOperator
+# Define class DictOperator
 DoIt
 Operator
-	subclass: 'CharstringOperator'
+	subclass: 'DictOperator'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -47349,9 +47411,10 @@ Operator
 	inDictionary: CFF
 %
 DoIt
-	CharstringOperator category: 'PDFtalk Fonts CompactFontFormat'.
-	CharstringOperator comment: 'single byte operator occuring in CharStrings'.
-	CharstringOperator namespacePath: #(#PDFtalk #Fonts #CFF).
+	DictOperator category: 'PDFtalk Fonts CompactFontFormat'.
+	DictOperator comment: 'single byte operator occuring in DICTs
+'.
+	DictOperator namespacePath: #(#PDFtalk #Fonts #CFF).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -49686,7 +49749,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Fonts OpenType'.
-	dict at: #storeVersion put: '2.0.0.11'.
+	dict at: #storeVersion put: '2.0.1.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components := (components at:  #'PDFtalk Fonts') at: #codeComponents.
@@ -49724,6 +49787,44 @@ DoIt
 '.
 	Table namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
+# Define class Cff
+DoIt
+Table
+	subclass: 'Cff'
+	instVarNames: #(fontSet)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Cff category: 'PDFtalk Fonts OpenType'.
+	Cff comment: 'This table contains a compact representation of a PostScript Type 1, or CIDFont and is structured according to Adobe Technical Note #5176: “The Compact Font Format Specification,” and Adobe Technical Note #5177: “Type 2 Charstring Format.”
+
+Existing TrueType fonts use a glyph index to specify and access glyphs within a font, e.g. to index the loca table and thereby access glyph data in the glyf table. This concept is retained in OpenType™ PostScript fonts except that glyph data is accessed through the CharStrings INDEX of the CFF table.'.
+	Cff namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable
+DoIt
+Value
+	subclass: 'CmapSubtable'
+	instVarNames: #(platform encoding contents)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapSubtable category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable comment: 'A cmap subtable supports one character encoding scheme. Character codes that do not correspond to any glyph in the font should be mapped to glyph index 0. The glyph at this location must be a special glyph representing a missing character, commonly known as .notdef.
+
+The table header indicates the character encodings for which subtables are present. Each subtable is in one of seven possible formats and begins with a format code indicating the format used.
+
+The platform ID and platform-specific encoding ID in the header entry (and, in the case of the Macintosh platform, the language field in the subtable itself) are used to specify a particular ''cmap'' encoding. The header entries must be sorted first by platform ID, then by platform-specific encoding ID, and then by the language field in the corresponding subtable. Each platform ID, platform-specific encoding ID, and subtable language combination may appear only once in the ''cmap'' table.
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
 # Define class Prep
 DoIt
 Table
@@ -49739,10 +49840,10 @@ DoIt
 	Prep comment: 'The Control Value Program consists of a set of TrueType instructions that will be executed whenever the font or point size or transformation matrix change and before each glyph is interpreted. Any instruction is legal in the CV Program but since no glyph is associated with it, instructions intended to move points within a particular glyph outline cannot be used in the CV Program. The name ''prep'' is anachronistic (the table used to be known as the Pre Program table.)'.
 	Prep namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Vdmx
+# Define class Gasp
 DoIt
 Table
-	subclass: 'Vdmx'
+	subclass: 'Gasp'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -49750,29 +49851,236 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Vdmx category: 'PDFtalk Fonts OpenType'.
-	Vdmx comment: 'The VDMX table relates to OpenType™ fonts with TrueType outlines. Under Windows, the usWinAscent and usWinDescent values from the ''OS/2'' table will be used to determine the maximum black height for a font at any given size. Windows calls this distance the Font Height. Because TrueType instructions can lead to Font Heights that differ from the actual scaled and rounded values, basing the Font Height strictly on the yMax and yMin can result in “lost pixels.” Windows will clip any pixels that extend above the yMax or below the yMin. In order to avoid grid fitting the entire font to determine the correct height, the VDMX table has been defined.'.
-	Vdmx namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Gasp category: 'PDFtalk Fonts OpenType'.
+	Gasp comment: 'This table contains information which describes the preferred rasterization techniques for the typeface when it is rendered on grayscale-capable devices. This table also has some use for monochrome devices, which may use the table to turn off hinting at very large or small sizes, to improve performance.
+
+At very small sizes, the best appearance on grayscale devices can usually be achieved by rendering the glyphs in grayscale without using hints. At intermediate sizes, hinting and monochrome rendering will usually produce the best appearance. At large sizes, the combination of hinting and grayscale rendering will typically produce the best appearance.
+
+If the ''gasp'' table is not present in a typeface, the rasterizer may apply default rules to decide how to render the glyphs on grayscale devices.'.
+	Gasp namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Cmap
+# Define class CmapLanguageSubtable
 DoIt
-Table
-	subclass: 'Cmap'
-	instVarNames: #(encodingTables)
+CmapSubtable
+	subclass: 'CmapLanguageSubtable'
+	instVarNames: #(language)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	Cmap category: 'PDFtalk Fonts OpenType'.
-	Cmap comment: 'This table defines the mapping of character codes to the glyph index values used in the font. It may contain more than one subtable, in order to support more than one character encoding scheme. Character codes that do not correspond to any glyph in the font should be mapped to glyph index 0. The glyph at this location must be a special glyph representing a missing character, commonly known as .notdef.
+	CmapLanguageSubtable category: 'PDFtalk Fonts OpenType'.
+	CmapLanguageSubtable comment: 'A cmap Subtable with a language id'.
+	CmapLanguageSubtable namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable0
+DoIt
+CmapLanguageSubtable
+	subclass: 'CmapSubtable0'
+	instVarNames: #(glyphIdArray)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapSubtable0 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable0 comment: 'Format 0: Byte encoding table
 
-The table header indicates the character encodings for which subtables are present. Each subtable is in one of seven possible formats and begins with a format code indicating the format used.
+This is the Apple standard character to glyph index mapping table.
+Type 		Name 				Description
+USHORT 	format 				Format number is set to 0.
+USHORT 	length 				This is the length in bytes of the subtable.
+USHORT 	language 			Please see “Note on the language field in ''cmap'' subtables“ in this document.
+BYTE 		glyphIdArray[256] 	An array that maps character codes to glyph index values.
 
-The platform ID and platform-specific encoding ID in the header entry (and, in the case of the Macintosh platform, the language field in the subtable itself) are used to specify a particular ''cmap'' encoding. The header entries must be sorted first by platform ID, then by platform-specific encoding ID, and then by the language field in the corresponding subtable. Each platform ID, platform-specific encoding ID, and subtable language combination may appear only once in the ''cmap'' table.
+This is a simple 1 to 1 mapping of character codes to glyph indices. The glyph set is limited to 256. Note that if this format is used to index into a larger glyph set, only the first 256 glyphs will be accessible.
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable0 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Ltsh
+DoIt
+Table
+	subclass: 'Ltsh'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Ltsh category: 'PDFtalk Fonts OpenType'.
+	Ltsh comment: 'The LTSH table relates to OpenType™ fonts containing TrueType outlines. There are noticeable improvements to fonts on the screen when instructions are carefully applied to the sidebearings. The gain in readability is offset by the necessity for the OS to grid fit the glyphs in order to find the actual advance width for the glyphs (since instructions may be moving the sidebearing points). The TrueType outline format already has two mechanisms to side step the speed issues: the ''hdmx'' table, where precomputed advance widths may be saved for selected ppem sizes, and the ''vdmx'' table, where precomputed vertical advance widths may be saved for selected ppem sizes. The ''LTSH'' table (Linear ThreSHold) is a second, complementary method.
+
+The LTSH table defines the point at which it is reasonable to assume linearly scaled advance widths on a glyph-by-glyph basis. This table should not be included unless bit 4 of the “flags” field in the ''head'' table is set. The criteria for linear scaling is:
+
+a. (ppem size is ³50) AND (difference between the rounded linear width and the rounded instructed width £ 2% of the rounded linear width)
+
+or b. Linear width == Instructed width
+
+The LTSH table records the ppem for each glyph at which the scaling becomes linear again, despite instructions effecting the advance width. It is a requirement that, at and above the recorded threshold size, the glyph remain linear in its scaling (i.e., not legal to set threshold at 55 ppem if glyph becomes nonlinear again at 90 ppem).'.
+	Ltsh namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapLanguageSubtable32
+DoIt
+CmapLanguageSubtable
+	subclass: 'CmapLanguageSubtable32'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapLanguageSubtable32 category: 'PDFtalk Fonts OpenType'.
+	CmapLanguageSubtable32 comment: 'A cmap Subtable with a 32 bit header'.
+	CmapLanguageSubtable32 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable12
+DoIt
+CmapLanguageSubtable32
+	subclass: 'CmapSubtable12'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapSubtable12 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable12 comment: 'Format 12: Segmented coverage
+
+This is the Microsoft standard character to glyph index mapping table for fonts supporting the UCS-4 characters in the Unicode Surrogates Area (U+D800 - U+DFFF). It is a bit like format 4, in that it defines segments for sparse representation in 4-byte character space. Here''s the subtable format:
+
+Type		Name		Description
+USHORT	format		Subtable format; set to 12.
+USHORT	reserved	Reserved; set to 0
+ULONG		length		Byte length of this subtable (including the header)
+ULONG		language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
+ULONG		nGroups	Number of groupings which follow
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable12 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Ebsc
+DoIt
+Table
+	subclass: 'Ebsc'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Ebsc category: 'PDFtalk Fonts OpenType'.
+	Ebsc comment: 'The ''EBSC'' table provides a mechanism for describing embedded bitmaps which are created by scaling other embedded bitmaps. While this is the sort of thing that outline font technologies were invented to avoid, there are cases (small sizes of Kanji, for example) where scaling a bitmap produces a more legible font than scan-converting an outline. For this reason the ''EBSC'' table allows a font to define a bitmap strike as a scaled version of another strike.'.
+	Ebsc namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Maxp
+DoIt
+Table
+	subclass: 'Maxp'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Maxp category: 'PDFtalk Fonts OpenType'.
+	Maxp comment: 'This table establishes the memory requirements for this font. Fonts with CFF data must use Version 0.5 of this table, specifying only the numGlyphs field. Fonts with TrueType outlines must use Version 1.0 of this table, where all data is required.'.
+	Maxp namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class NameRecord
+DoIt
+Value
+	subclass: 'NameRecord'
+	instVarNames: #(platformID encodingID languageID nameID bytes)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	NameRecord category: 'PDFtalk Fonts OpenType'.
+	NameRecord comment: 'substructure of the NameTable'.
+	NameRecord namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class OS2
+DoIt
+Table
+	subclass: 'OS2'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	OS2 category: 'PDFtalk Fonts OpenType'.
+	OS2 comment: 'The OS/2 table consists of a set of metrics that are required in OpenType fonts.
 '.
-	Cmap namespacePath: #(#PDFtalk #Fonts #OpenType).
+	OS2 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Fpgm
+DoIt
+Table
+	subclass: 'Fpgm'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Fpgm category: 'PDFtalk Fonts OpenType'.
+	Fpgm comment: 'This table is similar to the CVT Program, except that it is only run once, when the font is first used. It is used only for FDEFs and IDEFs. Thus the CVT Program need not contain function definitions. However, the CVT Program may redefine existing FDEFs or IDEFs.
+
+This table is optional.'.
+	Fpgm namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Hmtx
+DoIt
+Table
+	subclass: 'Hmtx'
+	instVarNames: #(hMetrics)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Hmtx category: 'PDFtalk Fonts OpenType'.
+	Hmtx comment: 'The type longHorMetric is defined as an array where each element has two parts: the advance width, which is of type USHORT, and the left side bearing, which is of type SHORT. These fields are in font design units.'.
+	Hmtx namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable4
+DoIt
+CmapLanguageSubtable
+	subclass: 'CmapSubtable4'
+	instVarNames: #(segments glyphIdArray indexToCode)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapSubtable4 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable4 comment: 'Format 4: Segment mapping to delta values
+
+This is the Microsoft standard character to glyph index mapping table for fonts that support Unicode ranges other than the range [U+D800 - U+DFFF] (defined as Surrogates Area, in Unicode v 3.0) which is used for UCS-4 characters. If a font supports this character range (i.e. in turn supports the UCS-4 characters) a subtable in this format with a platform specific encoding ID 1 is yet needed, in addition to a subtable in format 12 with a platform specific encoding ID 10. Please see details on format 12 below, for fonts that support UCS-4 characters on Windows.
+
+This format is used when the character codes for the characters represented by a font fall into several contiguous ranges, possibly with holes in some or all of the ranges (that is, some of the codes in a range may not have a representation in the font). The format-dependent data is divided into three parts, which must occur in the following order:
+
+   1. A four-word header gives parameters for an optimized search of the segment list;
+   2. Four parallel arrays describe the segments (one segment for each contiguous range of codes);
+   3. A variable-length array of glyph IDs (unsigned words).
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable4 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Vhea
 DoIt
@@ -49799,41 +50107,34 @@ The difference between version 1.0 and version 1.1 is the name and definition of
     * lineGap becomes vertTypoLineGap'.
 	Vhea namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class CmapSubtable
+# Define class CmapSubtable10
 DoIt
-Value
-	subclass: 'CmapSubtable'
-	instVarNames: #(platform encoding contents)
+CmapLanguageSubtable32
+	subclass: 'CmapSubtable10'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	CmapSubtable category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable comment: 'A cmap subtable supports one character encoding scheme. Character codes that do not correspond to any glyph in the font should be mapped to glyph index 0. The glyph at this location must be a special glyph representing a missing character, commonly known as .notdef.
+	CmapSubtable10 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable10 comment: 'Format 10: Trimmed array
 
-The table header indicates the character encodings for which subtables are present. Each subtable is in one of seven possible formats and begins with a format code indicating the format used.
+Format 10 is a bit like format 6, in that it defines a trimmed array for a tight range of 32-bit character codes:
+Type	Name	Description
+USHORT	format	Subtable format; set to 10.
+USHORT	reserved	Reserved; set to 0
+ULONG	length	Byte length of this subtable (including the header)
+ULONG	language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
+ULONG	startCharCode	First character code covered
+ULONG	numChars	Number of character codes covered
+USHORT	glyphs[]	Array of glyph indices for the character codes covered
 
-The platform ID and platform-specific encoding ID in the header entry (and, in the case of the Macintosh platform, the language field in the subtable itself) are used to specify a particular ''cmap'' encoding. The header entries must be sorted first by platform ID, then by platform-specific encoding ID, and then by the language field in the corresponding subtable. Each platform ID, platform-specific encoding ID, and subtable language combination may appear only once in the ''cmap'' table.
+This format is not supported by Microsoft.
 
 (see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapLanguageSubtable
-DoIt
-CmapSubtable
-	subclass: 'CmapLanguageSubtable'
-	instVarNames: #(language)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapLanguageSubtable category: 'PDFtalk Fonts OpenType'.
-	CmapLanguageSubtable comment: 'A cmap Subtable with a language id'.
-	CmapLanguageSubtable namespacePath: #(#PDFtalk #Fonts #OpenType).
+	CmapSubtable10 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Gsub
 DoIt
@@ -49850,10 +50151,10 @@ DoIt
 	Gsub comment: 'The Glyph Substitution table (GSUB) contains information for substituting glyphs to render the scripts and language systems supported in a font. Many language systems require glyph substitutes. For example, in the Arabic script, the glyph shape that depicts a particular character varies according to its position in a word or text string. In other language systems, glyph substitutes are aesthetic options for the user, such as the use of ligature glyphs in the English language.'.
 	Gsub namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Ebsc
+# Define class Kern
 DoIt
 Table
-	subclass: 'Ebsc'
+	subclass: 'Kern'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -49861,43 +50162,13 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Ebsc category: 'PDFtalk Fonts OpenType'.
-	Ebsc comment: 'The ''EBSC'' table provides a mechanism for describing embedded bitmaps which are created by scaling other embedded bitmaps. While this is the sort of thing that outline font technologies were invented to avoid, there are cases (small sizes of Kanji, for example) where scaling a bitmap produces a more legible font than scan-converting an outline. For this reason the ''EBSC'' table allows a font to define a bitmap strike as a scaled version of another strike.'.
-	Ebsc namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Font
-DoIt
-((PDFtalk at: #Fonts) at: #Font)
-	subclass: 'Font'
-	instVarNames: #(filename sfntVersion numTables searchRange entrySelector rangeShift tables glyphs tabularGlyphIds header)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Font category: 'PDFtalk Fonts OpenType'.
-	Font comment: 'holds an OpenType font content
-The data types are used in the OpenType font file. All OpenType fonts use Motorola-style byte ordering (Big Endian).
+	Kern category: 'PDFtalk Fonts OpenType'.
+	Kern comment: 'NOTE: Apple has extended the definition of the ''kern'' table to provide additional functionality. The Apple extensions are not supported on Windows. Fonts intended for cross-platform use or for the Windows platform in general should conform to the ''kern'' table format specified here.
 
-(see http://www.microsoft.com/typography/otspec/default.htm for specifications)
-'.
-	Font namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Pclt
-DoIt
-Table
-	subclass: 'Pclt'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Pclt category: 'PDFtalk Fonts OpenType'.
-	Pclt comment: 'The ''PCLT'' table is strongly discouraged for OpenType™ fonts with TrueType outlines. Extra information on many of these fields can be found in the HP PCL 5 Printer Language Technical Reference Manual  available from Hewlett-Packard Boise Printer Division.'.
-	Pclt namespacePath: #(#PDFtalk #Fonts #OpenType).
+The kerning table contains the values that control the intercharacter spacing for the glyphs in a font. There is currently no system level support for kerning (other than returning the kern pairs and kern values). OpenType™ fonts containing CFF outlines are not supported by the ''kern'' table and must use the ''GPOS'' OpenType Layout table.
+
+Each subtable varies in format, and can contain information for vertical or horizontal text, and can contain kerning values or minimum values. Kerning values are used to adjust inter-character spacing, and minimum values are used to limit the amount of adjustment that the scaler applies by the combination of kerning and tracking. Because the adjustments are additive, the order of the subtables containing kerning values is not important. However, tables containing minimum values should usually be placed last, so that they can be used to limit the total effect of other subtables.'.
+	Kern namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Glyph
 DoIt
@@ -49914,10 +50185,10 @@ DoIt
 	Glyph comment: 'a character from a CFF'.
 	Glyph namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class OS2
+# Define class Head
 DoIt
 Table
-	subclass: 'OS2'
+	subclass: 'Head'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -49925,30 +50196,15 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	OS2 category: 'PDFtalk Fonts OpenType'.
-	OS2 comment: 'The OS/2 table consists of a set of metrics that are required in OpenType fonts.
+	Head category: 'PDFtalk Fonts OpenType'.
+	Head comment: 'This table gives global information about the font. The bounding box values should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations.
 '.
-	OS2 namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Head namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class HorMetric
+# Define class CmapSubtable14
 DoIt
-Value
-	subclass: 'HorMetric'
-	instVarNames: #(advanceWidth lsb)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	HorMetric category: 'PDFtalk Fonts OpenType'.
-	HorMetric comment: 'Paired advance width and left side bearing values for a glyph.'.
-	HorMetric namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Loca
-DoIt
-Table
-	subclass: 'Loca'
+CmapSubtable
+	subclass: 'CmapSubtable14'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -49956,13 +50212,116 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Loca category: 'PDFtalk Fonts OpenType'.
-	Loca comment: 'The indexToLoc table stores the offsets to the locations of the glyphs in the font, relative to the beginning of the glyphData table. In order to compute the length of the last glyph element, there is an extra entry after the last valid index.
+	CmapSubtable14 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable14 comment: 'Format 14: Unicode Variation Sequences
 
-By definition, index zero points to the “missing character,” which is the character that appears if a character is not found in the font. The missing character is commonly represented by a blank box or a space. If the font does not contain an outline for the missing character, then the first and second offsets should have the same value. This also applies to any other characters without an outline, such as the space character. If a glyph has no outline, then loca[n] = loca [n+1]. In the particular case of the last glyph(s), loca[n] will be equal the length of the glyph data (''glyf'') table. The offsets must be in ascending order with loca[n] <= loca[n+1].
+Subtable format 14 specifies the Unicode Variation Sequences (UVSes) supported by the font. A Variation Sequence, according to the Unicode Standard, comprises a base character followed by a variation selector; e.g. <U+82A6, U+E0101>.
 
-Most routines will look at the ''maxp'' table to determine the number of glyphs in the font, but the value in the ''loca'' table must agree.'.
-	Loca namespacePath: #(#PDFtalk #Fonts #OpenType).
+The subtable partitions the UVSes supported by the font into two categories: “default” and “non-default” UVSes. Given a UVS, if the glyph obtained by looking up the base character of that sequence in the Unicode cmap subtable (i.e. the UCS-4 or the BMP cmap subtable) is the glyph to use for that sequence, then the sequence is a “default” UVS; otherwise it is a “non-default” UVS, and the glyph to use for that sequence is specified in the format 14 subtable itself.
+
+The example at the bottom of the page shows how a font vendor can use format 14 for a JIS-2004–aware font.
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable14 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Dsig
+DoIt
+Table
+	subclass: 'Dsig'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Dsig category: 'PDFtalk Fonts OpenType'.
+	Dsig comment: 'The DSIG table contains the digital signature of the OpenType™ font. Signature formats are widely documented and rely on a key pair architecture. Software developers, or publishers posting material on the Internet, create signatures using a private key. Operating systems or applications authenticate the signature using a public key.
+
+The W3C and major software and operating system developers have specified security standards that describe signature formats, specify secure collections of web objects, and recommend authentication architecture. OpenType fonts with signatures will support these standards.
+
+OpenType fonts offer many security features:
+
+    * Operating systems and browsing applications can identify the source and integrity of font files before using them,
+    * Font developers can specify embedding restrictions in OpenType fonts, and these restrictions cannot be altered in a font signed by the developer.
+
+The enforcement of signatures is an administrative policy, enabled by the operating system. Windows will soon require installed software components, including fonts, to be signed. Internet browsers will also give users and administrators the ability to screen out unsigned objects obtained on-line, including web pages, fonts, graphics, and software components.
+
+Anyone can obtain identity certificates and encryption keys from a certifying agency, such as Verisign or GTE''s Cybertrust, free or at a very low cost.'.
+	Dsig namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Pclt
+DoIt
+Table
+	subclass: 'Pclt'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Pclt category: 'PDFtalk Fonts OpenType'.
+	Pclt comment: 'The ''PCLT'' table is strongly discouraged for OpenType™ fonts with TrueType outlines. Extra information on many of these fields can be found in the HP PCL 5 Printer Language Technical Reference Manual  available from Hewlett-Packard Boise Printer Division.'.
+	Pclt namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Gpos
+DoIt
+Table
+	subclass: 'Gpos'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Gpos category: 'PDFtalk Fonts OpenType'.
+	Gpos comment: 'The Glyph Positioning table (GPOS) provides precise control over glyph placement for sophisticated text layout and rendering in each script and language system that a font supports.'.
+	Gpos namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Colr
+DoIt
+Table
+	subclass: 'Colr'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Colr category: 'PDFtalk Fonts OpenType'.
+	Colr comment: 'COLR - Color Table
+
+The COLR table adds support for multi-colored glyphs in a manner that is compatible with existing text engines and easy to support with current OFF font files.
+
+The COLR table defines a list of base glyphs — which are regular glyphs, typically associated with a cmap entry. Each base glyph is associated by the COLR table to a list of glyphs, each corresponding to layers that can be combined, creating a colored representation of the base glyph. The layered glyphs are explicitly defined in bottom-up z-order and each of their advance widths must match those of the base glyph. If the font has vertical metrics, the associated layer glyphs must also have the same advance height and vertical Y origin as the base glyph.
+
+The COLR table works together with the CPAL table which holds the color palettes used by the color layers.
+
+Fonts using ''COLR'' and ''CPAL'' tables must implement GlyphID 1 as the .null glyph. If the COLR table is present in a font but no CPAL table exists, then the COLR table will not be supported for this font.'.
+	Colr namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Cblc
+DoIt
+Table
+	subclass: 'Cblc'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Cblc category: 'PDFtalk Fonts OpenType'.
+	Cblc comment: 'CBLC - Color Bitmap Location Table
+
+Two new tables are used to embed color bitmaps in OFF fonts. They are the ''CBLC'' table, backward compatible with the existing EBLC table for embedded bitmap locators, and the ''CBDT'' table for embedded color bitmap data.
+
+The ''CBLC'' table begins with a header containing the table version and number of strikes. An OFF font may have one or more strikes embedded in the ''CBDT'' table.
+'.
+	Cblc namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Segment
 DoIt
@@ -49991,10 +50350,10 @@ If the idRangeOffset is 0, the idDelta value is added directly to the character 
 (see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
 	Segment namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Cbdt
+# Define class Glyf
 DoIt
 Table
-	subclass: 'Cbdt'
+	subclass: 'Glyf'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50002,34 +50361,14 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Cbdt category: 'PDFtalk Fonts OpenType'.
-	Cbdt comment: 'CBDT - Color Bitmap Data Table
-
-Two tables are used to embed color bitmaps in OFF fonts. They are the ''CBLC'' table for embedded bitmap locators and the ''CBDT'' table for embedded color bitmap data. The formats of these two tables are backward compatible with EBLC and EBDT used for embedded monochrome and grayscale bitmaps
-'.
-	Cbdt namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Glyf category: 'PDFtalk Fonts OpenType'.
+	Glyf comment: 'This table contains information that describes the glyphs in the font in the TrueType outline format. Information regarding the rasterizer (scaler) refers to the TrueType rasterizer.'.
+	Glyf namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class FontHeader
-DoIt
-Value
-	subclass: 'FontHeader'
-	instVarNames: #(version fontRevision checkSumAdjustment flags unitsPerEm created modified glyphBBox macStyle lowestRecPPEM fontDirectionHint indexToLocFormat glyphDataFormat)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	FontHeader category: 'PDFtalk Fonts OpenType'.
-	FontHeader comment: 'head - Font Header
-
-This table gives global information about the font. The bounding box values should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations.'.
-	FontHeader namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Gpos
+# Define class Vorg
 DoIt
 Table
-	subclass: 'Gpos'
+	subclass: 'Vorg'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50037,212 +50376,24 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Gpos category: 'PDFtalk Fonts OpenType'.
-	Gpos comment: 'The Glyph Positioning table (GPOS) provides precise control over glyph placement for sophisticated text layout and rendering in each script and language system that a font supports.'.
-	Gpos namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class ScriptRecord
-DoIt
-Value
-	subclass: 'ScriptRecord'
-	instVarNames: #(tag offset)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	ScriptRecord category: 'PDFtalk Fonts OpenType'.
-	ScriptRecord comment: 'The ScriptRecord array stores the records alphabetically by a ScriptTag that identifies the script. Each ScriptRecord consists of a ScriptTag and an offset to a Script table.'.
-	ScriptRecord namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Dsig
-DoIt
-Table
-	subclass: 'Dsig'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Dsig category: 'PDFtalk Fonts OpenType'.
-	Dsig comment: 'The DSIG table contains the digital signature of the OpenType™ font. Signature formats are widely documented and rely on a key pair architecture. Software developers, or publishers posting material on the Internet, create signatures using a private key. Operating systems or applications authenticate the signature using a public key.
+	Vorg category: 'PDFtalk Fonts OpenType'.
+	Vorg comment: 'This table specifies the y coordinate of the vertical origin of every glyph in the font.
 
-The W3C and major software and operating system developers have specified security standards that describe signature formats, specify secure collections of web objects, and recommend authentication architecture. OpenType fonts with signatures will support these standards.
+This table may be optionally present only in CFF OpenType fonts. If present in TrueType OpenType fonts it must be ignored by font clients, just as any other unrecognized table would be. This is because this table is not needed for TrueType OpenType fonts: the Vertical Metrics (''vmtx'') and Glyph Data (''glyf'') tables in TrueType OpenType fonts provide all the information necessary to accurately calculate the y coordinate of a glyph''s vertical origin. See the “Vertical Origin and Advance Height” section in the ''vmtx'' table specification for more details.
 
-OpenType fonts offer many security features:
+This table was added to version 1.3 of the OpenType specification. Note that the ''vmtx'' and Vertical Header (''vhea'') tables continue to be required for all OpenType fonts that support vertical writing. Advance heights must continue to be obtained from the ''vmtx'' table; that is the only place they are stored.
 
-    * Operating systems and browsing applications can identify the source and integrity of font files before using them,
-    * Font developers can specify embedding restrictions in OpenType fonts, and these restrictions cannot be altered in a font signed by the developer.
+If a ''VORG'' table is present in a CFF OpenType font, a font client may choose to obtain the y coordinate of a glyph''s vertical origin either:
 
-The enforcement of signatures is an administrative policy, enabled by the operating system. Windows will soon require installed software components, including fonts, to be signed. Internet browsers will also give users and administrators the ability to screen out unsigned objects obtained on-line, including web pages, fonts, graphics, and software components.
+   1. directly from the ''VORG'', or:
+   2. by first calculating the top of the glyph''s bounding box from the CFF charstring data and then adding to it the glyph''s top side bearing from the ''vmtx'' table.
 
-Anyone can obtain identity certificates and encryption keys from a certifying agency, such as Verisign or GTE''s Cybertrust, free or at a very low cost.'.
-	Dsig namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class NameRecord
-DoIt
-Value
-	subclass: 'NameRecord'
-	instVarNames: #(platformID encodingID languageID nameID bytes)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	NameRecord category: 'PDFtalk Fonts OpenType'.
-	NameRecord comment: 'substructure of the NameTable'.
-	NameRecord namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Head
-DoIt
-Table
-	subclass: 'Head'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Head category: 'PDFtalk Fonts OpenType'.
-	Head comment: 'This table gives global information about the font. The bounding box values should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations.
-'.
-	Head namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Gasp
-DoIt
-Table
-	subclass: 'Gasp'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Gasp category: 'PDFtalk Fonts OpenType'.
-	Gasp comment: 'This table contains information which describes the preferred rasterization techniques for the typeface when it is rendered on grayscale-capable devices. This table also has some use for monochrome devices, which may use the table to turn off hinting at very large or small sizes, to improve performance.
+The former method offers the advantage of increased accuracy and efficiency, since bounding box results calculated from the CFF charstring as in the latter method can differ depending on the rounding decisions and data types of the bounding box algorithm. The latter method provides compatibility for font clients who are either unaware of or choose not to support the ''VORG''.
 
-At very small sizes, the best appearance on grayscale devices can usually be achieved by rendering the glyphs in grayscale without using hints. At intermediate sizes, hinting and monochrome rendering will usually produce the best appearance. At large sizes, the combination of hinting and grayscale rendering will typically produce the best appearance.
+Thus, the ''VORG'' doesn''t add any new font metric values per se; it simply improves accuracy and efficiency for CFF OpenType font clients, since the intermediate step of calculating bounding boxes from the CFF charstring is rendered unnecessary.
 
-If the ''gasp'' table is not present in a typeface, the rasterizer may apply default rules to decide how to render the glyphs on grayscale devices.'.
-	Gasp namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Eblc
-DoIt
-Table
-	subclass: 'Eblc'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Eblc category: 'PDFtalk Fonts OpenType'.
-	Eblc comment: 'Three tables are used to embed bitmaps in OpenType™ fonts. They are the ''EBLC'' table for embedded bitmap locators, the ''EBDT'' table for embedded bitmap data, and the ''EBSC'' table for embedded bitmap scaling information. OpenType embedded bitmaps are called ''sbits'' (for “scaler bitmaps”). A set of bitmaps for a face at a given size is called a strike.
-
-The ''EBLC'' table identifies the sizes and glyph ranges of the sbits, and keeps offsets to glyph bitmap data in indexSubTables. The ''EBDT'' table then stores the glyph bitmap data, also in a number of different possible formats. Glyph metrics information may be stored in either the ''EBLC'' or ''EBDT'' table, depending upon the indexSubTable and glyph bitmap formats. The ''EBSC'' table identifies sizes that will be handled by scaling up or scaling down other sbit sizes.
-
-The ''EBLC'' table uses the same format as the Apple Apple Advanced Typography (AAT) ''bloc'' table.'.
-	Eblc namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Post
-DoIt
-Table
-	subclass: 'Post'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Post category: 'PDFtalk Fonts OpenType'.
-	Post comment: 'This table contains additional information needed to use TrueType or OpenType fonts on PostScript printers. This includes data for the FontInfo dictionary entry and the PostScript names of all the glyphs. For more information about PostScript names, see the Adobe document Unicode and Glyph Names.
-
-Versions 1.0, 2.0, and 2.5 refer to TrueType fonts and OpenType fonts with TrueType data. OpenType fonts with TrueType data may also use Version 3.0. OpenType fonts with CFF data use Version 3.0 only.
-'.
-	Post namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable14
-DoIt
-CmapSubtable
-	subclass: 'CmapSubtable14'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapSubtable14 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable14 comment: 'Format 14: Unicode Variation Sequences
-
-Subtable format 14 specifies the Unicode Variation Sequences (UVSes) supported by the font. A Variation Sequence, according to the Unicode Standard, comprises a base character followed by a variation selector; e.g. <U+82A6, U+E0101>.
-
-The subtable partitions the UVSes supported by the font into two categories: “default” and “non-default” UVSes. Given a UVS, if the glyph obtained by looking up the base character of that sequence in the Unicode cmap subtable (i.e. the UCS-4 or the BMP cmap subtable) is the glyph to use for that sequence, then the sequence is a “default” UVS; otherwise it is a “non-default” UVS, and the glyph to use for that sequence is specified in the format 14 subtable itself.
-
-The example at the bottom of the page shows how a font vendor can use format 14 for a JIS-2004–aware font.
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable14 namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Maxp
-DoIt
-Table
-	subclass: 'Maxp'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Maxp category: 'PDFtalk Fonts OpenType'.
-	Maxp comment: 'This table establishes the memory requirements for this font. Fonts with CFF data must use Version 0.5 of this table, specifying only the numGlyphs field. Fonts with TrueType outlines must use Version 1.0 of this table, where all data is required.'.
-	Maxp namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Cpal
-DoIt
-Table
-	subclass: 'Cpal'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Cpal category: 'PDFtalk Fonts OpenType'.
-	Cpal comment: 'CPAL - Color Palette Table
-
-The palette table is a set of one or more palettes, each containing a predefined number of RGBA values arranged consecutively by palette index value. It may also contain name table IDs describing the palettes and their entries.
-
-The first palette, number 0, is the default palette. The palettes are referenced by colorRecordIndices, this is the index into the array of color records where the palette starts. Multiple colorRecordIndices may refer to the same palette, therefore the number of actual palettes in the table may be less than the numPalettes entry. A minimum of one palette, the default, must be provided in the table if the table is present. Each palette must have the same number of entries as defined by numPaletteEntries, which must be at least one entry. Any empty CPAL table, with no palettes and no color records is not permissible. It is permissible for palettes to overlap and share data; therefore, the total number of color records in the CPAL table may be less than the number of palette entries multiplied by the number of palettes.
-
-For each of the palettes, the first color record is index zero. There can be no more than numPaletteEntries of RGBA values.'.
-	Cpal namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Name
-DoIt
-Table
-	subclass: 'Name'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Name category: 'PDFtalk Fonts OpenType'.
-	Name comment: 'The naming table allows multilingual strings to be associated with the OpenTypeTM font file. These strings can represent copyright notices, font names, family names, style names, and so on. To keep this table short, the font manufacturer may wish to make a limited set of entries in some small set of languages; later, the font can be "localized" and the strings translated or added. Other parts of the OpenType font file that require these strings can then refer to them simply by their index number. Clients that need a particular string can look it up by its platform ID, character encoding ID, language ID and name ID. Note that some platforms may require single byte character strings, while others may require double byte strings.
-'.
-	Name namespacePath: #(#PDFtalk #Fonts #OpenType).
+See the section “OpenType CJK Font Guidelines“ for more information about constructing CJK (Chinese, Japanese, and Korean) fonts.'.
+	Vorg namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Math
 DoIt
@@ -50282,25 +50433,10 @@ SVG - The SVG (Scalable Vector Graphics) table
 This table contains SVG descriptions for some or all of the glyphs in the font. For every SVG glyph description, there must also exist a corresponding CFF or TT glyph description in the font.'.
 	Svg namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Hmtx
+# Define class Name
 DoIt
 Table
-	subclass: 'Hmtx'
-	instVarNames: #(hMetrics)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Hmtx category: 'PDFtalk Fonts OpenType'.
-	Hmtx comment: 'The type longHorMetric is defined as an array where each element has two parts: the advance width, which is of type USHORT, and the left side bearing, which is of type SHORT. These fields are in font design units.'.
-	Hmtx namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Hdmx
-DoIt
-Table
-	subclass: 'Hdmx'
+	subclass: 'Name'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50308,18 +50444,34 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Hdmx category: 'PDFtalk Fonts OpenType'.
-	Hdmx comment: 'The hdmx table relates to OpenType™ fonts with TrueType outlines. The Horizontal Device Metrics table stores integer advance widths scaled to particular pixel sizes. This allows the font manager to build integer width tables without calling the scaler for each glyph. Typically this table contains only selected screen sizes. This table is sorted by pixel size. The checksum for this table applies to both subtables listed.
-
-Note that for non-square pixel grids, the character width (in pixels) will be used to determine which device record to use. For example, a 12 point character on a device with a resolution of 72x96 would be 12 pixels high and 16 pixels wide. The hdmx device record for 16 pixel characters would be used.
-
-If bit 4 of the flag field in the ''head'' table is not set, then it is assumed that the font scales linearly; in this case an ''hdmx'' table is not necessary and should not be built. If bit 4 of the flag field is set, then one or more glyphs in the font are assumed to scale nonlinearly. In this case, performance can be improved by including the ''hdmx'' table with one or more important DeviceRecord''s for important sizes. Please see the chapter “Recommendations for OpenType Fonts” for more detail.'.
-	Hdmx namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Name category: 'PDFtalk Fonts OpenType'.
+	Name comment: 'The naming table allows multilingual strings to be associated with the OpenTypeTM font file. These strings can represent copyright notices, font names, family names, style names, and so on. To keep this table short, the font manufacturer may wish to make a limited set of entries in some small set of languages; later, the font can be "localized" and the strings translated or added. Other parts of the OpenType font file that require these strings can then refer to them simply by their index number. Clients that need a particular string can look it up by its platform ID, character encoding ID, language ID and name ID. Note that some platforms may require single byte character strings, while others may require double byte strings.
+'.
+	Name namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Cvt
+# Define class Font
 DoIt
-Table
-	subclass: 'Cvt'
+((PDFtalk at: #Fonts) at: #Font)
+	subclass: 'Font'
+	instVarNames: #(filename sfntVersion numTables searchRange entrySelector rangeShift tables glyphs tabularGlyphIds header)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Font category: 'PDFtalk Fonts OpenType'.
+	Font comment: 'holds an OpenType font content
+The data types are used in the OpenType font file. All OpenType fonts use Motorola-style byte ordering (Big Endian).
+
+(see http://www.microsoft.com/typography/otspec/default.htm for specifications)
+'.
+	Font namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable2
+DoIt
+CmapLanguageSubtable
+	subclass: 'CmapSubtable2'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50327,105 +50479,50 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Cvt category: 'PDFtalk Fonts OpenType'.
-	Cvt comment: 'This table contains a list of values that can be referenced by instructions. They can be used, among other things, to control characteristics for different glyphs. The length of the table must be an integral number of FWORD units.'.
-	Cvt namespacePath: #(#PDFtalk #Fonts #OpenType).
+	CmapSubtable2 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable2 comment: 'Format 2: High-byte mapping through table
+
+This subtable is useful for the national character code standards used for Japanese, Chinese, and Korean characters. These code standards use a mixed 8/16-bit encoding, in which certain byte values signal the first byte of a 2-byte character (but these values are also legal as the second byte of a 2-byte character).
+
+In addition, even for the 2-byte characters, the mapping of character codes to glyph index values depends heavily on the first byte. Consequently, the table begins with an array that maps the first byte to a 4-word subHeader. For 2-byte character codes, the subHeader is used to map the second byte''s value through a subArray, as described below. When processing mixed 8/16-bit text, subHeader 0 is special: it is used for single-byte character codes. When subHeader zero is used, a second byte is not needed; the single byte value is mapped through the subArray.
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable2 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Vorg
+# Define class Cmap
 DoIt
 Table
-	subclass: 'Vorg'
-	instVarNames: #()
+	subclass: 'Cmap'
+	instVarNames: #(encodingTables)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	Vorg category: 'PDFtalk Fonts OpenType'.
-	Vorg comment: 'This table specifies the y coordinate of the vertical origin of every glyph in the font.
+	Cmap category: 'PDFtalk Fonts OpenType'.
+	Cmap comment: 'This table defines the mapping of character codes to the glyph index values used in the font. It may contain more than one subtable, in order to support more than one character encoding scheme. Character codes that do not correspond to any glyph in the font should be mapped to glyph index 0. The glyph at this location must be a special glyph representing a missing character, commonly known as .notdef.
 
-This table may be optionally present only in CFF OpenType fonts. If present in TrueType OpenType fonts it must be ignored by font clients, just as any other unrecognized table would be. This is because this table is not needed for TrueType OpenType fonts: the Vertical Metrics (''vmtx'') and Glyph Data (''glyf'') tables in TrueType OpenType fonts provide all the information necessary to accurately calculate the y coordinate of a glyph''s vertical origin. See the “Vertical Origin and Advance Height” section in the ''vmtx'' table specification for more details.
+The table header indicates the character encodings for which subtables are present. Each subtable is in one of seven possible formats and begins with a format code indicating the format used.
 
-This table was added to version 1.3 of the OpenType specification. Note that the ''vmtx'' and Vertical Header (''vhea'') tables continue to be required for all OpenType fonts that support vertical writing. Advance heights must continue to be obtained from the ''vmtx'' table; that is the only place they are stored.
-
-If a ''VORG'' table is present in a CFF OpenType font, a font client may choose to obtain the y coordinate of a glyph''s vertical origin either:
-
-   1. directly from the ''VORG'', or:
-   2. by first calculating the top of the glyph''s bounding box from the CFF charstring data and then adding to it the glyph''s top side bearing from the ''vmtx'' table.
-
-The former method offers the advantage of increased accuracy and efficiency, since bounding box results calculated from the CFF charstring as in the latter method can differ depending on the rounding decisions and data types of the bounding box algorithm. The latter method provides compatibility for font clients who are either unaware of or choose not to support the ''VORG''.
-
-Thus, the ''VORG'' doesn''t add any new font metric values per se; it simply improves accuracy and efficiency for CFF OpenType font clients, since the intermediate step of calculating bounding boxes from the CFF charstring is rendered unnecessary.
-
-See the section “OpenType CJK Font Guidelines“ for more information about constructing CJK (Chinese, Japanese, and Korean) fonts.'.
-	Vorg namespacePath: #(#PDFtalk #Fonts #OpenType).
+The platform ID and platform-specific encoding ID in the header entry (and, in the case of the Macintosh platform, the language field in the subtable itself) are used to specify a particular ''cmap'' encoding. The header entries must be sorted first by platform ID, then by platform-specific encoding ID, and then by the language field in the corresponding subtable. Each platform ID, platform-specific encoding ID, and subtable language combination may appear only once in the ''cmap'' table.
+'.
+	Cmap namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Kern
+# Define class HorMetric
 DoIt
-Table
-	subclass: 'Kern'
-	instVarNames: #()
+Value
+	subclass: 'HorMetric'
+	instVarNames: #(advanceWidth lsb)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	Kern category: 'PDFtalk Fonts OpenType'.
-	Kern comment: 'NOTE: Apple has extended the definition of the ''kern'' table to provide additional functionality. The Apple extensions are not supported on Windows. Fonts intended for cross-platform use or for the Windows platform in general should conform to the ''kern'' table format specified here.
-
-The kerning table contains the values that control the intercharacter spacing for the glyphs in a font. There is currently no system level support for kerning (other than returning the kern pairs and kern values). OpenType™ fonts containing CFF outlines are not supported by the ''kern'' table and must use the ''GPOS'' OpenType Layout table.
-
-Each subtable varies in format, and can contain information for vertical or horizontal text, and can contain kerning values or minimum values. Kerning values are used to adjust inter-character spacing, and minimum values are used to limit the amount of adjustment that the scaler applies by the combination of kerning and tracking. Because the adjustments are additive, the order of the subtables containing kerning values is not important. However, tables containing minimum values should usually be placed last, so that they can be used to limit the total effect of other subtables.'.
-	Kern namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Glyf
-DoIt
-Table
-	subclass: 'Glyf'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Glyf category: 'PDFtalk Fonts OpenType'.
-	Glyf comment: 'This table contains information that describes the glyphs in the font in the TrueType outline format. Information regarding the rasterizer (scaler) refers to the TrueType rasterizer.'.
-	Glyf namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Fpgm
-DoIt
-Table
-	subclass: 'Fpgm'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Fpgm category: 'PDFtalk Fonts OpenType'.
-	Fpgm comment: 'This table is similar to the CVT Program, except that it is only run once, when the font is first used. It is used only for FDEFs and IDEFs. Thus the CVT Program need not contain function definitions. However, the CVT Program may redefine existing FDEFs or IDEFs.
-
-This table is optional.'.
-	Fpgm namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Vmtx
-DoIt
-Table
-	subclass: 'Vmtx'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Vmtx category: 'PDFtalk Fonts OpenType'.
-	Vmtx comment: 'The vertical metrics table allows you to specify the vertical spacing for each glyph in a vertical font. This table consists of either one or two arrays that contain metric information (the advance heights and top sidebearings) for the vertical layout of each of the glyphs in the font.'.
-	Vmtx namespacePath: #(#PDFtalk #Fonts #OpenType).
+	HorMetric category: 'PDFtalk Fonts OpenType'.
+	HorMetric comment: 'Paired advance width and left side bearing values for a glyph.'.
+	HorMetric namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Jstf
 DoIt
@@ -50442,10 +50539,10 @@ DoIt
 	Jstf comment: 'The Justification table (JSTF) provides font developers with additional control over glyph substitution and positioning in justified text. Text-processing clients now have more options to expand or shrink word and glyph spacing so text fills the specified line length.'.
 	Jstf namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Colr
+# Define class Post
 DoIt
 Table
-	subclass: 'Colr'
+	subclass: 'Post'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50453,22 +50550,17 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Colr category: 'PDFtalk Fonts OpenType'.
-	Colr comment: 'COLR - Color Table
+	Post category: 'PDFtalk Fonts OpenType'.
+	Post comment: 'This table contains additional information needed to use TrueType or OpenType fonts on PostScript printers. This includes data for the FontInfo dictionary entry and the PostScript names of all the glyphs. For more information about PostScript names, see the Adobe document Unicode and Glyph Names.
 
-The COLR table adds support for multi-colored glyphs in a manner that is compatible with existing text engines and easy to support with current OFF font files.
-
-The COLR table defines a list of base glyphs — which are regular glyphs, typically associated with a cmap entry. Each base glyph is associated by the COLR table to a list of glyphs, each corresponding to layers that can be combined, creating a colored representation of the base glyph. The layered glyphs are explicitly defined in bottom-up z-order and each of their advance widths must match those of the base glyph. If the font has vertical metrics, the associated layer glyphs must also have the same advance height and vertical Y origin as the base glyph.
-
-The COLR table works together with the CPAL table which holds the color palettes used by the color layers.
-
-Fonts using ''COLR'' and ''CPAL'' tables must implement GlyphID 1 as the .null glyph. If the COLR table is present in a font but no CPAL table exists, then the COLR table will not be supported for this font.'.
-	Colr namespacePath: #(#PDFtalk #Fonts #OpenType).
+Versions 1.0, 2.0, and 2.5 refer to TrueType fonts and OpenType fonts with TrueType data. OpenType fonts with TrueType data may also use Version 3.0. OpenType fonts with CFF data use Version 3.0 only.
+'.
+	Post namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Ebdt
+# Define class Vmtx
 DoIt
 Table
-	subclass: 'Ebdt'
+	subclass: 'Vmtx'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50476,30 +50568,61 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Ebdt category: 'PDFtalk Fonts OpenType'.
-	Ebdt comment: 'Three tables are used to embed bitmaps in OpenType™ fonts. They are the ''EBLC'' table for embedded bitmap locators, the ''EBDT'' table for embedded bitmap data, and the ''EBSC'' table for embedded bitmap scaling information.
-
-OpenType embedded bitmaps are also called ''sbits'' (for “scaler bitmaps”). A set of bitmaps for a face at a given size is called a strike.
-
-The ''EBLC'' table identifies the sizes and glyph ranges of the sbits, and keeps offsets to glyph bitmap data in indexSubTables. The ''EBDT'' table then stores the glyph bitmap data, in a number of different possible formats. Glyph metrics information may be stored in either the ''EBLC'' or ''EBDT'' table, depending upon the indexSubTable and glyph bitmap data formats. The ''EBSC'' table identifies sizes that will be handled by scaling up or scaling down other sbit sizes.
-
-The ''EBDT'' table is a super set of Apple''s Apple Advanced Typography (AAT) ''bdat'' table.'.
-	Ebdt namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Vmtx category: 'PDFtalk Fonts OpenType'.
+	Vmtx comment: 'The vertical metrics table allows you to specify the vertical spacing for each glyph in a vertical font. This table consists of either one or two arrays that contain metric information (the advance heights and top sidebearings) for the vertical layout of each of the glyphs in the font.'.
+	Vmtx namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class IndexedSegment
+# Define class Cvt
 DoIt
-Segment
-	subclass: 'IndexedSegment'
-	instVarNames: #(glyphIdArrayIndex)
+Table
+	subclass: 'Cvt'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	IndexedSegment category: 'PDFtalk Fonts OpenType'.
-	IndexedSegment comment: 'A segment with a idRangeOffset'.
-	IndexedSegment namespacePath: #(#PDFtalk #Fonts #OpenType).
+	Cvt category: 'PDFtalk Fonts OpenType'.
+	Cvt comment: 'This table contains a list of values that can be referenced by instructions. They can be used, among other things, to control characteristics for different glyphs. The length of the table must be an integral number of FWORD units.'.
+	Cvt namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Cbdt
+DoIt
+Table
+	subclass: 'Cbdt'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Cbdt category: 'PDFtalk Fonts OpenType'.
+	Cbdt comment: 'CBDT - Color Bitmap Data Table
+
+Two tables are used to embed color bitmaps in OFF fonts. They are the ''CBLC'' table for embedded bitmap locators and the ''CBDT'' table for embedded color bitmap data. The formats of these two tables are backward compatible with EBLC and EBDT used for embedded monochrome and grayscale bitmaps
+'.
+	Cbdt namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Eblc
+DoIt
+Table
+	subclass: 'Eblc'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Eblc category: 'PDFtalk Fonts OpenType'.
+	Eblc comment: 'Three tables are used to embed bitmaps in OpenType™ fonts. They are the ''EBLC'' table for embedded bitmap locators, the ''EBDT'' table for embedded bitmap data, and the ''EBSC'' table for embedded bitmap scaling information. OpenType embedded bitmaps are called ''sbits'' (for “scaler bitmaps”). A set of bitmaps for a face at a given size is called a strike.
+
+The ''EBLC'' table identifies the sizes and glyph ranges of the sbits, and keeps offsets to glyph bitmap data in indexSubTables. The ''EBDT'' table then stores the glyph bitmap data, also in a number of different possible formats. Glyph metrics information may be stored in either the ''EBLC'' or ''EBDT'' table, depending upon the indexSubTable and glyph bitmap formats. The ''EBSC'' table identifies sizes that will be handled by scaling up or scaling down other sbit sizes.
+
+The ''EBLC'' table uses the same format as the Apple Apple Advanced Typography (AAT) ''bloc'' table.'.
+	Eblc namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class Base
 DoIt
@@ -50515,41 +50638,6 @@ DoIt
 	Base category: 'PDFtalk Fonts OpenType'.
 	Base comment: 'The Baseline table (BASE) provides information used to align glyphs of different scripts and sizes in a line of text, whether the glyphs are in the same font or in different fonts. To improve text layout, the Baseline table also provides minimum (min) and maximum (max) glyph extent values for each script, language system, or feature in a font.'.
 	Base namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Cblc
-DoIt
-Table
-	subclass: 'Cblc'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Cblc category: 'PDFtalk Fonts OpenType'.
-	Cblc comment: 'CBLC - Color Bitmap Location Table
-
-Two new tables are used to embed color bitmaps in OFF fonts. They are the ''CBLC'' table, backward compatible with the existing EBLC table for embedded bitmap locators, and the ''CBDT'' table for embedded color bitmap data.
-
-The ''CBLC'' table begins with a header containing the table version and number of strikes. An OFF font may have one or more strikes embedded in the ''CBDT'' table.
-'.
-	Cblc namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapLanguageSubtable32
-DoIt
-CmapLanguageSubtable
-	subclass: 'CmapLanguageSubtable32'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapLanguageSubtable32 category: 'PDFtalk Fonts OpenType'.
-	CmapLanguageSubtable32 comment: 'A cmap Subtable with a 32 bit header'.
-	CmapLanguageSubtable32 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class CmapSubtable8
 DoIt
@@ -50570,10 +50658,10 @@ Format 8 is a bit like format 2, in that it provides for mixed-length character 
 (see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
 	CmapSubtable8 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Ltsh
+# Define class Hhea
 DoIt
 Table
-	subclass: 'Ltsh'
+	subclass: 'Hhea'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50581,17 +50669,145 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Ltsh category: 'PDFtalk Fonts OpenType'.
-	Ltsh comment: 'The LTSH table relates to OpenType™ fonts containing TrueType outlines. There are noticeable improvements to fonts on the screen when instructions are carefully applied to the sidebearings. The gain in readability is offset by the necessity for the OS to grid fit the glyphs in order to find the actual advance width for the glyphs (since instructions may be moving the sidebearing points). The TrueType outline format already has two mechanisms to side step the speed issues: the ''hdmx'' table, where precomputed advance widths may be saved for selected ppem sizes, and the ''vdmx'' table, where precomputed vertical advance widths may be saved for selected ppem sizes. The ''LTSH'' table (Linear ThreSHold) is a second, complementary method.
+	Hhea category: 'PDFtalk Fonts OpenType'.
+	Hhea comment: 'This table contains information for horizontal layout. The values in the minRightSidebearing, minLeftSideBearing and xMaxExtent should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations. All reserved areas must be set to 0.
+'.
+	Hhea namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class ScriptRecord
+DoIt
+Value
+	subclass: 'ScriptRecord'
+	instVarNames: #(tag offset)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	ScriptRecord category: 'PDFtalk Fonts OpenType'.
+	ScriptRecord comment: 'The ScriptRecord array stores the records alphabetically by a ScriptTag that identifies the script. Each ScriptRecord consists of a ScriptTag and an offset to a Script table.'.
+	ScriptRecord namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Vdmx
+DoIt
+Table
+	subclass: 'Vdmx'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Vdmx category: 'PDFtalk Fonts OpenType'.
+	Vdmx comment: 'The VDMX table relates to OpenType™ fonts with TrueType outlines. Under Windows, the usWinAscent and usWinDescent values from the ''OS/2'' table will be used to determine the maximum black height for a font at any given size. Windows calls this distance the Font Height. Because TrueType instructions can lead to Font Heights that differ from the actual scaled and rounded values, basing the Font Height strictly on the yMax and yMin can result in “lost pixels.” Windows will clip any pixels that extend above the yMax or below the yMin. In order to avoid grid fitting the entire font to determine the correct height, the VDMX table has been defined.'.
+	Vdmx namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class IndexedSegment
+DoIt
+Segment
+	subclass: 'IndexedSegment'
+	instVarNames: #(glyphIdArrayIndex)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	IndexedSegment category: 'PDFtalk Fonts OpenType'.
+	IndexedSegment comment: 'A segment with a idRangeOffset'.
+	IndexedSegment namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Gdef
+DoIt
+Table
+	subclass: 'Gdef'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Gdef category: 'PDFtalk Fonts OpenType'.
+	Gdef comment: 'The Glyph Definition (GDEF) table contains four types of information in four independent tables:
 
-The LTSH table defines the point at which it is reasonable to assume linearly scaled advance widths on a glyph-by-glyph basis. This table should not be included unless bit 4 of the “flags” field in the ''head'' table is set. The criteria for linear scaling is:
+    * The GlyphClassDef table classifies the different types of glyphs in the font.
+    * The AttachmentList table identifies all attachment points on the glyphs, which streamlines data access and bitmap caching.
+    * The LigatureCaretList table contains positioning data for ligature carets, which the text-processing client uses on screen to select and highlight the individual components of a ligature glyph.
+    * The MarkAttachClassDef table classifies mark glyphs, to help group together marks that are positioned similarly.
+    * The MarkGlyphSetsTable allows the enumeration of an arbitrary number of glyph sets that can be used as an extension of the mark attachment class definition to allow lookups to filter mark glyphs by arbitrary sets of marks.
 
-a. (ppem size is ³50) AND (difference between the rounded linear width and the rounded instructed width £ 2% of the rounded linear width)
+The GSUB and GPOS tables may reference certain GDEF table information. See, for example, the LookupFlag bit enumeration in “OpenType Layout Common Table Formats”.'.
+	Gdef namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Hdmx
+DoIt
+Table
+	subclass: 'Hdmx'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Hdmx category: 'PDFtalk Fonts OpenType'.
+	Hdmx comment: 'The hdmx table relates to OpenType™ fonts with TrueType outlines. The Horizontal Device Metrics table stores integer advance widths scaled to particular pixel sizes. This allows the font manager to build integer width tables without calling the scaler for each glyph. Typically this table contains only selected screen sizes. This table is sorted by pixel size. The checksum for this table applies to both subtables listed.
 
-or b. Linear width == Instructed width
+Note that for non-square pixel grids, the character width (in pixels) will be used to determine which device record to use. For example, a 12 point character on a device with a resolution of 72x96 would be 12 pixels high and 16 pixels wide. The hdmx device record for 16 pixel characters would be used.
 
-The LTSH table records the ppem for each glyph at which the scaling becomes linear again, despite instructions effecting the advance width. It is a requirement that, at and above the recorded threshold size, the glyph remain linear in its scaling (i.e., not legal to set threshold at 55 ppem if glyph becomes nonlinear again at 90 ppem).'.
-	Ltsh namespacePath: #(#PDFtalk #Fonts #OpenType).
+If bit 4 of the flag field in the ''head'' table is not set, then it is assumed that the font scales linearly; in this case an ''hdmx'' table is not necessary and should not be built. If bit 4 of the flag field is set, then one or more glyphs in the font are assumed to scale nonlinearly. In this case, performance can be improved by including the ''hdmx'' table with one or more important DeviceRecord''s for important sizes. Please see the chapter “Recommendations for OpenType Fonts” for more detail.'.
+	Hdmx namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class CmapSubtable6
+DoIt
+CmapLanguageSubtable
+	subclass: 'CmapSubtable6'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	CmapSubtable6 category: 'PDFtalk Fonts OpenType'.
+	CmapSubtable6 comment: 'Format 6: Trimmed table mapping
+
+Type	Name	Description
+USHORT	format	Format number is set to 6.
+USHORT	length	This is the length in bytes of the subtable.
+USHORT	language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
+USHORT	firstCode	First character code of subrange.
+USHORT	entryCount	Number of character codes in subrange.
+USHORT	glyphIdArray [entryCount]	Array of glyph index values for character codes in the range.
+
+The firstCode and entryCount values specify a subrange (beginning at firstCode,length = entryCount) within the range of possible character codes. Codes outside of this subrange are mapped to glyph index 0. The offset of the code (from the first code) within this subrange is used as index to the glyphIdArray, which provides the glyph index value.
+
+(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
+	CmapSubtable6 namespacePath: #(#PDFtalk #Fonts #OpenType).
+%
+# Define class Cpal
+DoIt
+Table
+	subclass: 'Cpal'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	Cpal category: 'PDFtalk Fonts OpenType'.
+	Cpal comment: 'CPAL - Color Palette Table
+
+The palette table is a set of one or more palettes, each containing a predefined number of RGBA values arranged consecutively by palette index value. It may also contain name table IDs describing the palettes and their entries.
+
+The first palette, number 0, is the default palette. The palettes are referenced by colorRecordIndices, this is the index into the array of color records where the palette starts. Multiple colorRecordIndices may refer to the same palette, therefore the number of actual palettes in the table may be less than the numPalettes entry. A minimum of one palette, the default, must be provided in the table if the table is present. Each palette must have the same number of entries as defined by numPaletteEntries, which must be at least one entry. Any empty CPAL table, with no palettes and no color records is not permissible. It is permissible for palettes to overlap and share data; therefore, the total number of color records in the CPAL table may be less than the number of palette entries multiplied by the number of palettes.
+
+For each of the palettes, the first color record is index zero. There can be no more than numPaletteEntries of RGBA values.'.
+	Cpal namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 # Define class CmapSubtable13
 DoIt
@@ -50625,10 +50841,10 @@ ULONG		glyphID			Glyph index to be used for all the characters in the group''s r
 (see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
 	CmapSubtable13 namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Gdef
+# Define class Ebdt
 DoIt
 Table
-	subclass: 'Gdef'
+	subclass: 'Ebdt'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50636,65 +50852,37 @@ Table
 	inDictionary: OpenType
 %
 DoIt
-	Gdef category: 'PDFtalk Fonts OpenType'.
-	Gdef comment: 'The Glyph Definition (GDEF) table contains four types of information in four independent tables:
+	Ebdt category: 'PDFtalk Fonts OpenType'.
+	Ebdt comment: 'Three tables are used to embed bitmaps in OpenType™ fonts. They are the ''EBLC'' table for embedded bitmap locators, the ''EBDT'' table for embedded bitmap data, and the ''EBSC'' table for embedded bitmap scaling information.
 
-    * The GlyphClassDef table classifies the different types of glyphs in the font.
-    * The AttachmentList table identifies all attachment points on the glyphs, which streamlines data access and bitmap caching.
-    * The LigatureCaretList table contains positioning data for ligature carets, which the text-processing client uses on screen to select and highlight the individual components of a ligature glyph.
-    * The MarkAttachClassDef table classifies mark glyphs, to help group together marks that are positioned similarly.
-    * The MarkGlyphSetsTable allows the enumeration of an arbitrary number of glyph sets that can be used as an extension of the mark attachment class definition to allow lookups to filter mark glyphs by arbitrary sets of marks.
+OpenType embedded bitmaps are also called ''sbits'' (for “scaler bitmaps”). A set of bitmaps for a face at a given size is called a strike.
 
-The GSUB and GPOS tables may reference certain GDEF table information. See, for example, the LookupFlag bit enumeration in “OpenType Layout Common Table Formats”.'.
-	Gdef namespacePath: #(#PDFtalk #Fonts #OpenType).
+The ''EBLC'' table identifies the sizes and glyph ranges of the sbits, and keeps offsets to glyph bitmap data in indexSubTables. The ''EBDT'' table then stores the glyph bitmap data, in a number of different possible formats. Glyph metrics information may be stored in either the ''EBLC'' or ''EBDT'' table, depending upon the indexSubTable and glyph bitmap data formats. The ''EBSC'' table identifies sizes that will be handled by scaling up or scaling down other sbit sizes.
+
+The ''EBDT'' table is a super set of Apple''s Apple Advanced Typography (AAT) ''bdat'' table.'.
+	Ebdt namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class CmapSubtable12
+# Define class FontHeader
 DoIt
-CmapLanguageSubtable32
-	subclass: 'CmapSubtable12'
-	instVarNames: #()
+Value
+	subclass: 'FontHeader'
+	instVarNames: #(version fontRevision checkSumAdjustment flags unitsPerEm created modified glyphBBox macStyle lowestRecPPEM fontDirectionHint indexToLocFormat glyphDataFormat)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: OpenType
 %
 DoIt
-	CmapSubtable12 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable12 comment: 'Format 12: Segmented coverage
+	FontHeader category: 'PDFtalk Fonts OpenType'.
+	FontHeader comment: 'head - Font Header
 
-This is the Microsoft standard character to glyph index mapping table for fonts supporting the UCS-4 characters in the Unicode Surrogates Area (U+D800 - U+DFFF). It is a bit like format 4, in that it defines segments for sparse representation in 4-byte character space. Here''s the subtable format:
-
-Type		Name		Description
-USHORT	format		Subtable format; set to 12.
-USHORT	reserved	Reserved; set to 0
-ULONG		length		Byte length of this subtable (including the header)
-ULONG		language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
-ULONG		nGroups	Number of groupings which follow
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable12 namespacePath: #(#PDFtalk #Fonts #OpenType).
+This table gives global information about the font. The bounding box values should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations.'.
+	FontHeader namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
-# Define class Cff
+# Define class Loca
 DoIt
 Table
-	subclass: 'Cff'
-	instVarNames: #(fontSet)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Cff category: 'PDFtalk Fonts OpenType'.
-	Cff comment: 'This table contains a compact representation of a PostScript Type 1, or CIDFont and is structured according to Adobe Technical Note #5176: “The Compact Font Format Specification,” and Adobe Technical Note #5177: “Type 2 Charstring Format.”
-
-Existing TrueType fonts use a glyph index to specify and access glyphs within a font, e.g. to index the loca table and thereby access glyph data in the glyf table. This concept is retained in OpenType™ PostScript fonts except that glyph data is accessed through the CharStrings INDEX of the CFF table.'.
-	Cff namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable10
-DoIt
-CmapLanguageSubtable32
-	subclass: 'CmapSubtable10'
+	subclass: 'Loca'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -50702,138 +50890,13 @@ CmapLanguageSubtable32
 	inDictionary: OpenType
 %
 DoIt
-	CmapSubtable10 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable10 comment: 'Format 10: Trimmed array
+	Loca category: 'PDFtalk Fonts OpenType'.
+	Loca comment: 'The indexToLoc table stores the offsets to the locations of the glyphs in the font, relative to the beginning of the glyphData table. In order to compute the length of the last glyph element, there is an extra entry after the last valid index.
 
-Format 10 is a bit like format 6, in that it defines a trimmed array for a tight range of 32-bit character codes:
-Type	Name	Description
-USHORT	format	Subtable format; set to 10.
-USHORT	reserved	Reserved; set to 0
-ULONG	length	Byte length of this subtable (including the header)
-ULONG	language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
-ULONG	startCharCode	First character code covered
-ULONG	numChars	Number of character codes covered
-USHORT	glyphs[]	Array of glyph indices for the character codes covered
+By definition, index zero points to the “missing character,” which is the character that appears if a character is not found in the font. The missing character is commonly represented by a blank box or a space. If the font does not contain an outline for the missing character, then the first and second offsets should have the same value. This also applies to any other characters without an outline, such as the space character. If a glyph has no outline, then loca[n] = loca [n+1]. In the particular case of the last glyph(s), loca[n] will be equal the length of the glyph data (''glyf'') table. The offsets must be in ascending order with loca[n] <= loca[n+1].
 
-This format is not supported by Microsoft.
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable10 namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class Hhea
-DoIt
-Table
-	subclass: 'Hhea'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	Hhea category: 'PDFtalk Fonts OpenType'.
-	Hhea comment: 'This table contains information for horizontal layout. The values in the minRightSidebearing, minLeftSideBearing and xMaxExtent should be computed using only glyphs that have contours. Glyphs with no contours should be ignored for the purposes of these calculations. All reserved areas must be set to 0.
-'.
-	Hhea namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable2
-DoIt
-CmapLanguageSubtable
-	subclass: 'CmapSubtable2'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapSubtable2 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable2 comment: 'Format 2: High-byte mapping through table
-
-This subtable is useful for the national character code standards used for Japanese, Chinese, and Korean characters. These code standards use a mixed 8/16-bit encoding, in which certain byte values signal the first byte of a 2-byte character (but these values are also legal as the second byte of a 2-byte character).
-
-In addition, even for the 2-byte characters, the mapping of character codes to glyph index values depends heavily on the first byte. Consequently, the table begins with an array that maps the first byte to a 4-word subHeader. For 2-byte character codes, the subHeader is used to map the second byte''s value through a subArray, as described below. When processing mixed 8/16-bit text, subHeader 0 is special: it is used for single-byte character codes. When subHeader zero is used, a second byte is not needed; the single byte value is mapped through the subArray.
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable2 namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable6
-DoIt
-CmapLanguageSubtable
-	subclass: 'CmapSubtable6'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapSubtable6 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable6 comment: 'Format 6: Trimmed table mapping
-
-Type	Name	Description
-USHORT	format	Format number is set to 6.
-USHORT	length	This is the length in bytes of the subtable.
-USHORT	language	Please see “Note on the language field in ''cmap'' subtables“ in this document.
-USHORT	firstCode	First character code of subrange.
-USHORT	entryCount	Number of character codes in subrange.
-USHORT	glyphIdArray [entryCount]	Array of glyph index values for character codes in the range.
-
-The firstCode and entryCount values specify a subrange (beginning at firstCode,length = entryCount) within the range of possible character codes. Codes outside of this subrange are mapped to glyph index 0. The offset of the code (from the first code) within this subrange is used as index to the glyphIdArray, which provides the glyph index value.
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable6 namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable0
-DoIt
-CmapLanguageSubtable
-	subclass: 'CmapSubtable0'
-	instVarNames: #(glyphIdArray)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapSubtable0 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable0 comment: 'Format 0: Byte encoding table
-
-This is the Apple standard character to glyph index mapping table.
-Type 		Name 				Description
-USHORT 	format 				Format number is set to 0.
-USHORT 	length 				This is the length in bytes of the subtable.
-USHORT 	language 			Please see “Note on the language field in ''cmap'' subtables“ in this document.
-BYTE 		glyphIdArray[256] 	An array that maps character codes to glyph index values.
-
-This is a simple 1 to 1 mapping of character codes to glyph indices. The glyph set is limited to 256. Note that if this format is used to index into a larger glyph set, only the first 256 glyphs will be accessible.
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable0 namespacePath: #(#PDFtalk #Fonts #OpenType).
-%
-# Define class CmapSubtable4
-DoIt
-CmapLanguageSubtable
-	subclass: 'CmapSubtable4'
-	instVarNames: #(segments glyphIdArray indexToCode)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	CmapSubtable4 category: 'PDFtalk Fonts OpenType'.
-	CmapSubtable4 comment: 'Format 4: Segment mapping to delta values
-
-This is the Microsoft standard character to glyph index mapping table for fonts that support Unicode ranges other than the range [U+D800 - U+DFFF] (defined as Surrogates Area, in Unicode v 3.0) which is used for UCS-4 characters. If a font supports this character range (i.e. in turn supports the UCS-4 characters) a subtable in this format with a platform specific encoding ID 1 is yet needed, in addition to a subtable in format 12 with a platform specific encoding ID 10. Please see details on format 12 below, for fonts that support UCS-4 characters on Windows.
-
-This format is used when the character codes for the characters represented by a font fall into several contiguous ranges, possibly with holes in some or all of the ranges (that is, some of the codes in a range may not have a representation in the font). The format-dependent data is divided into three parts, which must occur in the following order:
-
-   1. A four-word header gives parameters for an optimized search of the segment list;
-   2. Four parallel arrays describe the segments (one segment for each contiguous range of codes);
-   3. A variable-length array of glyph IDs (unsigned words).
-
-(see http://www.microsoft.com/typography/otspec/cmap.htm for specifications)'.
-	CmapSubtable4 namespacePath: #(#PDFtalk #Fonts #OpenType).
+Most routines will look at the ''maxp'' table to determine the number of glyphs in the font, but the value in the ''loca'' table must agree.'.
+	Loca namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -50901,8 +50964,7 @@ fromOpenTypeLongDateTime: secondsFromNewyear1904
 	"Answer a new Timestamp from the number of seconds since 12:00 am, January 1, 1904.
 	Used in the OpenType file format"
 
-	^self secondsUTC: secondsFromNewyear1904 + self newyear1904AsSeconds
-		offset: Duration zero
+	^self secondsUTC: secondsFromNewyear1904 + self newyear1904AsSeconds offset: Duration zero
 %
 classmethod: Timestamp
 newyear1904AsSeconds
@@ -51147,12 +51209,13 @@ subclassFor: formatInteger
 	"assumes that all subclasses are defined in namespace #{PDFtalk.Fonts.OpenType}"
 
 	| classOrganizer |
-	classOrganizer := ClassOrganizer _newWithRoot: CmapSubtable
-				symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType)).
-	^(classOrganizer allSubclassesOf: CmapSubtable) detect: 
-			[:subclass |
-			(classOrganizer subclassesOf: subclass) isEmpty
-				and: [subclass formatNumber = formatInteger]]
+	classOrganizer := ClassOrganizer
+		_newWithRoot: CmapSubtable
+		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType))
+		env: 0.
+	^(classOrganizer allSubclassesOf: CmapSubtable) detect: [:subclass |
+		(classOrganizer subclassesOf: subclass) isEmpty and: [
+		subclass formatNumber = formatInteger]]
 %
 category: 'instance creation'
 classmethod: CmapSubtable
@@ -52026,7 +52089,7 @@ tabularGlyphsFor: aString
 %
 method: Font
 tabularSuffixes
-	^#('tab' 'lt' 'fitted' 'tf')
+	^#('tab' 'lt' 'fitted' 'tf' 'lftab')
 %
 method: Font
 tabularVariantOf: aGlyph
@@ -52473,7 +52536,7 @@ classmethod: Glyph
 localSpecification
 	<constant: #id class: #(#Integer)>
 	<constant: #name class: #(#Symbol)>
-	<constant: #charString class: #(#Smalltalk #Charstring)>
+	<constant: #charString class: #(#PDFtalk #Fonts #CFF #Charstring)>
 	<constant: #code class: #(#Integer)>
 	<constant: #hMetric class: #(#HorMetric)>
 %
@@ -53215,16 +53278,17 @@ method: NameRecord
 string
 	"<String>"
 
-	(self platformID = 3 and: [self encodingID = 1])
-		ifTrue: 
-			[| rst wst |
+	(self platformID = 3 and: [
+	self encodingID = 1]) ifTrue: [
+			| rst wst |
 			rst := ByteReadStream bigEndianOn: self bytes.
 			wst := WriteStream on: (Unicode16 new: rst size // 2).
-			[rst atEnd]
-				whileFalse: [wst nextPut: (Character codePoint: rst nextUnsignedShort)].
+			[rst atEnd] whileFalse: [
+				wst nextPut: (Character codePoint: rst nextUnsignedShort)].
 			^wst contents].
-	(self platformID = 1 and: [self encodingID = 0])
-		ifTrue: [^ISOLatin withAll: self bytes].
+	(self platformID = 1 and: [
+	self encodingID = 0]) ifTrue: [
+			^ISOLatin withAll: self bytes].
 	^String withAll: self bytes
 %
 category: 'initialize-release'
@@ -53788,11 +53852,12 @@ subclassFor: tagString
 	"assumes that all subclasses are defined in namespace ((PDFtalk at: #Fonts) at: #OpenType)"
 
 	| classOrganizer |
-	classOrganizer := ClassOrganizer _newWithRoot: Table
-				symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType)).
-	^(classOrganizer subclassesOf: Table)
-		detect: [:subclass | subclass tag = tagString]
-		ifNone: [self]
+	classOrganizer := ClassOrganizer
+		_newWithRoot: Table
+		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType))
+		env: 0.
+	^(classOrganizer subclassesOf: Table) detect: [:subclass | subclass tag = tagString] ifNone: [
+		self]
 %
 classmethod: Table
 tag: tagString file: aOpenTypeFile contents: contentsByteArray
@@ -53907,7 +53972,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Fonts'.
-	dict at: #storeVersion put: '2.0.0.12'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components := (components at:  #'PDFtalk Fonts') at: #codeComponents.
@@ -53916,10 +53981,10 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class CIDSystemInfo
+# Define class FontDescriptor
 DoIt
-PDFDictionary
-	subclass: 'CIDSystemInfo'
+TypedDictionary
+	subclass: 'FontDescriptor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -53927,19 +53992,18 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	CIDSystemInfo category: 'PDFtalk Fonts'.
-	CIDSystemInfo comment: 'PDF CIDSystemInfo Dictionaries as defined in PDF 32000_2008.pdf, clause 9.7.3, pp. 268.
+	FontDescriptor category: 'PDFtalk Fonts'.
+	FontDescriptor comment: 'PDF FontDescriptor as defined in PDF 32000_2008.pdf pp. 281.
 
-CIDFont and CMap dictionaries shall contain a CIDSystemInfo entry specifying the character collection assumed by the CIDFont associated with the CMap—that is, the interpretation of the CID numbers used by the CIDFont.
-A character collection shall be uniquely identified by the Registry, Ordering, and Supplemententries in the CIDSystemInfo dictionary.
-In order to be compatible, the Registry and Ordering values must be the same.
+A font descriptor specifies metrics and other attributes of a simple font or a CIDFont as a whole, as distinct from the metrics of individual glyphs.
+These font metrics provide information that enables a conforming reader to synthesize a substitute font or select a similar font when the font program is unavailable.
+The font descriptor may also be used to embed the font program in the PDF file.
 
-The CIDSystemInfo entry in a CIDFont is a dictionary that shall specify the CIDFont’s character collection.
-The CIDFont need not contain glyph descriptions for all the CIDs in a collection; it may contain a subset.
-The CIDSystemInfo entry in a CMap file shall be either a single dictionary or an array of dictionaries, depending on whether it associates codes with a single character collection or with multiple character collections.
+Font descriptors shall not be used with Type 0 fonts. Beginning with PDF 1.5, font descriptors may be used with Type 3 fonts.
 
-For proper behaviour, the CIDSystemInfo entry of a CMap shall be compatible with that of the CIDFont or CIDFonts with which it is used.'.
-	CIDSystemInfo namespacePath: #(#PDFtalk).
+A font descriptor is a dictionary whose entries specify various font attributes. 
+All integer values shall be units in glyph space.'.
+	FontDescriptor namespacePath: #(#PDFtalk).
 %
 # Define class Font
 DoIt
@@ -53964,6 +54028,42 @@ Type 0 fonts are called composite fonts; other types of fonts are called simple 
 In addition to fonts, PDF supports two classes of font-related objects, called CIDFonts and CMaps. 
 CIDFonts, like fonts, are collections of glyphs; however, a CIDFont shall not be used directly but only as a component of a Type 0 font.'.
 	Font namespacePath: #(#PDFtalk).
+%
+# Define class Type0
+DoIt
+Font
+	subclass: 'Type0'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Type0 category: 'PDFtalk Fonts'.
+	Type0 comment: 'PDF Composite Fonts as defined in PDF 32000_2008.pdf, clause 9.7, pp. 267.
+
+A composite font, also called a Type 0 font, is one whose glyphs are obtained from a fontlike object called a CIDFont. 
+A composite font shall be represented by a font dictionary whose Subtype value is Type0. 
+The Type 0 font is known as the root font, and its associated CIDFont is called its descendant.
+
+NOTE 1		Composite fonts in PDF are analogous to composite fonts in PostScript but with some limitations. 
+			In particular, PDF requires that the character encoding be defined by a CMap, which is only one of several encoding methods available in PostScript. 
+			Also, PostScript allows a Type 0 font to have multiple descendants, which might also be Type 0 fonts. 
+			PDF supports only a single descendant, which shall be a CIDFont.
+
+When the current font is composite, the text-showing operators shall behave differently than with simple fonts. 
+For simple fonts, each byte of a string to be shown selects one glyph, whereas for composite fonts, 
+a sequence of one or more bytes are decoded to select a glyph from the descendant CIDFont.
+
+NOTE 2		This facility supports the use of very large character sets, such as those for the Chinese, Japanese, and Korean languages. 
+			It also simplifies the organization of fonts that have complex encoding requirements.
+
+This sub-clause first introduces the architecture of CID-keyed fonts, which are the only kind of composite font supported in PDF. 
+Then it describes the CIDFont and CMap dictionaries, which are the PDF objects that represent the correspondingly named components of a CID-keyed font. 
+Finally, it describes the Type 0 font dictionary, which combines a CIDFont and a CMap to produce a font 
+whose glyphs may be accessed by means of variable-length character codes in a string to be shown.'.
+	Type0 namespacePath: #(#PDFtalk).
 %
 # Define class Type1
 DoIt
@@ -54034,24 +54134,39 @@ NOTE 4		For CJK (Chinese, Japanese, and Korean) fonts, the host font system’s 
 			each of which requires multiple characters to represent in a PDF name object (using the # notation to quote special characters as needed).'.
 	TrueType namespacePath: #(#PDFtalk).
 %
-# Define class StandardFont
+# Define class MMType1
 DoIt
 Type1
-	subclass: 'StandardFont'
-	instVarNames: #(standardWidths)
+	subclass: 'MMType1'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	StandardFont category: 'PDFtalk Fonts'.
-	StandardFont comment: 'PDF Standard Type 1 Fonts as defined in PDF 32000_2008.pdf, clause 9.6.2.2, pp. 256.
+	MMType1 category: 'PDFtalk Fonts'.
+	MMType1 comment: 'PDF Multiple Master Fonts as defined in PDF 32000_2008.pdf, clause 9.6.2.3, pp. 256.
 
-The PostScript names of 14 Type 1 fonts, known as the standard 14 fonts, are as follows: Times-Roman, Helvetica, Courier, Symbol, Times-Bold, Helvetica-Bold, Courier-Bold, ZapfDingbats, Times-Italic, Helvetica-Oblique, Courier-Oblique, Times-BoldItalic, Helvetica-BoldOblique, Courier-BoldOblique
+The multiple master font format is an extension of the Type 1 font format that allows the generation of a wide variety of typeface styles from a single font program. 
+This is accomplished through the presence of various design dimensions in the font.
 
-These fonts, or their font metrics and suitable substitution fonts, shall be available to the conforming reader'.
-	StandardFont namespacePath: #(#PDFtalk).
+EXAMPLE 1	Examples of design dimensions are weight (light to extra-bold) and width (condensed to expanded).
+
+Coordinates along these design dimensions (such as the degree of boldness) are specified by numbers. 
+A particular choice of numbers selects an instance of the multiple master font. 
+PDFs can contain multiple master instances.
+
+NOTE		Adobe Technical Note #5015, Type 1 Font Format Supplement, describes multiple master fonts in detail.
+
+The font dictionary for a multiple master font instance may contain the same entries as a Type 1 font dictionary, with these differences:
+	•	The value of Subtype shall be MMType1.
+	•	If the PostScript name of the instance contains SPACEs (20h), the SPACEs shall be replaced by LOW LINEs (underscores) (5Fh) in the value of BaseFont. 
+		For instance, as illustrated in this example, the name “MinionMM 366 465 11 ” (which ends with a SPACE character) becomes /MinionMM_366_465_11_.
+
+If the font program for a multiple master font instance is embedded in the PDF file, it shall be an ordinary Type 1 font program, not a multiple master font program. 
+This font program is called a snapshot of the multiple master font instance that incorporates the chosen values of the design coordinates.'.
+	MMType1 namespacePath: #(#PDFtalk).
 %
 # Define class CIDFont
 DoIt
@@ -54082,40 +54197,6 @@ It does not have an Encoding entry, it may not be listed in the Font subdictiona
 It shall be used only as a descendant of a Type 0 font. 
 The CMap in the Type 0 font shall be what defines the encoding that maps character codes to CIDs in the CIDFont.'.
 	CIDFont namespacePath: #(#PDFtalk).
-%
-# Define class CIDFontType0
-DoIt
-CIDFont
-	subclass: 'CIDFontType0'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CIDFontType0 category: 'PDFtalk Fonts'.
-	CIDFontType0 comment: 'PDF Glyph Selection in CIDFonts as defined in PDF 32000_2008.pdf, clause 9.7.4.2, pp. 270.
-
-Type 0 and Type 2 CIDFonts handle the mapping from CIDs to glyph descriptions in somewhat different ways.
-
-For Type 0, the CIDFont program contains glyph descriptions that are identified by CIDs. 
-The CIDFont program identifies the character collection by a CIDSystemInfo dictionary, which should be copied into the PDF CIDFont dictionary. 
-CIDs shall be interpreted uniformly in all CIDFont programs supporting a given character collection, 
-whether the program is embedded in the PDF file or obtained from an external source.
-
-When the CIDFont contains an embedded font program that is represented in the Compact Font Format (CFF), 
-the FontFile3 entry in the font descriptor may be CIDFontType0C or OpenType. 
-There are two cases, depending on the contents of the font program:
-	•	The “CFF” font program has a Top DICT that uses CIDFont operators: 
-		The CIDs shall be used to determine the GID value for the glyph procedure using the charset table in the CFF program. 
-		The GID value shall then be used to look up the glyph procedure using the CharStrings INDEX table.
-
-NOTE	Although in many fonts the CID value and GID value are the same, the CID and GID values may differ.
-
-	•	The “CFF” font program has a Top DICT that does not use CIDFont operators: 
-		The CIDs shall be used directly as GID values, and the glyph procedure shall be retrieved using the CharStrings INDEX.'.
-	CIDFontType0 namespacePath: #(#PDFtalk).
 %
 # Define class CIDFontType2
 DoIt
@@ -54156,10 +54237,10 @@ Even though the CIDs are not used to select glyphs in a Type 2 CIDFont, they sha
 Every CIDFont shall contain a glyph description for CID 0, which is analogous to the .notdef character name in simple fonts.'.
 	CIDFontType2 namespacePath: #(#PDFtalk).
 %
-# Define class Type0
+# Define class Encoding
 DoIt
-Font
-	subclass: 'Type0'
+TypedDictionary
+	subclass: 'Encoding'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -54167,35 +54248,16 @@ Font
 	inDictionary: PDFtalk
 %
 DoIt
-	Type0 category: 'PDFtalk Fonts'.
-	Type0 comment: 'PDF Composite Fonts as defined in PDF 32000_2008.pdf, clause 9.7, pp. 267.
+	Encoding category: 'PDFtalk Fonts'.
+	Encoding comment: 'PDF Character Encoding as defined in PDF 32000_2008.pdf, section 5.5.5, pp. 425.
 
-A composite font, also called a Type 0 font, is one whose glyphs are obtained from a fontlike object called a CIDFont. 
-A composite font shall be represented by a font dictionary whose Subtype value is Type0. 
-The Type 0 font is known as the root font, and its associated CIDFont is called its descendant.
-
-NOTE 1		Composite fonts in PDF are analogous to composite fonts in PostScript but with some limitations. 
-			In particular, PDF requires that the character encoding be defined by a CMap, which is only one of several encoding methods available in PostScript. 
-			Also, PostScript allows a Type 0 font to have multiple descendants, which might also be Type 0 fonts. 
-			PDF supports only a single descendant, which shall be a CIDFont.
-
-When the current font is composite, the text-showing operators shall behave differently than with simple fonts. 
-For simple fonts, each byte of a string to be shown selects one glyph, whereas for composite fonts, 
-a sequence of one or more bytes are decoded to select a glyph from the descendant CIDFont.
-
-NOTE 2		This facility supports the use of very large character sets, such as those for the Chinese, Japanese, and Korean languages. 
-			It also simplifies the organization of fonts that have complex encoding requirements.
-
-This sub-clause first introduces the architecture of CID-keyed fonts, which are the only kind of composite font supported in PDF. 
-Then it describes the CIDFont and CMap dictionaries, which are the PDF objects that represent the correspondingly named components of a CID-keyed font. 
-Finally, it describes the Type 0 font dictionary, which combines a CIDFont and a CMap to produce a font 
-whose glyphs may be accessed by means of variable-length character codes in a string to be shown.'.
-	Type0 namespacePath: #(#PDFtalk).
+A font program’s built-in encoding can be overridden or altered by including an Encoding entry in the PDF font dictionary. The possible encoding modifications depend on the font type, as discussed below. The value of the Encoding entry is either a named encoding (the name of one of the predefined encodings MacRomanEncoding, MacExpertEncoding, or WinAnsiEncoding) or an encoding dictionary.'.
+	Encoding namespacePath: #(#PDFtalk).
 %
-# Define class MMType1
+# Define class CIDFontType0
 DoIt
-Type1
-	subclass: 'MMType1'
+CIDFont
+	subclass: 'CIDFontType0'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -54203,28 +54265,53 @@ Type1
 	inDictionary: PDFtalk
 %
 DoIt
-	MMType1 category: 'PDFtalk Fonts'.
-	MMType1 comment: 'PDF Multiple Master Fonts as defined in PDF 32000_2008.pdf, clause 9.6.2.3, pp. 256.
+	CIDFontType0 category: 'PDFtalk Fonts'.
+	CIDFontType0 comment: 'PDF Glyph Selection in CIDFonts as defined in PDF 32000_2008.pdf, clause 9.7.4.2, pp. 270.
 
-The multiple master font format is an extension of the Type 1 font format that allows the generation of a wide variety of typeface styles from a single font program. 
-This is accomplished through the presence of various design dimensions in the font.
+Type 0 and Type 2 CIDFonts handle the mapping from CIDs to glyph descriptions in somewhat different ways.
 
-EXAMPLE 1	Examples of design dimensions are weight (light to extra-bold) and width (condensed to expanded).
+For Type 0, the CIDFont program contains glyph descriptions that are identified by CIDs. 
+The CIDFont program identifies the character collection by a CIDSystemInfo dictionary, which should be copied into the PDF CIDFont dictionary. 
+CIDs shall be interpreted uniformly in all CIDFont programs supporting a given character collection, 
+whether the program is embedded in the PDF file or obtained from an external source.
 
-Coordinates along these design dimensions (such as the degree of boldness) are specified by numbers. 
-A particular choice of numbers selects an instance of the multiple master font. 
-PDFs can contain multiple master instances.
+When the CIDFont contains an embedded font program that is represented in the Compact Font Format (CFF), 
+the FontFile3 entry in the font descriptor may be CIDFontType0C or OpenType. 
+There are two cases, depending on the contents of the font program:
+	•	The “CFF” font program has a Top DICT that uses CIDFont operators: 
+		The CIDs shall be used to determine the GID value for the glyph procedure using the charset table in the CFF program. 
+		The GID value shall then be used to look up the glyph procedure using the CharStrings INDEX table.
 
-NOTE		Adobe Technical Note #5015, Type 1 Font Format Supplement, describes multiple master fonts in detail.
+NOTE	Although in many fonts the CID value and GID value are the same, the CID and GID values may differ.
 
-The font dictionary for a multiple master font instance may contain the same entries as a Type 1 font dictionary, with these differences:
-	•	The value of Subtype shall be MMType1.
-	•	If the PostScript name of the instance contains SPACEs (20h), the SPACEs shall be replaced by LOW LINEs (underscores) (5Fh) in the value of BaseFont. 
-		For instance, as illustrated in this example, the name “MinionMM 366 465 11 ” (which ends with a SPACE character) becomes /MinionMM_366_465_11_.
+	•	The “CFF” font program has a Top DICT that does not use CIDFont operators: 
+		The CIDs shall be used directly as GID values, and the glyph procedure shall be retrieved using the CharStrings INDEX.'.
+	CIDFontType0 namespacePath: #(#PDFtalk).
+%
+# Define class CIDSystemInfo
+DoIt
+PDFDictionary
+	subclass: 'CIDSystemInfo'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CIDSystemInfo category: 'PDFtalk Fonts'.
+	CIDSystemInfo comment: 'PDF CIDSystemInfo Dictionaries as defined in PDF 32000_2008.pdf, clause 9.7.3, pp. 268.
 
-If the font program for a multiple master font instance is embedded in the PDF file, it shall be an ordinary Type 1 font program, not a multiple master font program. 
-This font program is called a snapshot of the multiple master font instance that incorporates the chosen values of the design coordinates.'.
-	MMType1 namespacePath: #(#PDFtalk).
+CIDFont and CMap dictionaries shall contain a CIDSystemInfo entry specifying the character collection assumed by the CIDFont associated with the CMap—that is, the interpretation of the CID numbers used by the CIDFont.
+A character collection shall be uniquely identified by the Registry, Ordering, and Supplemententries in the CIDSystemInfo dictionary.
+In order to be compatible, the Registry and Ordering values must be the same.
+
+The CIDSystemInfo entry in a CIDFont is a dictionary that shall specify the CIDFont’s character collection.
+The CIDFont need not contain glyph descriptions for all the CIDs in a collection; it may contain a subset.
+The CIDSystemInfo entry in a CMap file shall be either a single dictionary or an array of dictionaries, depending on whether it associates codes with a single character collection or with multiple character collections.
+
+For proper behaviour, the CIDSystemInfo entry of a CMap shall be compatible with that of the CIDFont or CIDFonts with which it is used.'.
+	CIDSystemInfo namespacePath: #(#PDFtalk).
 %
 # Define class Type3
 DoIt
@@ -54251,46 +54338,24 @@ NOTE 1		Type 3 fonts are more flexible than Type 1 fonts because the glyph descr
 			However, Type 3 fonts have no hinting mechanism for improving output at small sizes or low resolutions.'.
 	Type3 namespacePath: #(#PDFtalk).
 %
-# Define class FontDescriptor
+# Define class StandardFont
 DoIt
-TypedDictionary
-	subclass: 'FontDescriptor'
-	instVarNames: #()
+Type1
+	subclass: 'StandardFont'
+	instVarNames: #(standardWidths)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	FontDescriptor category: 'PDFtalk Fonts'.
-	FontDescriptor comment: 'PDF FontDescriptor as defined in PDF 32000_2008.pdf pp. 281.
+	StandardFont category: 'PDFtalk Fonts'.
+	StandardFont comment: 'PDF Standard Type 1 Fonts as defined in PDF 32000_2008.pdf, clause 9.6.2.2, pp. 256.
 
-A font descriptor specifies metrics and other attributes of a simple font or a CIDFont as a whole, as distinct from the metrics of individual glyphs.
-These font metrics provide information that enables a conforming reader to synthesize a substitute font or select a similar font when the font program is unavailable.
-The font descriptor may also be used to embed the font program in the PDF file.
+The PostScript names of 14 Type 1 fonts, known as the standard 14 fonts, are as follows: Times-Roman, Helvetica, Courier, Symbol, Times-Bold, Helvetica-Bold, Courier-Bold, ZapfDingbats, Times-Italic, Helvetica-Oblique, Courier-Oblique, Times-BoldItalic, Helvetica-BoldOblique, Courier-BoldOblique
 
-Font descriptors shall not be used with Type 0 fonts. Beginning with PDF 1.5, font descriptors may be used with Type 3 fonts.
-
-A font descriptor is a dictionary whose entries specify various font attributes. 
-All integer values shall be units in glyph space.'.
-	FontDescriptor namespacePath: #(#PDFtalk).
-%
-# Define class Encoding
-DoIt
-TypedDictionary
-	subclass: 'Encoding'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Encoding category: 'PDFtalk Fonts'.
-	Encoding comment: 'PDF Character Encoding as defined in PDF 32000_2008.pdf, section 5.5.5, pp. 425.
-
-A font program’s built-in encoding can be overridden or altered by including an Encoding entry in the PDF font dictionary. The possible encoding modifications depend on the font type, as discussed below. The value of the Encoding entry is either a named encoding (the name of one of the predefined encodings MacRomanEncoding, MacExpertEncoding, or WinAnsiEncoding) or an encoding dictionary.'.
-	Encoding namespacePath: #(#PDFtalk).
+These fonts, or their font metrics and suitable substitution fonts, shall be available to the conforming reader'.
+	StandardFont namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -54482,7 +54547,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #CIDSystemInfo
-		supertype: #Object
+		supertype: #Dictionary
 		section: '9.7.3'
 		documentation: 'CIDFont and CMap dictionaries shall contain a CIDSystemInfo entry specifying the character collection assumed by the CIDFont associated with the CMap—that is, the interpretation of the CID numbers used by the CIDFont.
 A character collection shall be uniquely identified by the Registry, Ordering, and Supplemententries in the CIDSystemInfo dictionary.
@@ -54523,7 +54588,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Encoding
-		supertype: #Object
+		supertype: #Dictionary
 		section: '9.6.6.1'
 		documentation: 'A font program’s built-in encoding can be overridden or altered by including an Encoding entry in the PDF font dictionary. 
 		The possible encoding modifications depend on the font type, as discussed below. 
@@ -54551,7 +54616,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Font
-		supertype: #Object
+		supertype: #Dictionary
 		section: '9.5'
 		documentation: 'A font shall be represented in PDF as a dictionary specifying the type of font, its PostScript name, its encoding, 
 and information that can be used to provide a substitute when the font program is not available. 
@@ -54628,7 +54693,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #FontDescriptor
-		supertype: #Object
+		supertype: #Dictionary
 		section: '9.8'
 		documentation: 'A font descriptor specifies metrics and other attributes of a simple font or a CIDFont as a whole, as distinct from the metrics of individual glyphs.
 These font metrics provide information that enables a conforming reader to synthesize a substitute font or select a similar font when the font program is unavailable.
@@ -55587,7 +55652,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Graphics'.
-	dict at: #storeVersion put: '2.0.0.17'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -55595,50 +55660,10 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class Subpath
+# Define class ContentParser
 DoIt
-Value
-	subclass: 'Subpath'
-	instVarNames: #(segments)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Subpath category: 'PDFtalk Graphics'.
-	Subpath comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
-
-Paths define shapes, trajectories, and regions of all sorts. 
-They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
-The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
-At the beginning of each page, the clipping path shall be initialized to include the entire page.
-
-A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
-A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
-Thus, the order in which the segments of a path are defined shall be significant. 
-Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
-
-NOTE
-A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
-The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
-
-The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
-A subpath that has not been explicitly closed is said to be open.
-
-A path object is defined by a sequence of operators to construct the path, 
-followed by one or more operators to paint the path or to use it as a clipping boundary. 
-PDF path operators fall into three categories:
-	•	Path construction operators define the geometry of a path. 
-		A path is constructed by sequentially applying one or more of these operators.
-	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
-	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
-	Subpath namespacePath: #(#PDFtalk).
-%
-# Define class Dash
-DoIt
-PDFArray
-	subclass: 'Dash'
+Parser
+	subclass: 'ContentParser'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -55646,69 +55671,31 @@ PDFArray
 	inDictionary: PDFtalk
 %
 DoIt
-	Dash category: 'PDFtalk Graphics'.
-	Dash comment: 'PDF Line Dash Pattern as defined in PDF 32000_2008.pdf, section 8.4.3.6, pp. 126.
+	ContentParser category: 'PDFtalk Graphics'.
+	ContentParser comment: 'This parser reads PDF content streams.
+Special restrictions apply.
 
-The line dash pattern shall control the pattern of dashes and gaps used to stroke paths. It shall be specified by a dash array and a dash phase. 
-The dash array''s elements shall be numbers that specify the lengths of alternating dashes and gaps; 
-the numbers shall be nonnegative and not all zero. 
-The dash phase shall specify the distance into the dash pattern at which to start the dash. 
-The elements of both the dash array and the dash phase shall be expressed in user space units.
+From PDF 32000_2008.pdf pp.81:
 
-Before beginning to stroke a path, the dash array shall be cycled through, adding up the lengths of dashes and gaps. 
-When the accumulated length equals the value specified by the dash phase, stroking of the path shall begin, 
-and the dash array shall be used cyclically from that point onward. 
-As can be seen from the table, an empty dash array and zero phase can be used to restore the dash pattern to a solid line.
+A content stream, after decoding with any specified filters, shall be interpreted according to the PDF syntax rules.
+It consists of PDF objects denoting operands and operators.
+The operands needed by an operator shall precede it in the stream.
 
-Dashed lines shall wrap around curves and corners just as solid stroked lines do. 
-The ends of each dash shall be treated with the current line cap style, and corners within dashes shall be treated with the current line join style. 
-A stroking operation shall take no measures to coordinate the dash pattern with features of the path; 
-it simply shall dispense dashes and gaps along the path in the pattern defined by the dash array.
+An operand is a direct object belonging to any of the basic PDF data types except a stream.
+Dictionaries shall be permitted as operands only by certain specific operators.
+Indirect objects and object references shall not be permitted at all.
 
-When a path consisting of several subpaths is stroked, each subpath shall be treated independently—that is, 
-the dash pattern shall be restarted and the dash phase shall be reapplied to it at the beginning of each subpath.'.
-	Dash namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsState
-DoIt
-PDFDictionary
-	subclass: 'GraphicsState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsState category: 'PDFtalk Graphics'.
-	GraphicsState comment: 'PDF Graphics State as defined in PDF 32000_2008.pdf, section 8.4, pp. 121.
+An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
+An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
+Operators shall be meaningful only inside a content stream.
 
-A conforming reader shall maintain an internal data structure called the graphics state that holds current graphics control parameters. 
-These parameters define the global framework within which the graphics operators execute.
+NOTE 
+This postfix notation, in which an operator is preceded by its operands, is superficially the same as in the PostScript language.
+However, PDF has no concept of an operand stack as PostScript has.
 
-EXAMPLE 1
-The f (fill) operator implicitly uses the current colour parameter, and the S (stroke) operator additionally uses the current line width parameter from the graphics state.
-
-A conforming reader shall initialize the graphic state at the beginning of each page with the values specified. 
-Table 52 lists those graphics state parameters that are device-independent and are appropriate to specify in page descriptions. 
-The parameters listed in Table 53 control details of the rendering (scan conversion) process and are device-dependent; 
-a page description that is intended to be device-independent should not be written to modify these parameters.'.
-	GraphicsState namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsInterpreter
-DoIt
-Object
-	subclass: 'GraphicsInterpreter'
-	instVarNames: #(container objects graphicsState graphicsStateStack currentPath operations beginTextIndex currentObjectStack)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsInterpreter category: 'PDFtalk Graphics'.
-	GraphicsInterpreter comment: 'The graphics on one page'.
-	GraphicsInterpreter namespacePath: #(#PDFtalk).
+In PDF, all of the operands needed by an operator shall immediately precede that operator.
+Operators do not return results, and operands shall not be left over when an operator finishes execution.'.
+	ContentParser namespacePath: #(#PDFtalk).
 %
 # Define class GraphicsObject
 DoIt
@@ -55725,6 +55712,83 @@ DoIt
 	GraphicsObject comment: 'An object occuring in the page contents stream'.
 	GraphicsObject namespacePath: #(#PDFtalk).
 %
+# Define class PathObject
+DoIt
+GraphicsObject
+	subclass: 'PathObject'
+	instVarNames: #(clipping painting intersections)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PathObject category: 'PDFtalk Graphics'.
+	PathObject comment: 'list of path construction operators with a path painting operator'.
+	PathObject namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsCollector
+DoIt
+Object
+	subclass: 'GraphicsCollector'
+	instVarNames: #(objects)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsCollector category: 'PDFtalk Graphics'.
+	GraphicsCollector comment: 'a sequence of GraphicsObjects and maybe nested GraphicsCollectors'.
+	GraphicsCollector namespacePath: #(#PDFtalk).
+%
+# Define class IsolatedObject
+DoIt
+GraphicsCollector
+	subclass: 'IsolatedObject'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	IsolatedObject category: 'PDFtalk Graphics'.
+	IsolatedObject comment: 'operations between #q and #Q'.
+	IsolatedObject namespacePath: #(#PDFtalk).
+%
+# Define class TextSegment
+DoIt
+GraphicsObject
+	subclass: 'TextSegment'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextSegment category: 'PDFtalk Graphics'.
+	TextSegment comment: 'a string styled in a uniform way
+
+The text cannot contail line breaks'.
+	TextSegment namespacePath: #(#PDFtalk).
+%
+# Define class IsolatedObjectx
+DoIt
+GraphicsObject
+	subclass: 'IsolatedObjectx'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	IsolatedObjectx category: 'PDFtalk Graphics'.
+	IsolatedObjectx comment: 'operations between #q and #Q'.
+	IsolatedObjectx namespacePath: #(#PDFtalk).
+%
 # Define class GraphicsObjectWithResource
 DoIt
 GraphicsObject
@@ -55739,6 +55803,125 @@ DoIt
 	GraphicsObjectWithResource category: 'PDFtalk Graphics'.
 	GraphicsObjectWithResource comment: 'an object with a resource from the Resources dictionary'.
 	GraphicsObjectWithResource namespacePath: #(#PDFtalk).
+%
+# Define class OperationObject
+DoIt
+GraphicsObjectWithResource
+	subclass: 'OperationObject'
+	instVarNames: #(redundant)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OperationObject category: 'PDFtalk Graphics'.
+	OperationObject comment: 'simple wrapper for a single operator.
+
+May contain a resolved resource'.
+	OperationObject namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsInterpreter
+DoIt
+Object
+	subclass: 'GraphicsInterpreter'
+	instVarNames: #(container objects graphicsState graphicsStateStack currentPath operations beginTextIndex currentObjectStack)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsInterpreter category: 'PDFtalk Graphics'.
+	GraphicsInterpreter comment: 'The graphics on one page'.
+	GraphicsInterpreter namespacePath: #(#PDFtalk).
+%
+# Define class MarkedObject
+DoIt
+GraphicsCollector
+	subclass: 'MarkedObject'
+	instVarNames: #(tag properties)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MarkedObject category: 'PDFtalk Graphics'.
+	MarkedObject comment: 'operations between BDC or BMC and EMC'.
+	MarkedObject namespacePath: #(#PDFtalk).
+%
+# Define class ExtGState
+DoIt
+PDFDictionary
+	subclass: 'ExtGState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ExtGState category: 'PDFtalk Graphics'.
+	ExtGState comment: 'PDF Graphics State Parameter Dictionaries as defined in PDF 32000_2008.pdf, section 8.4.5, pp. 128.
+
+While some parameters in the graphics state may be set with individual operators, others may not. 
+The latter may only be set with the generic graphics state operator gs (PDF 1.2). 
+The operand supplied to this operator shall be the name of a graphics state parameter dictionary 
+whose contents specify the values of one or more graphics state parameters. 
+This name shall be looked up in the ExtGState subdictionary of the current resource dictionary.
+
+The graphics state parameter dictionary is also used by type 2 patterns, which do not have a content stream in which the graphics state operators could be invoked.
+
+Each entry in the parameter dictionary shall specify the value of an individual graphics state parameter. 
+All entries need not be present for every invocation of the gs operator; the supplied parameter dictionary may include any combination of parameter entries. 
+The results of gs shall be cumulative; parameter values established in previous invocations persist until explicitly overridden.
+
+NOTE
+Note that some parameters appear in both Tables; 
+these parameters can be set either with individual graphics state operators or with gs. 
+It is expected that any future extensions to the graphics state will be implemented by 
+adding new entries to the graphics state parameter dictionary rather than by introducing new graphics state operators.'.
+	ExtGState namespacePath: #(#PDFtalk).
+%
+# Define class TextObject
+DoIt
+GraphicsCollector
+	subclass: 'TextObject'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextObject category: 'PDFtalk Graphics'.
+	TextObject comment: 'operations between BT and ET'.
+	TextObject namespacePath: #(#PDFtalk).
+%
+# Define class LineJoin
+DoIt
+Value
+	subclass: 'LineJoin'
+	instVarNames: #(value)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LineJoin category: 'PDFtalk Graphics'.
+	LineJoin comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.4, pp. 125.
+
+The line join style shall specify the shape to be used at the corners of paths that are stroked. Table 55 shows the possible values. Join styles shall be significant only at points where consecutive segments of a path connect at an angle; segments that meet or intersect fortuitously shall receive no special treatment.
+
+0	Miter join	The outer edges of the strokes for the two segments shall beextended until they meet at an angle, as in a picture frame. 
+				If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join shall be used instead.
+1	Round join	An arc of a circle with a diameter equal to the line width shall be drawn around the point where the two segments meet, 
+				connecting the outer edges of the strokes for the two segments. 
+				This pieslice-shaped figure shall be filled in, producing a rounded corner.
+2	Bevel join	The two segments shall be finished with butt caps and the resulting notch beyond the ends of the segments shall be filled with a triangle.'.
+	LineJoin namespacePath: #(#PDFtalk).
 %
 # Define class ExternalGraphicsObject
 DoIt
@@ -55755,43 +55938,26 @@ DoIt
 	ExternalGraphicsObject comment: 'XObject'.
 	ExternalGraphicsObject namespacePath: #(#PDFtalk).
 %
-# Define class Matrix
+# Define class LineCap
 DoIt
-PDFArray
-	subclass: 'Matrix'
-	instVarNames: #()
+Value
+	subclass: 'LineCap'
+	instVarNames: #(value)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	Matrix category: 'PDFtalk Graphics'.
-	Matrix comment: 'PDF Transformation Matrices as defined in PDF 32000_2008.pdf, section 8.3.4, pp. 119.
+	LineCap category: 'PDFtalk Graphics'.
+	LineCap comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.3, pp. 125.
 
-To understand the mathematics of coordinate transformations in PDF, it is vital to remember two points:
-	• Transformations alter coordinate systems, not graphics objects.
-	All objects painted before a transformation is applied shall be unaffected by the transformation.
-	Objects painted after the transformation is applied shall be interpreted in the transformed coordinate system.
-	• Transformation matrices specify the transformation from the new (transformed) coordinate system to the original (untransformed) coordinate system.
-	All coordinates used after the transformation shall be expressed in the transformed coordinate system.
-	PDF applies the transformation matrix to find the equivalent coordinates in the untransformed coordinate system.
+The line cap style shall specify the shape that shall be used at the ends of open subpaths (and dashes, if any) when they are stroked.
 
-NOTE 1
-Many computer graphics textbooks consider transformations of graphics objects rather than of coordinate systems.
-Although either approach is correct and self-consistent, some details of the calculations differ depending on which point of view is taken.
-
-PDF represents coordinates in a two-dimensional space.
-The point (x, y) in such a space can be expressed in vector form as [x y 1].
-The constant third element of this vector (1) is needed so that the vector can be used with 3-by-3 matrices in the calculations described below.
-
-The transformation between two coordinate systems can be represented by a 3-by-3 transformation matrix written as follows:
-[a b 0]
-[c d 0]
-[e f 1]
-
-Because a transformation matrix has only six elements that can be changed, in most cases in PDF it shall be specified as the six-element array [a b c d e f]'.
-	Matrix namespacePath: #(#PDFtalk).
+0	Butt cap. 				The stroke shall be squared off at the endpoint of the path. There shall be no projection beyond the end of the path.
+1	Round cap. 				A semicircular arc with a diameter equal to the line width shall be drawn around the endpoint and shall be filled in.
+2	Projecting square cap. 	The stroke shall continue beyond the endpoint of the path for a distance equal to half the line width and shall besquared off.'.
+	LineCap namespacePath: #(#PDFtalk).
 %
 # Define class Path
 DoIt
@@ -55833,264 +55999,6 @@ PDF path operators fall into three categories:
 	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
 	Path namespacePath: #(#PDFtalk).
 %
-# Define class Operation
-DoIt
-Value
-	subclass: 'Operation'
-	instVarNames: #(operands)
-	classVars: #(ClassesAtNames)
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Operation category: 'PDFtalk Graphics'.
-	Operation comment: 'PDF Operator as defined in PDF 32000_2008.pdf pp. 82.
-
-An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
-An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
-Operators shall be meaningful only inside a content stream.'.
-	Operation namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsCollector
-DoIt
-Object
-	subclass: 'GraphicsCollector'
-	instVarNames: #(objects)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsCollector category: 'PDFtalk Graphics'.
-	GraphicsCollector comment: 'a sequence of GraphicsObjects and maybe nested GraphicsCollectors'.
-	GraphicsCollector namespacePath: #(#PDFtalk).
-%
-# Define class TextObject
-DoIt
-GraphicsCollector
-	subclass: 'TextObject'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TextObject category: 'PDFtalk Graphics'.
-	TextObject comment: 'operations between BT and ET'.
-	TextObject namespacePath: #(#PDFtalk).
-%
-# Define class ExtGState
-DoIt
-TypedDictionary
-	subclass: 'ExtGState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ExtGState category: 'PDFtalk Graphics'.
-	ExtGState comment: 'PDF Graphics State Parameter Dictionaries as defined in PDF 32000_2008.pdf, section 8.4.5, pp. 128.
-
-While some parameters in the graphics state may be set with individual operators, others may not. 
-The latter may only be set with the generic graphics state operator gs (PDF 1.2). 
-The operand supplied to this operator shall be the name of a graphics state parameter dictionary 
-whose contents specify the values of one or more graphics state parameters. 
-This name shall be looked up in the ExtGState subdictionary of the current resource dictionary.
-
-The graphics state parameter dictionary is also used by type 2 patterns, which do not have a content stream in which the graphics state operators could be invoked.
-
-Each entry in the parameter dictionary shall specify the value of an individual graphics state parameter. 
-All entries need not be present for every invocation of the gs operator; the supplied parameter dictionary may include any combination of parameter entries. 
-The results of gs shall be cumulative; parameter values established in previous invocations persist until explicitly overridden.
-
-NOTE
-Note that some parameters appear in both Tables; 
-these parameters can be set either with individual graphics state operators or with gs. 
-It is expected that any future extensions to the graphics state will be implemented by 
-adding new entries to the graphics state parameter dictionary rather than by introducing new graphics state operators.'.
-	ExtGState namespacePath: #(#PDFtalk).
-%
-# Define class PathObject
-DoIt
-GraphicsObject
-	subclass: 'PathObject'
-	instVarNames: #(clipping painting intersections)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PathObject category: 'PDFtalk Graphics'.
-	PathObject comment: 'list of path construction operators with a path painting operator'.
-	PathObject namespacePath: #(#PDFtalk).
-%
-# Define class TextSegment
-DoIt
-GraphicsObject
-	subclass: 'TextSegment'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TextSegment category: 'PDFtalk Graphics'.
-	TextSegment comment: 'a string styled in a uniform way
-
-The text cannot contail line breaks'.
-	TextSegment namespacePath: #(#PDFtalk).
-%
-# Define class LineCap
-DoIt
-Value
-	subclass: 'LineCap'
-	instVarNames: #(value)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LineCap category: 'PDFtalk Graphics'.
-	LineCap comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.3, pp. 125.
-
-The line cap style shall specify the shape that shall be used at the ends of open subpaths (and dashes, if any) when they are stroked.
-
-0	Butt cap. 				The stroke shall be squared off at the endpoint of the path. There shall be no projection beyond the end of the path.
-1	Round cap. 				A semicircular arc with a diameter equal to the line width shall be drawn around the endpoint and shall be filled in.
-2	Projecting square cap. 	The stroke shall continue beyond the endpoint of the path for a distance equal to half the line width and shall besquared off.'.
-	LineCap namespacePath: #(#PDFtalk).
-%
-# Define class OperationObject
-DoIt
-GraphicsObjectWithResource
-	subclass: 'OperationObject'
-	instVarNames: #(redundant)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OperationObject category: 'PDFtalk Graphics'.
-	OperationObject comment: 'simple wrapper for a single operator.
-
-May contain a resolved resource'.
-	OperationObject namespacePath: #(#PDFtalk).
-%
-# Define class ContentParser
-DoIt
-Parser
-	subclass: 'ContentParser'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ContentParser category: 'PDFtalk Graphics'.
-	ContentParser comment: 'This parser reads PDF content streams.
-Special restrictions apply.
-
-From PDF 32000_2008.pdf pp.81:
-
-A content stream, after decoding with any specified filters, shall be interpreted according to the PDF syntax rules.
-It consists of PDF objects denoting operands and operators.
-The operands needed by an operator shall precede it in the stream.
-
-An operand is a direct object belonging to any of the basic PDF data types except a stream.
-Dictionaries shall be permitted as operands only by certain specific operators.
-Indirect objects and object references shall not be permitted at all.
-
-An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
-An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
-Operators shall be meaningful only inside a content stream.
-
-NOTE 
-This postfix notation, in which an operator is preceded by its operands, is superficially the same as in the PostScript language.
-However, PDF has no concept of an operand stack as PostScript has.
-
-In PDF, all of the operands needed by an operator shall immediately precede that operator.
-Operators do not return results, and operands shall not be left over when an operator finishes execution.'.
-	ContentParser namespacePath: #(#PDFtalk).
-%
-# Define class IsolatedObject
-DoIt
-GraphicsCollector
-	subclass: 'IsolatedObject'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	IsolatedObject category: 'PDFtalk Graphics'.
-	IsolatedObject comment: 'operations between #q and #Q'.
-	IsolatedObject namespacePath: #(#PDFtalk).
-%
-# Define class LineJoin
-DoIt
-Value
-	subclass: 'LineJoin'
-	instVarNames: #(value)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LineJoin category: 'PDFtalk Graphics'.
-	LineJoin comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.4, pp. 125.
-
-The line join style shall specify the shape to be used at the corners of paths that are stroked. Table 55 shows the possible values. Join styles shall be significant only at points where consecutive segments of a path connect at an angle; segments that meet or intersect fortuitously shall receive no special treatment.
-
-0	Miter join	The outer edges of the strokes for the two segments shall beextended until they meet at an angle, as in a picture frame. 
-				If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join shall be used instead.
-1	Round join	An arc of a circle with a diameter equal to the line width shall be drawn around the point where the two segments meet, 
-				connecting the outer edges of the strokes for the two segments. 
-				This pieslice-shaped figure shall be filled in, producing a rounded corner.
-2	Bevel join	The two segments shall be finished with butt caps and the resulting notch beyond the ends of the segments shall be filled with a triangle.'.
-	LineJoin namespacePath: #(#PDFtalk).
-%
-# Define class IsolatedObjectx
-DoIt
-GraphicsObject
-	subclass: 'IsolatedObjectx'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	IsolatedObjectx category: 'PDFtalk Graphics'.
-	IsolatedObjectx comment: 'operations between #q and #Q'.
-	IsolatedObjectx namespacePath: #(#PDFtalk).
-%
-# Define class MarkedObject
-DoIt
-GraphicsCollector
-	subclass: 'MarkedObject'
-	instVarNames: #(tag properties)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MarkedObject category: 'PDFtalk Graphics'.
-	MarkedObject comment: 'operations between BDC or BMC and EMC'.
-	MarkedObject namespacePath: #(#PDFtalk).
-%
 # Define class Pathsegment
 DoIt
 Value
@@ -56130,6 +56038,163 @@ PDF path operators fall into three categories:
 	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
 	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
 	Pathsegment namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsState
+DoIt
+PDFDictionary
+	subclass: 'GraphicsState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsState category: 'PDFtalk Graphics'.
+	GraphicsState comment: 'PDF Graphics State as defined in PDF 32000_2008.pdf, section 8.4, pp. 121.
+
+A conforming reader shall maintain an internal data structure called the graphics state that holds current graphics control parameters. 
+These parameters define the global framework within which the graphics operators execute.
+
+EXAMPLE 1
+The f (fill) operator implicitly uses the current colour parameter, and the S (stroke) operator additionally uses the current line width parameter from the graphics state.
+
+A conforming reader shall initialize the graphic state at the beginning of each page with the values specified. 
+Table 52 lists those graphics state parameters that are device-independent and are appropriate to specify in page descriptions. 
+The parameters listed in Table 53 control details of the rendering (scan conversion) process and are device-dependent; 
+a page description that is intended to be device-independent should not be written to modify these parameters.'.
+	GraphicsState namespacePath: #(#PDFtalk).
+%
+# Define class Subpath
+DoIt
+Value
+	subclass: 'Subpath'
+	instVarNames: #(segments)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Subpath category: 'PDFtalk Graphics'.
+	Subpath comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
+
+Paths define shapes, trajectories, and regions of all sorts. 
+They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
+The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
+At the beginning of each page, the clipping path shall be initialized to include the entire page.
+
+A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
+A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
+Thus, the order in which the segments of a path are defined shall be significant. 
+Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
+
+NOTE
+A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
+The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
+
+The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
+A subpath that has not been explicitly closed is said to be open.
+
+A path object is defined by a sequence of operators to construct the path, 
+followed by one or more operators to paint the path or to use it as a clipping boundary. 
+PDF path operators fall into three categories:
+	•	Path construction operators define the geometry of a path. 
+		A path is constructed by sequentially applying one or more of these operators.
+	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
+	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
+	Subpath namespacePath: #(#PDFtalk).
+%
+# Define class Operation
+DoIt
+Value
+	subclass: 'Operation'
+	instVarNames: #(operands)
+	classVars: #(ClassesAtNames)
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Operation category: 'PDFtalk Graphics'.
+	Operation comment: 'PDF Operator as defined in PDF 32000_2008.pdf pp. 82.
+
+An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
+An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
+Operators shall be meaningful only inside a content stream.'.
+	Operation namespacePath: #(#PDFtalk).
+%
+# Define class Dash
+DoIt
+PDFArray
+	subclass: 'Dash'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Dash category: 'PDFtalk Graphics'.
+	Dash comment: 'PDF Line Dash Pattern as defined in PDF 32000_2008.pdf, section 8.4.3.6, pp. 126.
+
+The line dash pattern shall control the pattern of dashes and gaps used to stroke paths. It shall be specified by a dash array and a dash phase. 
+The dash array''s elements shall be numbers that specify the lengths of alternating dashes and gaps; 
+the numbers shall be nonnegative and not all zero. 
+The dash phase shall specify the distance into the dash pattern at which to start the dash. 
+The elements of both the dash array and the dash phase shall be expressed in user space units.
+
+Before beginning to stroke a path, the dash array shall be cycled through, adding up the lengths of dashes and gaps. 
+When the accumulated length equals the value specified by the dash phase, stroking of the path shall begin, 
+and the dash array shall be used cyclically from that point onward. 
+As can be seen from the table, an empty dash array and zero phase can be used to restore the dash pattern to a solid line.
+
+Dashed lines shall wrap around curves and corners just as solid stroked lines do. 
+The ends of each dash shall be treated with the current line cap style, and corners within dashes shall be treated with the current line join style. 
+A stroking operation shall take no measures to coordinate the dash pattern with features of the path; 
+it simply shall dispense dashes and gaps along the path in the pattern defined by the dash array.
+
+When a path consisting of several subpaths is stroked, each subpath shall be treated independently—that is, 
+the dash pattern shall be restarted and the dash phase shall be reapplied to it at the beginning of each subpath.'.
+	Dash namespacePath: #(#PDFtalk).
+%
+# Define class Matrix
+DoIt
+PDFArray
+	subclass: 'Matrix'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Matrix category: 'PDFtalk Graphics'.
+	Matrix comment: 'PDF Transformation Matrices as defined in PDF 32000_2008.pdf, section 8.3.4, pp. 119.
+
+To understand the mathematics of coordinate transformations in PDF, it is vital to remember two points:
+	• Transformations alter coordinate systems, not graphics objects.
+	All objects painted before a transformation is applied shall be unaffected by the transformation.
+	Objects painted after the transformation is applied shall be interpreted in the transformed coordinate system.
+	• Transformation matrices specify the transformation from the new (transformed) coordinate system to the original (untransformed) coordinate system.
+	All coordinates used after the transformation shall be expressed in the transformed coordinate system.
+	PDF applies the transformation matrix to find the equivalent coordinates in the untransformed coordinate system.
+
+NOTE 1
+Many computer graphics textbooks consider transformations of graphics objects rather than of coordinate systems.
+Although either approach is correct and self-consistent, some details of the calculations differ depending on which point of view is taken.
+
+PDF represents coordinates in a two-dimensional space.
+The point (x, y) in such a space can be expressed in vector form as [x y 1].
+The constant third element of this vector (1) is needed so that the vector can be used with 3-by-3 matrices in the calculations described below.
+
+The transformation between two coordinate systems can be represented by a 3-by-3 transformation matrix written as follows:
+[a b 0]
+[c d 0]
+[e f 1]
+
+Because a transformation matrix has only six elements that can be changed, in most cases in PDF it shall be specified as the six-element array [a b c d e f]'.
+	Matrix namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -56207,7 +56272,7 @@ readOperations
 		(object isNil and: [
 		self atEnd]) ifTrue: [
 				^operators].
-		object isOperator
+		(object isKindOf: Operation)
 			ifTrue: [
 			operators add: (object class operands: operands).
 			operands := OrderedCollection new]
@@ -56348,7 +56413,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ExtGState
-		supertype: #Object
+		supertype: #Dictionary
 		section: '8.4.5'
 		documentation: 'While some parameters in the graphics state may be set with individual operators, others may not. 
 The latter may only be set with the generic graphics state operator gs (PDF 1.2). 
@@ -57742,13 +57807,14 @@ newClassesAtNames
 	"assumes that all subclasses are defined in namespace #{PDFtalk}"
 
 	| classOrganizer dict |
-	classOrganizer := ClassOrganizer _newWithRoot: Operation
-				symbolList: (SymbolList with: PDFtalk).
+	classOrganizer := ClassOrganizer
+		_newWithRoot: Operation
+		symbolList: (SymbolList with: PDFtalk)
+		env: 0.
 	dict := Dictionary new.
-	(classOrganizer allSubclassesOf: Operation) do: 
-			[:subclass |
-			(classOrganizer subclassesOf: subclass) isEmpty
-				ifTrue: [dict at: subclass operatorName put: subclass]].
+	(classOrganizer allSubclassesOf: Operation) do: [:subclass |
+		(classOrganizer subclassesOf: subclass) isEmpty ifTrue: [
+			dict at: subclass operatorName put: subclass]].
 	^dict
 %
 classmethod: Operation
@@ -57930,11 +57996,6 @@ printvalueWith: printer
 	args := OrderedCollection new.
 	args add: (printer array: 'operands' value: self operands).
 	^printer printvalue: self arguments: args
-%
-category: 'testing'
-method: Operation
-isOperator
-	^true
 %
 category: 'writing'
 method: Operation
@@ -58218,107 +58279,6 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class ColourOperation
-DoIt
-Operation
-	subclass: 'ColourOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ColourOperation category: 'PDFtalk Graphics Operations'.
-	ColourOperation comment: 'PDF Colour Operators as defined in PDF 32000_2008.pdf, section 8.6.8, pp. 171.
-
-The PDF operators that control colour spaces and colour values. 
-Also colour-related is the graphics state operator ri. 
-Colour operators may appear at the page description level or inside text objects.'.
-	ColourOperation namespacePath: #(#PDFtalk).
-%
-# Define class SetNonStrokingColorSpecial
-DoIt
-ColourOperation
-	subclass: 'SetNonStrokingColorSpecial'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetNonStrokingColorSpecial category: 'PDFtalk Graphics Operations'.
-	SetNonStrokingColorSpecial comment: 'Same as SCN but used for nonstroking operations.'.
-	SetNonStrokingColorSpecial namespacePath: #(#PDFtalk).
-%
-# Define class PathPaintingOperation
-DoIt
-Operation
-	subclass: 'PathPaintingOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PathPaintingOperation category: 'PDFtalk Graphics Operations'.
-	PathPaintingOperation comment: 'PDF Path-Painting Operators as defined in PDF 32000_2008.pdf, section 8.5.3, pp. 134.
-
-The path-painting operators end a path object, causing it to be painted on the current page in the manner that the operator specifies. 
-The principal path-painting operators shall be S (for stroking) and f (for filling). 
-Variants of these operators combine stroking and filling in a single operation or apply different rules for determining the area to be filled.'.
-	PathPaintingOperation namespacePath: #(#PDFtalk).
-%
-# Define class EndPath
-DoIt
-PathPaintingOperation
-	subclass: 'EndPath'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EndPath category: 'PDFtalk Graphics Operations'.
-	EndPath comment: 'End the path object without filling or stroking it. 
-This operator shall be a path-painting no-op, used primarily for the side effect of changing the current clipping path'.
-	EndPath namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsStateOperation
-DoIt
-Operation
-	subclass: 'GraphicsStateOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsStateOperation category: 'PDFtalk Graphics Operations'.
-	GraphicsStateOperation comment: 'PDF Graphics State Operators as defined in PDF 32000_2008.pdf, section 8.4.4, pp. 127.
-
-Operators that set the values of parameters in the graphics state.'.
-	GraphicsStateOperation namespacePath: #(#PDFtalk).
-%
-# Define class SaveState
-DoIt
-GraphicsStateOperation
-	subclass: 'SaveState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SaveState category: 'PDFtalk Graphics Operations'.
-	SaveState comment: 'Save the current graphics state on the graphics state stack'.
-	SaveState namespacePath: #(#PDFtalk).
-%
 # Define class TextPositioningOperation
 DoIt
 Operation
@@ -58342,10 +58302,10 @@ If text space has been translated, scaled, or rotated, then the position, size, 
 The text-positioning operators shall only appear within text objects.'.
 	TextPositioningOperation namespacePath: #(#PDFtalk).
 %
-# Define class NextLineRelativeSetLeading
+# Define class NextLineRelative
 DoIt
 TextPositioningOperation
-	subclass: 'NextLineRelativeSetLeading'
+	subclass: 'NextLineRelative'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58353,49 +58313,20 @@ TextPositioningOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	NextLineRelativeSetLeading category: 'PDFtalk Graphics Operations'.
-	NextLineRelativeSetLeading comment: 'Move to the start of the next line, offset from the start of the current line by (tx, ty). 
-As a side effect, this operator shall set the leading parameter in the text state. 
-This operator shall have the same effect as this code:
-	-ty TL
-	tx ty Td'.
-	NextLineRelativeSetLeading namespacePath: #(#PDFtalk).
+	NextLineRelative category: 'PDFtalk Graphics Operations'.
+	NextLineRelative comment: 'Move to the start of the next line, offset from the start of the current line by (tx, ty). 
+tx and ty shall denote numbers expressed in unscaled text space units. 
+More precisely, this operator shall perform these assignments:
+                    [ 1  0  0 ]
+Tm := Tlm := [  0  1  0 ] * Tlm
+                    [ tx ty 1 ]
+'.
+	NextLineRelative namespacePath: #(#PDFtalk).
 %
-# Define class Fill
-DoIt
-PathPaintingOperation
-	subclass: 'Fill'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Fill category: 'PDFtalk Graphics Operations'.
-	Fill comment: 'Fill the path, using the nonzero winding number rule to determine the region to fill. 
-Any subpaths that are open shall be implicitly closed before being filled'.
-	Fill namespacePath: #(#PDFtalk).
-%
-# Define class SetNonStrokingCMYK
-DoIt
-ColourOperation
-	subclass: 'SetNonStrokingCMYK'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetNonStrokingCMYK category: 'PDFtalk Graphics Operations'.
-	SetNonStrokingCMYK comment: 'Same as K but used for nonstroking operations.'.
-	SetNonStrokingCMYK namespacePath: #(#PDFtalk).
-%
-# Define class PathConstructionOperation
+# Define class GraphicsStateOperation
 DoIt
 Operation
-	subclass: 'PathConstructionOperation'
+	subclass: 'GraphicsStateOperation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58403,35 +58334,16 @@ Operation
 	inDictionary: PDFtalk
 %
 DoIt
-	PathConstructionOperation category: 'PDFtalk Graphics Operations'.
-	PathConstructionOperation comment: 'PDF Path Construction Operators as defined in PDF 32000_2008.pdf, section 8.5.2, pp. 132.
+	GraphicsStateOperation category: 'PDFtalk Graphics Operations'.
+	GraphicsStateOperation comment: 'PDF Graphics State Operators as defined in PDF 32000_2008.pdf, section 8.4.4, pp. 127.
 
-A page description shall begin with an empty path and shall build up its definition by invoking one or more path construction operators to add segments to it. 
-The path construction operators may be invoked in any sequence, but the first one invoked shall be m or re to begin a new subpath. 
-The path definition may conclude with the application of a path-painting operator such as S, f, or b; 
-this operator may optionally be preceded by one of the clipping path operators W or W*.
-
-NOTE
-Note that the path construction operators do not place any marks on the page; only the painting operators do that. 
-A path definition is not complete until a path-painting operator has been applied to it.
-
-The path currently under construction is called the current path. In PDF (unlike PostScript), 
-the current path is not part of the graphics state and is not saved and restored along with the other graphics state parameters. 
-PDF paths shall be strictly internal objects with no explicit representation. 
-After the current path has been painted, it shall become no longer defined; 
-there is then no current path until a new one is begun with the m or re operator.
-
-The trailing endpoint of the segment most recently added to the current path is referred to as the current point.
-If the current path is empty, the current point shall be undefined. 
-Most operators that add a segment to the current path start at the current point; if the current point is undefined, an error shall be generated.
-
-All operands shall be numbers denoting coordinates in user space.'.
-	PathConstructionOperation namespacePath: #(#PDFtalk).
+Operators that set the values of parameters in the graphics state.'.
+	GraphicsStateOperation namespacePath: #(#PDFtalk).
 %
-# Define class ClosePath
+# Define class SetCap
 DoIt
-PathConstructionOperation
-	subclass: 'ClosePath'
+GraphicsStateOperation
+	subclass: 'SetCap'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58439,13 +58351,9 @@ PathConstructionOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	ClosePath category: 'PDFtalk Graphics Operations'.
-	ClosePath comment: 'Close the current subpath by appending a straight line segment from the current point to the starting point of the subpath. 
-If the current subpath is already closed, h shall do nothing.
-
-This operator terminates the current subpath. 
-Appending another segment to the current path shall begin a new subpath, even if the new segment begins at the endpoint reached by the h operation'.
-	ClosePath namespacePath: #(#PDFtalk).
+	SetCap category: 'PDFtalk Graphics Operations'.
+	SetCap comment: 'Set the line cap style in the graphics state'.
+	SetCap namespacePath: #(#PDFtalk).
 %
 # Define class ShadingOperation
 DoIt
@@ -58496,25 +58404,10 @@ This operator should be applied only to bounded or geometrically defined shading
 If applied to an unbounded shading, it paints the shading’s gradient fill across the entire clipping region, which may be time-consuming'.
 	PaintShading namespacePath: #(#PDFtalk).
 %
-# Define class SetMiterLimit
-DoIt
-GraphicsStateOperation
-	subclass: 'SetMiterLimit'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetMiterLimit category: 'PDFtalk Graphics Operations'.
-	SetMiterLimit comment: 'Set the miter limit in the graphics state'.
-	SetMiterLimit namespacePath: #(#PDFtalk).
-%
-# Define class TextShowingOperation
+# Define class ColourOperation
 DoIt
 Operation
-	subclass: 'TextShowingOperation'
+	subclass: 'ColourOperation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58522,19 +58415,18 @@ Operation
 	inDictionary: PDFtalk
 %
 DoIt
-	TextShowingOperation category: 'PDFtalk Graphics Operations'.
-	TextShowingOperation comment: 'PDF Text Showing Operator as defined in PDF 32000_2008.pdf, section 9.4.3, pp. 250.
+	ColourOperation category: 'PDFtalk Graphics Operations'.
+	ColourOperation comment: 'PDF Colour Operators as defined in PDF 32000_2008.pdf, section 8.6.8, pp. 171.
 
-The text-showing operators shall show text on the page, repositioning text space as they do so. 
-All of the operators shall interpret the text string and apply the text state parameters.
-
-The text-showing operators shall only appear within text objects.'.
-	TextShowingOperation namespacePath: #(#PDFtalk).
+The PDF operators that control colour spaces and colour values. 
+Also colour-related is the graphics state operator ri. 
+Colour operators may appear at the page description level or inside text objects.'.
+	ColourOperation namespacePath: #(#PDFtalk).
 %
-# Define class ShowTextOnNextLineWithSpacing
+# Define class SetStrokingCMYK
 DoIt
-TextShowingOperation
-	subclass: 'ShowTextOnNextLineWithSpacing'
+ColourOperation
+	subclass: 'SetStrokingCMYK'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58542,15 +58434,139 @@ TextShowingOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	ShowTextOnNextLineWithSpacing category: 'PDFtalk Graphics Operations'.
-	ShowTextOnNextLineWithSpacing comment: 'Move to the next line and show a text string, using aw as the word spacing and ac as the character spacing 
-(setting the corresponding parameters in the text state). 
-aw and ac shall be numbers expressed in unscaled text space units. 
-This operator shall have the same effect as this code:
-	aw Tw
-	ac Tc
-	string '''.
-	ShowTextOnNextLineWithSpacing namespacePath: #(#PDFtalk).
+	SetStrokingCMYK category: 'PDFtalk Graphics Operations'.
+	SetStrokingCMYK comment: 'Set the stroking colour space to DeviceCMYK (or the DefaultCMYK colour space) and set the colour to use for stroking operations. 
+Each operand shall be a number between 0.0 (zero concentration) and 1.0 (maximum concentration). 
+The behaviour of this operator is affected by the overprint mode.'.
+	SetStrokingCMYK namespacePath: #(#PDFtalk).
+%
+# Define class RestoreState
+DoIt
+GraphicsStateOperation
+	subclass: 'RestoreState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	RestoreState category: 'PDFtalk Graphics Operations'.
+	RestoreState comment: 'Restore the graphics state by removing the most recently saved state from the stack and making it the current state'.
+	RestoreState namespacePath: #(#PDFtalk).
+%
+# Define class SetNonStrokingColorSpecial
+DoIt
+ColourOperation
+	subclass: 'SetNonStrokingColorSpecial'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetNonStrokingColorSpecial category: 'PDFtalk Graphics Operations'.
+	SetNonStrokingColorSpecial comment: 'Same as SCN but used for nonstroking operations.'.
+	SetNonStrokingColorSpecial namespacePath: #(#PDFtalk).
+%
+# Define class SetLineWidth
+DoIt
+GraphicsStateOperation
+	subclass: 'SetLineWidth'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetLineWidth category: 'PDFtalk Graphics Operations'.
+	SetLineWidth comment: 'Set the line width in the graphics state'.
+	SetLineWidth namespacePath: #(#PDFtalk).
+%
+# Define class PathPaintingOperation
+DoIt
+Operation
+	subclass: 'PathPaintingOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PathPaintingOperation category: 'PDFtalk Graphics Operations'.
+	PathPaintingOperation comment: 'PDF Path-Painting Operators as defined in PDF 32000_2008.pdf, section 8.5.3, pp. 134.
+
+The path-painting operators end a path object, causing it to be painted on the current page in the manner that the operator specifies. 
+The principal path-painting operators shall be S (for stroking) and f (for filling). 
+Variants of these operators combine stroking and filling in a single operation or apply different rules for determining the area to be filled.'.
+	PathPaintingOperation namespacePath: #(#PDFtalk).
+%
+# Define class FillEvenOddAndStrokeClosed
+DoIt
+PathPaintingOperation
+	subclass: 'FillEvenOddAndStrokeClosed'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FillEvenOddAndStrokeClosed category: 'PDFtalk Graphics Operations'.
+	FillEvenOddAndStrokeClosed comment: 'Close, fill, and then stroke the path, using the even-odd rule to determine the region to fill. 
+This operator shall have the same effect as the sequence h B*'.
+	FillEvenOddAndStrokeClosed namespacePath: #(#PDFtalk).
+%
+# Define class SetStrokingRGB
+DoIt
+ColourOperation
+	subclass: 'SetStrokingRGB'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetStrokingRGB category: 'PDFtalk Graphics Operations'.
+	SetStrokingRGB comment: 'Set the stroking colour space to DeviceRGB (or the DefaultRGB colour space) and set the colour to use for stroking operations. 
+Each operand shall be a number between 0.0 (minimum intensity) and 1.0 (maximum intensity).'.
+	SetStrokingRGB namespacePath: #(#PDFtalk).
+%
+# Define class Fill
+DoIt
+PathPaintingOperation
+	subclass: 'Fill'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Fill category: 'PDFtalk Graphics Operations'.
+	Fill comment: 'Fill the path, using the nonzero winding number rule to determine the region to fill. 
+Any subpaths that are open shall be implicitly closed before being filled'.
+	Fill namespacePath: #(#PDFtalk).
+%
+# Define class ConcatenateMatrix
+DoIt
+GraphicsStateOperation
+	subclass: 'ConcatenateMatrix'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ConcatenateMatrix category: 'PDFtalk Graphics Operations'.
+	ConcatenateMatrix comment: 'Modify the current transformation matrix (CTM) by concatenating the specified matrix. 
+Although the operands specify a matrix, they shall be written as six separate numbers, not as an array.'.
+	ConcatenateMatrix namespacePath: #(#PDFtalk).
 %
 # Define class TextStateOperation
 DoIt
@@ -58593,10 +58609,10 @@ The text state operators may appear outside text objects, and the values they se
 Like other graphics state parameters, these parameters shall be initialized to their default values at the beginning of each page'.
 	TextStateOperation namespacePath: #(#PDFtalk).
 %
-# Define class TextRenderingMode
+# Define class WordSpacing
 DoIt
 TextStateOperation
-	subclass: 'TextRenderingMode'
+	subclass: 'WordSpacing'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58604,31 +58620,17 @@ TextStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	TextRenderingMode category: 'PDFtalk Graphics Operations'.
-	TextRenderingMode comment: 'Set the text rendering mode, Tmode, to render. 
-Initial value: 0'.
-	TextRenderingMode namespacePath: #(#PDFtalk).
+	WordSpacing category: 'PDFtalk Graphics Operations'.
+	WordSpacing comment: 'Set the word spacing, Tw, to wordSpace, which shall be a number expressed in unscaled text space units. 
+Word spacing shall be used by the Tj, TJ, and '' operators. 
+Initial value: 0
+'.
+	WordSpacing namespacePath: #(#PDFtalk).
 %
-# Define class ConcatenateMatrix
-DoIt
-GraphicsStateOperation
-	subclass: 'ConcatenateMatrix'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ConcatenateMatrix category: 'PDFtalk Graphics Operations'.
-	ConcatenateMatrix comment: 'Modify the current transformation matrix (CTM) by concatenating the specified matrix. 
-Although the operands specify a matrix, they shall be written as six separate numbers, not as an array.'.
-	ConcatenateMatrix namespacePath: #(#PDFtalk).
-%
-# Define class InlineImageOperation
+# Define class CompatibilityOperation
 DoIt
 Operation
-	subclass: 'InlineImageOperation'
+	subclass: 'CompatibilityOperation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58636,38 +58638,17 @@ Operation
 	inDictionary: PDFtalk
 %
 DoIt
-	InlineImageOperation category: 'PDFtalk Graphics Operations'.
-	InlineImageOperation comment: 'PDF Inline Images as defined in PDF 32000_2008.pdf, section 8.9.7, pp. 214.
+	CompatibilityOperation category: 'PDFtalk Graphics Operations'.
+	CompatibilityOperation comment: 'PDF Content Streams as defined in PDF 32000_2008.pdf, section 7.8.2, pp. 81.
 
-As an alternative to the image XObjects, a sampled image may be specified in the form of an inline image. 
-This type of image shall be defined directly within the content stream in which it will be painted rather than as a separate object. 
-Because the inline format gives the reader less flexibility in managing the image data, it shall be used only for small images (4 KB or less).
-
-An inline image object shall be delimited in the content stream by the operators BI (begin image), ID (image data), and EI (end image). 
-BI and ID shall bracket a series of key-value pairs specifying the characteristics of the image, such as its dimensions and colour space; 
-the image data shall follow between the ID and EI operators. 
-The format is thus analogous to that of a stream object such as an image XObject:
-	BI
-	…Key-value pairs…
-	ID
-	…Image data…
-	EI'.
-	InlineImageOperation namespacePath: #(#PDFtalk).
-%
-# Define class EndInlineImage
-DoIt
-InlineImageOperation
-	subclass: 'EndInlineImage'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EndInlineImage category: 'PDFtalk Graphics Operations'.
-	EndInlineImage comment: 'End an inline image object'.
-	EndInlineImage namespacePath: #(#PDFtalk).
+Ordinarily, when a conforming reader encounters an operator in a content stream that it does not recognize, an error shall occur. 
+A pair of compatibility operators, BX and EX (PDF 1.1), shall modify this behaviour. 
+These operators shall occur in pairs and may be nested. 
+They bracket a compatibility section, a portion of a content stream within which unrecognized operators shall be ignored without error. 
+This mechanism enables a conforming writer to use operators defined in later versions of PDF without sacrificing compatibility with older applications. 
+It should be used only in cases where ignoring such newer operators is the appropriate thing to do. 
+The BX and EX operators are not themselves part of any graphics object or of the graphics state.'.
+	CompatibilityOperation namespacePath: #(#PDFtalk).
 %
 # Define class MarkedContentOperation
 DoIt
@@ -58709,10 +58690,10 @@ NOTE 4		The Contents entry of a page object, which may be either a single stream
 			is considered a single stream with respect to marked-content sequences.'.
 	MarkedContentOperation namespacePath: #(#PDFtalk).
 %
-# Define class MarkedContentPoint
+# Define class BeginMarkedContentWithProperties
 DoIt
 MarkedContentOperation
-	subclass: 'MarkedContentPoint'
+	subclass: 'BeginMarkedContentWithProperties'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58720,15 +58701,17 @@ MarkedContentOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	MarkedContentPoint category: 'PDFtalk Graphics Operations'.
-	MarkedContentPoint comment: 'Designate a marked-content point. 
-tag shall be a name object indicating the role or significance of the point'.
-	MarkedContentPoint namespacePath: #(#PDFtalk).
+	BeginMarkedContentWithProperties category: 'PDFtalk Graphics Operations'.
+	BeginMarkedContentWithProperties comment: 'Begin a marked-content sequence with an associated property list, terminated by a balancing EMC operator. 
+tag shall be a name object indicating the role or significance of the sequence. 
+properties shall be either an inline dictionary containing the property list or a name object associated with it in the 
+Properties subdictionary of the current resource dictionary'.
+	BeginMarkedContentWithProperties namespacePath: #(#PDFtalk).
 %
-# Define class AppendLine
+# Define class SetGraphicsState
 DoIt
-PathConstructionOperation
-	subclass: 'AppendLine'
+GraphicsStateOperation
+	subclass: 'SetGraphicsState'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58736,10 +58719,46 @@ PathConstructionOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	AppendLine category: 'PDFtalk Graphics Operations'.
-	AppendLine comment: 'Append a straight line segment from the current point to the point (x, y). 
-The new current point shall be (x, y)'.
-	AppendLine namespacePath: #(#PDFtalk).
+	SetGraphicsState category: 'PDFtalk Graphics Operations'.
+	SetGraphicsState comment: 'Set the specified parameters in the graphics state. 
+dictName shall be the name of a graphics state parameter dictionary in the ExtGState subdictionary of the current resource dictionary'.
+	SetGraphicsState namespacePath: #(#PDFtalk).
+%
+# Define class PathConstructionOperation
+DoIt
+Operation
+	subclass: 'PathConstructionOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PathConstructionOperation category: 'PDFtalk Graphics Operations'.
+	PathConstructionOperation comment: 'PDF Path Construction Operators as defined in PDF 32000_2008.pdf, section 8.5.2, pp. 132.
+
+A page description shall begin with an empty path and shall build up its definition by invoking one or more path construction operators to add segments to it. 
+The path construction operators may be invoked in any sequence, but the first one invoked shall be m or re to begin a new subpath. 
+The path definition may conclude with the application of a path-painting operator such as S, f, or b; 
+this operator may optionally be preceded by one of the clipping path operators W or W*.
+
+NOTE
+Note that the path construction operators do not place any marks on the page; only the painting operators do that. 
+A path definition is not complete until a path-painting operator has been applied to it.
+
+The path currently under construction is called the current path. In PDF (unlike PostScript), 
+the current path is not part of the graphics state and is not saved and restored along with the other graphics state parameters. 
+PDF paths shall be strictly internal objects with no explicit representation. 
+After the current path has been painted, it shall become no longer defined; 
+there is then no current path until a new one is begun with the m or re operator.
+
+The trailing endpoint of the segment most recently added to the current path is referred to as the current point.
+If the current path is empty, the current point shall be undefined. 
+Most operators that add a segment to the current path start at the current point; if the current point is undefined, an error shall be generated.
+
+All operands shall be numbers denoting coordinates in user space.'.
+	PathConstructionOperation namespacePath: #(#PDFtalk).
 %
 # Define class Move
 DoIt
@@ -58757,10 +58776,10 @@ DoIt
 If the previous path construction operator in the current path was also m, the new m overrides it; no vestige of the previous m operation remains in the path'.
 	Move namespacePath: #(#PDFtalk).
 %
-# Define class TextRise
+# Define class Stroke
 DoIt
-TextStateOperation
-	subclass: 'TextRise'
+PathPaintingOperation
+	subclass: 'Stroke'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58768,10 +58787,345 @@ TextStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	TextRise category: 'PDFtalk Graphics Operations'.
-	TextRise comment: 'Set the text rise, Trise, to rise, which shall be a number expressed in unscaled text space units. 
-Initial value: 0'.
-	TextRise namespacePath: #(#PDFtalk).
+	Stroke category: 'PDFtalk Graphics Operations'.
+	Stroke comment: 'Stroke the path'.
+	Stroke namespacePath: #(#PDFtalk).
+%
+# Define class TextObjectOperation
+DoIt
+Operation
+	subclass: 'TextObjectOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextObjectOperation category: 'PDFtalk Graphics Operations'.
+	TextObjectOperation comment: 'PDF Text Object Operator as defined in PDF 32000_2008.pdf, section 9.4, pp. 248.
+
+A PDF text object consists of operators that may show text strings, move the text position, and set text state and certain other parameters. 
+In addition, three parameters may be specified only within a text object and shall not persist from one text object to the next:
+	•	Tm, 	the text matrix
+	•	Tlm, 	the text line matrix
+	•	Trm, 	the text rendering matrix, which is actually just an intermediate result that combines the effects of text state parameters, 
+				the text matrix (Tm), and the current transformation matrix.
+
+A text object begins with the BT operator and ends with the ET operator.'.
+	TextObjectOperation namespacePath: #(#PDFtalk).
+%
+# Define class EndText
+DoIt
+TextObjectOperation
+	subclass: 'EndText'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EndText category: 'PDFtalk Graphics Operations'.
+	EndText comment: 'End a text object, discarding the text matrix'.
+	EndText namespacePath: #(#PDFtalk).
+%
+# Define class FillOld
+DoIt
+PathPaintingOperation
+	subclass: 'FillOld'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FillOld category: 'PDFtalk Graphics Operations'.
+	FillOld comment: 'Equivalent to f; included only for compatibility. 
+Although PDF reader applications shall be able to accept this operator, PDF writer applications should use f instead'.
+	FillOld namespacePath: #(#PDFtalk).
+%
+# Define class ClippingPathOperation
+DoIt
+Operation
+	subclass: 'ClippingPathOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ClippingPathOperation category: 'PDFtalk Graphics Operations'.
+	ClippingPathOperation comment: 'PDF Graphics State Operators as defined in PDF 32000_2008.pdf, section 8.5.4, pp. 137.
+
+The graphics state shall contain a current clipping path that limits the regions of the page affected by painting operators. 
+The closed subpaths of this path shall define the area that can be painted. 
+Marks falling inside this area shall be applied to the page; those falling outside it shall not be.
+
+In the context of the transparent imaging model (PDF 1.4), the current clipping path constrains an object’s shape). 
+The effective shape is the intersection of the object’s intrinsic shape with the clipping path; the source shape value shall be 0.0 outside this intersection. 
+Similarly, the shape of a transparency group (defined as the union of the shapes of its constituent objects) shall be influenced both 
+by the clipping path in effect when each of the objects is painted and by the one in effect at the time the group’s results are painted onto its backdrop.
+
+The initial clipping path shall include the entire page. 
+A clipping path operator (W or W*) may appear after the last path construction operator and before the path-painting operator that terminates a path object. 
+Although the clipping path operator appears before the painting operator, it shall not alter the clipping path at the point where it appears. 
+Rather, it shall modify the effect of the succeeding painting operator. 
+After the path has been painted, the clipping path in the graphics state shall be set to the intersection of the current clipping path and the newly constructed path.
+
+NOTE 1
+In addition to path objects, text objects may also be used for clipping.
+
+The n operator is a no-op path-painting operator; it shall cause no marks to be placed on the page, 
+but can be used with a clipping path operator to establish a new clipping path. 
+That is, after a path has been constructed, the sequence W n shall intersect that path with the current clipping path and shall establish a new clipping path.
+
+NOTE 2
+There is no way to enlarge the current clipping path or to set a new clipping path without reference to the current one. 
+However, since the clipping path is part of the graphics state, its effect can be localized to 
+specific graphics objects by enclosing the modification of the clipping path and the painting of those objects between a pair of q and Q operators. 
+Execution of the Q operator causes the clipping path to revert to the value that was saved by the q operator before the clipping path was modified.'.
+	ClippingPathOperation namespacePath: #(#PDFtalk).
+%
+# Define class ClipEvenOdd
+DoIt
+ClippingPathOperation
+	subclass: 'ClipEvenOdd'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ClipEvenOdd category: 'PDFtalk Graphics Operations'.
+	ClipEvenOdd comment: 'Modify the current clipping path by intersecting it with the current path, 
+using the even-odd rule to determine which regions lie inside the clipping path.
+'.
+	ClipEvenOdd namespacePath: #(#PDFtalk).
+%
+# Define class FillEvenOddAndStroke
+DoIt
+PathPaintingOperation
+	subclass: 'FillEvenOddAndStroke'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FillEvenOddAndStroke category: 'PDFtalk Graphics Operations'.
+	FillEvenOddAndStroke comment: 'Fill and then stroke the path, using the even-odd rule to determine the region to fill. 
+This operator shall produce the same result as B, except that the path is filled as if with f* instead of f'.
+	FillEvenOddAndStroke namespacePath: #(#PDFtalk).
+%
+# Define class TextShowingOperation
+DoIt
+Operation
+	subclass: 'TextShowingOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextShowingOperation category: 'PDFtalk Graphics Operations'.
+	TextShowingOperation comment: 'PDF Text Showing Operator as defined in PDF 32000_2008.pdf, section 9.4.3, pp. 250.
+
+The text-showing operators shall show text on the page, repositioning text space as they do so. 
+All of the operators shall interpret the text string and apply the text state parameters.
+
+The text-showing operators shall only appear within text objects.'.
+	TextShowingOperation namespacePath: #(#PDFtalk).
+%
+# Define class ShowTextOnNextLine
+DoIt
+TextShowingOperation
+	subclass: 'ShowTextOnNextLine'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ShowTextOnNextLine category: 'PDFtalk Graphics Operations'.
+	ShowTextOnNextLine comment: 'Move to the next line and show a text string. 
+This operator shall have the same effect as the code
+	T*
+	string Tj'.
+	ShowTextOnNextLine namespacePath: #(#PDFtalk).
+%
+# Define class XObjectOperation
+DoIt
+Operation
+	subclass: 'XObjectOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	XObjectOperation category: 'PDFtalk Graphics Operations'.
+	XObjectOperation comment: 'PDF External Objects as defined in PDF 32000_2008.pdf, section 8.8, pp. 201.
+
+An external object (commonly called an XObject) is a graphics object whose contents are defined by a self-contained stream, 
+separate from the content stream in which it is used. 
+There are three types of external objects:
+	•	An image XObject represents a sampled visual image such as a photograph.
+	•	A form XObject is a self-contained description of an arbitrary sequence of graphics objects.
+	•	A PostScript XObject contains a fragment of code expressed in the PostScript page description language. 
+		PostScript XObjects should not be used.
+
+Two further categories of external objects, group XObjects and reference XObjects (both PDF 1.4), 
+are actually specialized types of form XObjects with additional properties.
+
+Any XObject can be painted as part of another content stream by means of the Do operator. 
+This operator applies to any type of XObject—image, form, or PostScript. 
+The syntax is the same in all cases, although details of the operator’s behaviour differ depending on the type.'.
+	XObjectOperation namespacePath: #(#PDFtalk).
+%
+# Define class PaintXObject
+DoIt
+XObjectOperation
+	subclass: 'PaintXObject'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PaintXObject category: 'PDFtalk Graphics Operations'.
+	PaintXObject comment: 'Paint the specified XObject. 
+The operand name shall appear as a key in the XObject subdictionary of the current resource dictionary. 
+The associated value shall be a stream whose Type entry, if present, is XObject. 
+The effect of Do depends on the value of the XObject’s Subtype entry, which may be Image, Form, or PS'.
+	PaintXObject namespacePath: #(#PDFtalk).
+%
+# Define class Leading
+DoIt
+TextStateOperation
+	subclass: 'Leading'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Leading category: 'PDFtalk Graphics Operations'.
+	Leading comment: 'Set the text leading, Tl, to leading, which shall be a number expressed in unscaled text space units. 
+Text leading shall be used only by the T*, '', and  operators. 
+Initial value: 0
+'.
+	Leading namespacePath: #(#PDFtalk).
+%
+# Define class ClosePath
+DoIt
+PathConstructionOperation
+	subclass: 'ClosePath'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ClosePath category: 'PDFtalk Graphics Operations'.
+	ClosePath comment: 'Close the current subpath by appending a straight line segment from the current point to the starting point of the subpath. 
+If the current subpath is already closed, h shall do nothing.
+
+This operator terminates the current subpath. 
+Appending another segment to the current path shall begin a new subpath, even if the new segment begins at the endpoint reached by the h operation'.
+	ClosePath namespacePath: #(#PDFtalk).
+%
+# Define class ShowTextPositioned
+DoIt
+TextShowingOperation
+	subclass: 'ShowTextPositioned'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ShowTextPositioned category: 'PDFtalk Graphics Operations'.
+	ShowTextPositioned comment: 'Show one or more text strings, allowing individual glyph positioning. 
+Each element of array shall be either a string or a number. 
+If the element is a string, this operator shall show the string. 
+If it is a number, the operator shall adjust the text position by that amount; that is, it shall translate the text matrix, Tm. 
+The number shall be expressed in thousandths of a unit of text space. 
+This amount shall be subtracted from the current horizontal or vertical coordinate, depending on the writing mode. 
+In the default coordinate system, a positive adjustment has the effect of moving the next glyph painted either to the left or down by the given amount'.
+	ShowTextPositioned namespacePath: #(#PDFtalk).
+%
+# Define class InlineImageOperation
+DoIt
+Operation
+	subclass: 'InlineImageOperation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	InlineImageOperation category: 'PDFtalk Graphics Operations'.
+	InlineImageOperation comment: 'PDF Inline Images as defined in PDF 32000_2008.pdf, section 8.9.7, pp. 214.
+
+As an alternative to the image XObjects, a sampled image may be specified in the form of an inline image. 
+This type of image shall be defined directly within the content stream in which it will be painted rather than as a separate object. 
+Because the inline format gives the reader less flexibility in managing the image data, it shall be used only for small images (4 KB or less).
+
+An inline image object shall be delimited in the content stream by the operators BI (begin image), ID (image data), and EI (end image). 
+BI and ID shall bracket a series of key-value pairs specifying the characteristics of the image, such as its dimensions and colour space; 
+the image data shall follow between the ID and EI operators. 
+The format is thus analogous to that of a stream object such as an image XObject:
+	BI
+	…Key-value pairs…
+	ID
+	…Image data…
+	EI'.
+	InlineImageOperation namespacePath: #(#PDFtalk).
+%
+# Define class BeginImageData
+DoIt
+InlineImageOperation
+	subclass: 'BeginImageData'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BeginImageData category: 'PDFtalk Graphics Operations'.
+	BeginImageData comment: 'Begin the image data for an inline image object'.
+	BeginImageData namespacePath: #(#PDFtalk).
+%
+# Define class MarkedContentPointWithProperties
+DoIt
+MarkedContentOperation
+	subclass: 'MarkedContentPointWithProperties'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MarkedContentPointWithProperties category: 'PDFtalk Graphics Operations'.
+	MarkedContentPointWithProperties comment: 'Designate a marked-content point with an associated property list. 
+tag shall be a name object indicating the role or significance of the point. 
+properties shall be either an inline dictionary containing the property list or a name object associated with it in the Properties subdictionary of the current resource dictionary'.
+	MarkedContentPointWithProperties namespacePath: #(#PDFtalk).
 %
 # Define class Type3FontOperation
 DoIt
@@ -58822,10 +59176,10 @@ This operator shall only be permitted in a content stream appearing in a Type 3 
 It is typically used only if the glyph description executes operators to set the colour explicitly.'.
 	SetType3GlyphWidth namespacePath: #(#PDFtalk).
 %
-# Define class SetLineWidth
+# Define class Clip
 DoIt
-GraphicsStateOperation
-	subclass: 'SetLineWidth'
+ClippingPathOperation
+	subclass: 'Clip'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58833,29 +59187,16 @@ GraphicsStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetLineWidth category: 'PDFtalk Graphics Operations'.
-	SetLineWidth comment: 'Set the line width in the graphics state'.
-	SetLineWidth namespacePath: #(#PDFtalk).
+	Clip category: 'PDFtalk Graphics Operations'.
+	Clip comment: 'Modify the current clipping path by intersecting it with the current path, 
+using the nonzero winding number rule to determine which regions lie inside the clipping path.
+'.
+	Clip namespacePath: #(#PDFtalk).
 %
-# Define class EndMarkedContent
-DoIt
-MarkedContentOperation
-	subclass: 'EndMarkedContent'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EndMarkedContent category: 'PDFtalk Graphics Operations'.
-	EndMarkedContent comment: 'End a marked-content sequence begun by a BMC or BDC operator'.
-	EndMarkedContent namespacePath: #(#PDFtalk).
-%
-# Define class SetStrokingColorSpecial
+# Define class SetStrokingGray
 DoIt
 ColourOperation
-	subclass: 'SetStrokingColorSpecial'
+	subclass: 'SetStrokingGray'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58863,15 +59204,60 @@ ColourOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetStrokingColorSpecial category: 'PDFtalk Graphics Operations'.
-	SetStrokingColorSpecial comment: 'Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour spaces.
-If the current stroking colour space is a Separation, DeviceN, or ICCBased colour space, the operands c1…cn shall be numbers. 
-The number of operands and their interpretation depends on the colour space.
-
-If the current stroking colour space is a Pattern colour space, name shall be the name of an entry in the Pattern subdictionary of the current resource dictionary. 
-For an uncoloured tiling pattern (PatternType = 1 and PaintType = 2), c1…cn shall be component values specifying a colour in the pattern’s underlying colour space. 
-For other types of patterns, these operands shall not be specified.'.
-	SetStrokingColorSpecial namespacePath: #(#PDFtalk).
+	SetStrokingGray category: 'PDFtalk Graphics Operations'.
+	SetStrokingGray comment: 'Set the stroking colour space to DeviceGray (or the DefaultGray colour space) and set the gray level to use for stroking operations. 
+gray shall be a number between 0.0 (black) and 1.0 (white).'.
+	SetStrokingGray namespacePath: #(#PDFtalk).
+%
+# Define class NextLineRelativeSetLeading
+DoIt
+TextPositioningOperation
+	subclass: 'NextLineRelativeSetLeading'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NextLineRelativeSetLeading category: 'PDFtalk Graphics Operations'.
+	NextLineRelativeSetLeading comment: 'Move to the start of the next line, offset from the start of the current line by (tx, ty). 
+As a side effect, this operator shall set the leading parameter in the text state. 
+This operator shall have the same effect as this code:
+	-ty TL
+	tx ty Td'.
+	NextLineRelativeSetLeading namespacePath: #(#PDFtalk).
+%
+# Define class SetRenderingIntent
+DoIt
+GraphicsStateOperation
+	subclass: 'SetRenderingIntent'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetRenderingIntent category: 'PDFtalk Graphics Operations'.
+	SetRenderingIntent comment: 'Set the colour rendering intent in the graphics state'.
+	SetRenderingIntent namespacePath: #(#PDFtalk).
+%
+# Define class TextRenderingMode
+DoIt
+TextStateOperation
+	subclass: 'TextRenderingMode'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextRenderingMode category: 'PDFtalk Graphics Operations'.
+	TextRenderingMode comment: 'Set the text rendering mode, Tmode, to render. 
+Initial value: 0'.
+	TextRenderingMode namespacePath: #(#PDFtalk).
 %
 # Define class SetNonStrokingColorSpace
 DoIt
@@ -58888,10 +59274,10 @@ DoIt
 	SetNonStrokingColorSpace comment: 'Same as CS but used for nonstroking operations.'.
 	SetNonStrokingColorSpace namespacePath: #(#PDFtalk).
 %
-# Define class WordSpacing
+# Define class FillEvenOdd
 DoIt
-TextStateOperation
-	subclass: 'WordSpacing'
+PathPaintingOperation
+	subclass: 'FillEvenOdd'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -58899,12 +59285,346 @@ TextStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	WordSpacing category: 'PDFtalk Graphics Operations'.
-	WordSpacing comment: 'Set the word spacing, Tw, to wordSpace, which shall be a number expressed in unscaled text space units. 
-Word spacing shall be used by the Tj, TJ, and '' operators. 
-Initial value: 0
-'.
-	WordSpacing namespacePath: #(#PDFtalk).
+	FillEvenOdd category: 'PDFtalk Graphics Operations'.
+	FillEvenOdd comment: 'Fill the path, using the even-odd rule to determine the region to fill'.
+	FillEvenOdd namespacePath: #(#PDFtalk).
+%
+# Define class HorizontalScaling
+DoIt
+TextStateOperation
+	subclass: 'HorizontalScaling'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	HorizontalScaling category: 'PDFtalk Graphics Operations'.
+	HorizontalScaling comment: 'Set the horizontal scaling, Th, to (scale ÷ 100). 
+scale shall be a number specifying the percentage of the normal width. 
+Initial value: 100 (normal width)'.
+	HorizontalScaling namespacePath: #(#PDFtalk).
+%
+# Define class FillAndStrokeClosed
+DoIt
+PathPaintingOperation
+	subclass: 'FillAndStrokeClosed'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FillAndStrokeClosed category: 'PDFtalk Graphics Operations'.
+	FillAndStrokeClosed comment: 'Close, fill, and then stroke the path, using the nonzero winding number rule to determine the region to fill. 
+This operator shall have the same effect as the sequence h B'.
+	FillAndStrokeClosed namespacePath: #(#PDFtalk).
+%
+# Define class AppendLine
+DoIt
+PathConstructionOperation
+	subclass: 'AppendLine'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	AppendLine category: 'PDFtalk Graphics Operations'.
+	AppendLine comment: 'Append a straight line segment from the current point to the point (x, y). 
+The new current point shall be (x, y)'.
+	AppendLine namespacePath: #(#PDFtalk).
+%
+# Define class EndCompatibility
+DoIt
+CompatibilityOperation
+	subclass: 'EndCompatibility'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EndCompatibility category: 'PDFtalk Graphics Operations'.
+	EndCompatibility comment: 'End a compatibility section begun by a balancing BX operator. 
+Ignore any unrecognized operands and operators from previous matching BX onward.'.
+	EndCompatibility namespacePath: #(#PDFtalk).
+%
+# Define class SetStrokingColor
+DoIt
+ColourOperation
+	subclass: 'SetStrokingColor'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetStrokingColor category: 'PDFtalk Graphics Operations'.
+	SetStrokingColor comment: 'Set the colour to use for stroking operations in a device, CIE-based (other than ICCBased), or Indexed colour space. 
+The number of operands required and their interpretation depends on the current stroking colour space:
+For DeviceGray, CalGray, and Indexed colour spaces, one operand shall be required (n = 1).
+For DeviceRGB, CalRGB, and Lab colour spaces, three operands shall be required (n = 3).
+For DeviceCMYK, four operands shall be required (n = 4).'.
+	SetStrokingColor namespacePath: #(#PDFtalk).
+%
+# Define class SetFlatness
+DoIt
+GraphicsStateOperation
+	subclass: 'SetFlatness'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetFlatness category: 'PDFtalk Graphics Operations'.
+	SetFlatness comment: 'Set the flatness tolerance in the graphics state. 
+flatness is a number in the range 0 to 100; 
+a value of 0 shall specify the output device’s default flatness tolerance'.
+	SetFlatness namespacePath: #(#PDFtalk).
+%
+# Define class BeginText
+DoIt
+TextObjectOperation
+	subclass: 'BeginText'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BeginText category: 'PDFtalk Graphics Operations'.
+	BeginText comment: 'Begin a text object, initializing the text matrix, Tm, and the text line matrix, Tlm, to the identity matrix. 
+Text objects shall not be nested; a second BT shall not appear before an ET'.
+	BeginText namespacePath: #(#PDFtalk).
+%
+# Define class ShowText
+DoIt
+TextShowingOperation
+	subclass: 'ShowText'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ShowText category: 'PDFtalk Graphics Operations'.
+	ShowText comment: 'Show a text string'.
+	ShowText namespacePath: #(#PDFtalk).
+%
+# Define class SetMiterLimit
+DoIt
+GraphicsStateOperation
+	subclass: 'SetMiterLimit'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetMiterLimit category: 'PDFtalk Graphics Operations'.
+	SetMiterLimit comment: 'Set the miter limit in the graphics state'.
+	SetMiterLimit namespacePath: #(#PDFtalk).
+%
+# Define class SetNonStrokingGray
+DoIt
+ColourOperation
+	subclass: 'SetNonStrokingGray'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetNonStrokingGray category: 'PDFtalk Graphics Operations'.
+	SetNonStrokingGray comment: 'Same as G but used for nonstroking operations.'.
+	SetNonStrokingGray namespacePath: #(#PDFtalk).
+%
+# Define class AppendCurveWithoutC1
+DoIt
+PathConstructionOperation
+	subclass: 'AppendCurveWithoutC1'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	AppendCurveWithoutC1 category: 'PDFtalk Graphics Operations'.
+	AppendCurveWithoutC1 comment: 'Append a cubic Bézier curve to the current path. 
+The curve shall extend from the current point to the point (x3, y3), using the current point and (x2, y2) as the Bézier control points. 
+The new current point shall be (x3, y3)'.
+	AppendCurveWithoutC1 namespacePath: #(#PDFtalk).
+%
+# Define class AppendCurveWithoutC2
+DoIt
+PathConstructionOperation
+	subclass: 'AppendCurveWithoutC2'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	AppendCurveWithoutC2 category: 'PDFtalk Graphics Operations'.
+	AppendCurveWithoutC2 comment: 'Append a cubic Bézier curve to the current path. 
+The curve shall extend from the current point to the point (x3, y3), using (x1, y1) and (x3, y3) as the Bézier control points. 
+The new current point shall be (x3, y3)'.
+	AppendCurveWithoutC2 namespacePath: #(#PDFtalk).
+%
+# Define class BeginMarkedContent
+DoIt
+MarkedContentOperation
+	subclass: 'BeginMarkedContent'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BeginMarkedContent category: 'PDFtalk Graphics Operations'.
+	BeginMarkedContent comment: 'Begin a marked-content sequence terminated by a balancing EMC operator. 
+tag shall be a name object indicating the role or significance of the sequence'.
+	BeginMarkedContent namespacePath: #(#PDFtalk).
+%
+# Define class EndPath
+DoIt
+PathPaintingOperation
+	subclass: 'EndPath'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EndPath category: 'PDFtalk Graphics Operations'.
+	EndPath comment: 'End the path object without filling or stroking it. 
+This operator shall be a path-painting no-op, used primarily for the side effect of changing the current clipping path'.
+	EndPath namespacePath: #(#PDFtalk).
+%
+# Define class EndMarkedContent
+DoIt
+MarkedContentOperation
+	subclass: 'EndMarkedContent'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EndMarkedContent category: 'PDFtalk Graphics Operations'.
+	EndMarkedContent comment: 'End a marked-content sequence begun by a BMC or BDC operator'.
+	EndMarkedContent namespacePath: #(#PDFtalk).
+%
+# Define class SetJoin
+DoIt
+GraphicsStateOperation
+	subclass: 'SetJoin'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetJoin category: 'PDFtalk Graphics Operations'.
+	SetJoin comment: 'Set the line join style in the graphics state'.
+	SetJoin namespacePath: #(#PDFtalk).
+%
+# Define class TextFont
+DoIt
+TextStateOperation
+	subclass: 'TextFont'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextFont category: 'PDFtalk Graphics Operations'.
+	TextFont comment: 'Set the text font, Tf, to font and the text font size, Tfs, to size. 
+font shall be the name of a font resource in the Font subdictionary of the current resource dictionary; 
+size shall be a number representing a scale factor. 
+There is no initial value for either font or size; they shall be specified explicitly by using Tf before any text is shown'.
+	TextFont namespacePath: #(#PDFtalk).
+%
+# Define class SetStrokingColorSpace
+DoIt
+ColourOperation
+	subclass: 'SetStrokingColorSpace'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetStrokingColorSpace category: 'PDFtalk Graphics Operations'.
+	SetStrokingColorSpace comment: 'Set the current colour space to use for stroking operations. 
+The operand name shall be a name object. 
+If the colour space is one that can be specified by a name and no additional parameters (DeviceGray, DeviceRGB, DeviceCMYK, and certain cases of Pattern), 
+the name may be specified directly. 
+Otherwise, it shall be a name defined in the ColorSpace subdictionary of the current resource dictionary; 
+the associated value shall be an array describing the colour space.
+
+The names DeviceGray, DeviceRGB, DeviceCMYK, and Pattern always identify the corresponding colour spaces directly; 
+they never refer to resources in the ColorSpace subdictionary.
+
+The CS operator shall also set the current stroking colour to its initial value, which depends on the colour space:
+In a DeviceGray, DeviceRGB, CalGray, or CalRGB colour space, the initial colour shall have all components equal to 0.0.
+In a DeviceCMYK colour space, the initial colour shall be [0.0 0.0 0.0 1.0].
+In a Lab or ICCBased colour space, the initial colour shall have all components equal to 0.0 unless that falls outside the intervals specified by the space’s Range entry, in which case the nearest valid value shall be substituted.
+In an Indexed colour space, the initial colour value shall be 0.
+In a Separation or DeviceN colour space, the initial tint value shall be 1.0 for all colorants.
+In a Pattern colour space, the initial colour shall be a pattern object that causes nothing to be painted.'.
+	SetStrokingColorSpace namespacePath: #(#PDFtalk).
+%
+# Define class SetNonStrokingCMYK
+DoIt
+ColourOperation
+	subclass: 'SetNonStrokingCMYK'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SetNonStrokingCMYK category: 'PDFtalk Graphics Operations'.
+	SetNonStrokingCMYK comment: 'Same as K but used for nonstroking operations.'.
+	SetNonStrokingCMYK namespacePath: #(#PDFtalk).
+%
+# Define class EndInlineImage
+DoIt
+InlineImageOperation
+	subclass: 'EndInlineImage'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	EndInlineImage category: 'PDFtalk Graphics Operations'.
+	EndInlineImage comment: 'End an inline image object'.
+	EndInlineImage namespacePath: #(#PDFtalk).
 %
 # Define class NextLine
 DoIt
@@ -58924,276 +59644,6 @@ where Tl denotes the current leading parameter in the text state.
 The negative of Tl is used here because Tl is the text leading expressed as a positive number. 
 Going to the next line entails decreasing the y coordinate'.
 	NextLine namespacePath: #(#PDFtalk).
-%
-# Define class ShowTextPositioned
-DoIt
-TextShowingOperation
-	subclass: 'ShowTextPositioned'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ShowTextPositioned category: 'PDFtalk Graphics Operations'.
-	ShowTextPositioned comment: 'Show one or more text strings, allowing individual glyph positioning. 
-Each element of array shall be either a string or a number. 
-If the element is a string, this operator shall show the string. 
-If it is a number, the operator shall adjust the text position by that amount; that is, it shall translate the text matrix, Tm. 
-The number shall be expressed in thousandths of a unit of text space. 
-This amount shall be subtracted from the current horizontal or vertical coordinate, depending on the writing mode. 
-In the default coordinate system, a positive adjustment has the effect of moving the next glyph painted either to the left or down by the given amount'.
-	ShowTextPositioned namespacePath: #(#PDFtalk).
-%
-# Define class SetStrokingCMYK
-DoIt
-ColourOperation
-	subclass: 'SetStrokingCMYK'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetStrokingCMYK category: 'PDFtalk Graphics Operations'.
-	SetStrokingCMYK comment: 'Set the stroking colour space to DeviceCMYK (or the DefaultCMYK colour space) and set the colour to use for stroking operations. 
-Each operand shall be a number between 0.0 (zero concentration) and 1.0 (maximum concentration). 
-The behaviour of this operator is affected by the overprint mode.'.
-	SetStrokingCMYK namespacePath: #(#PDFtalk).
-%
-# Define class AppendCurveWithoutC1
-DoIt
-PathConstructionOperation
-	subclass: 'AppendCurveWithoutC1'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AppendCurveWithoutC1 category: 'PDFtalk Graphics Operations'.
-	AppendCurveWithoutC1 comment: 'Append a cubic Bézier curve to the current path. 
-The curve shall extend from the current point to the point (x3, y3), using the current point and (x2, y2) as the Bézier control points. 
-The new current point shall be (x3, y3)'.
-	AppendCurveWithoutC1 namespacePath: #(#PDFtalk).
-%
-# Define class SetDash
-DoIt
-GraphicsStateOperation
-	subclass: 'SetDash'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetDash category: 'PDFtalk Graphics Operations'.
-	SetDash comment: 'Set the line dash pattern in the graphics state'.
-	SetDash namespacePath: #(#PDFtalk).
-%
-# Define class ClippingPathOperation
-DoIt
-Operation
-	subclass: 'ClippingPathOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ClippingPathOperation category: 'PDFtalk Graphics Operations'.
-	ClippingPathOperation comment: 'PDF Graphics State Operators as defined in PDF 32000_2008.pdf, section 8.5.4, pp. 137.
-
-The graphics state shall contain a current clipping path that limits the regions of the page affected by painting operators. 
-The closed subpaths of this path shall define the area that can be painted. 
-Marks falling inside this area shall be applied to the page; those falling outside it shall not be.
-
-In the context of the transparent imaging model (PDF 1.4), the current clipping path constrains an object’s shape). 
-The effective shape is the intersection of the object’s intrinsic shape with the clipping path; the source shape value shall be 0.0 outside this intersection. 
-Similarly, the shape of a transparency group (defined as the union of the shapes of its constituent objects) shall be influenced both 
-by the clipping path in effect when each of the objects is painted and by the one in effect at the time the group’s results are painted onto its backdrop.
-
-The initial clipping path shall include the entire page. 
-A clipping path operator (W or W*) may appear after the last path construction operator and before the path-painting operator that terminates a path object. 
-Although the clipping path operator appears before the painting operator, it shall not alter the clipping path at the point where it appears. 
-Rather, it shall modify the effect of the succeeding painting operator. 
-After the path has been painted, the clipping path in the graphics state shall be set to the intersection of the current clipping path and the newly constructed path.
-
-NOTE 1
-In addition to path objects, text objects may also be used for clipping.
-
-The n operator is a no-op path-painting operator; it shall cause no marks to be placed on the page, 
-but can be used with a clipping path operator to establish a new clipping path. 
-That is, after a path has been constructed, the sequence W n shall intersect that path with the current clipping path and shall establish a new clipping path.
-
-NOTE 2
-There is no way to enlarge the current clipping path or to set a new clipping path without reference to the current one. 
-However, since the clipping path is part of the graphics state, its effect can be localized to 
-specific graphics objects by enclosing the modification of the clipping path and the painting of those objects between a pair of q and Q operators. 
-Execution of the Q operator causes the clipping path to revert to the value that was saved by the q operator before the clipping path was modified.'.
-	ClippingPathOperation namespacePath: #(#PDFtalk).
-%
-# Define class Clip
-DoIt
-ClippingPathOperation
-	subclass: 'Clip'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Clip category: 'PDFtalk Graphics Operations'.
-	Clip comment: 'Modify the current clipping path by intersecting it with the current path, 
-using the nonzero winding number rule to determine which regions lie inside the clipping path.
-'.
-	Clip namespacePath: #(#PDFtalk).
-%
-# Define class FillEvenOddAndStrokeClosed
-DoIt
-PathPaintingOperation
-	subclass: 'FillEvenOddAndStrokeClosed'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FillEvenOddAndStrokeClosed category: 'PDFtalk Graphics Operations'.
-	FillEvenOddAndStrokeClosed comment: 'Close, fill, and then stroke the path, using the even-odd rule to determine the region to fill. 
-This operator shall have the same effect as the sequence h B*'.
-	FillEvenOddAndStrokeClosed namespacePath: #(#PDFtalk).
-%
-# Define class SetJoin
-DoIt
-GraphicsStateOperation
-	subclass: 'SetJoin'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetJoin category: 'PDFtalk Graphics Operations'.
-	SetJoin comment: 'Set the line join style in the graphics state'.
-	SetJoin namespacePath: #(#PDFtalk).
-%
-# Define class XObjectOperation
-DoIt
-Operation
-	subclass: 'XObjectOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	XObjectOperation category: 'PDFtalk Graphics Operations'.
-	XObjectOperation comment: 'PDF External Objects as defined in PDF 32000_2008.pdf, section 8.8, pp. 201.
-
-An external object (commonly called an XObject) is a graphics object whose contents are defined by a self-contained stream, 
-separate from the content stream in which it is used. 
-There are three types of external objects:
-	•	An image XObject represents a sampled visual image such as a photograph.
-	•	A form XObject is a self-contained description of an arbitrary sequence of graphics objects.
-	•	A PostScript XObject contains a fragment of code expressed in the PostScript page description language. 
-		PostScript XObjects should not be used.
-
-Two further categories of external objects, group XObjects and reference XObjects (both PDF 1.4), 
-are actually specialized types of form XObjects with additional properties.
-
-Any XObject can be painted as part of another content stream by means of the Do operator. 
-This operator applies to any type of XObject—image, form, or PostScript. 
-The syntax is the same in all cases, although details of the operator’s behaviour differ depending on the type.'.
-	XObjectOperation namespacePath: #(#PDFtalk).
-%
-# Define class PaintXObject
-DoIt
-XObjectOperation
-	subclass: 'PaintXObject'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PaintXObject category: 'PDFtalk Graphics Operations'.
-	PaintXObject comment: 'Paint the specified XObject. 
-The operand name shall appear as a key in the XObject subdictionary of the current resource dictionary. 
-The associated value shall be a stream whose Type entry, if present, is XObject. 
-The effect of Do depends on the value of the XObject’s Subtype entry, which may be Image, Form, or PS'.
-	PaintXObject namespacePath: #(#PDFtalk).
-%
-# Define class NextLineRelative
-DoIt
-TextPositioningOperation
-	subclass: 'NextLineRelative'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NextLineRelative category: 'PDFtalk Graphics Operations'.
-	NextLineRelative comment: 'Move to the start of the next line, offset from the start of the current line by (tx, ty). 
-tx and ty shall denote numbers expressed in unscaled text space units. 
-More precisely, this operator shall perform these assignments:
-                    [ 1  0  0 ]
-Tm := Tlm := [  0  1  0 ] * Tlm
-                    [ tx ty 1 ]
-'.
-	NextLineRelative namespacePath: #(#PDFtalk).
-%
-# Define class TextObjectOperation
-DoIt
-Operation
-	subclass: 'TextObjectOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TextObjectOperation category: 'PDFtalk Graphics Operations'.
-	TextObjectOperation comment: 'PDF Text Object Operator as defined in PDF 32000_2008.pdf, section 9.4, pp. 248.
-
-A PDF text object consists of operators that may show text strings, move the text position, and set text state and certain other parameters. 
-In addition, three parameters may be specified only within a text object and shall not persist from one text object to the next:
-	•	Tm, 	the text matrix
-	•	Tlm, 	the text line matrix
-	•	Trm, 	the text rendering matrix, which is actually just an intermediate result that combines the effects of text state parameters, 
-				the text matrix (Tm), and the current transformation matrix.
-
-A text object begins with the BT operator and ends with the ET operator.'.
-	TextObjectOperation namespacePath: #(#PDFtalk).
-%
-# Define class BeginText
-DoIt
-TextObjectOperation
-	subclass: 'BeginText'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	BeginText category: 'PDFtalk Graphics Operations'.
-	BeginText comment: 'Begin a text object, initializing the text matrix, Tm, and the text line matrix, Tlm, to the identity matrix. 
-Text objects shall not be nested; a second BT shall not appear before an ET'.
-	BeginText namespacePath: #(#PDFtalk).
 %
 # Define class SetType3GlyphWidthAndBoundingBox
 DoIt
@@ -59230,40 +59680,10 @@ however, an image mask is acceptable, since it merely defines a region of the pa
 This operator shall be used only in a content stream appearing in a Type 3 font’s CharProcs dictionary'.
 	SetType3GlyphWidthAndBoundingBox namespacePath: #(#PDFtalk).
 %
-# Define class BeginImageData
-DoIt
-InlineImageOperation
-	subclass: 'BeginImageData'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	BeginImageData category: 'PDFtalk Graphics Operations'.
-	BeginImageData comment: 'Begin the image data for an inline image object'.
-	BeginImageData namespacePath: #(#PDFtalk).
-%
-# Define class RestoreState
-DoIt
-GraphicsStateOperation
-	subclass: 'RestoreState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	RestoreState category: 'PDFtalk Graphics Operations'.
-	RestoreState comment: 'Restore the graphics state by removing the most recently saved state from the stack and making it the current state'.
-	RestoreState namespacePath: #(#PDFtalk).
-%
-# Define class AppendCurveWithoutC2
+# Define class AppendRectangle
 DoIt
 PathConstructionOperation
-	subclass: 'AppendCurveWithoutC2'
+	subclass: 'AppendRectangle'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59271,16 +59691,22 @@ PathConstructionOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	AppendCurveWithoutC2 category: 'PDFtalk Graphics Operations'.
-	AppendCurveWithoutC2 comment: 'Append a cubic Bézier curve to the current path. 
-The curve shall extend from the current point to the point (x3, y3), using (x1, y1) and (x3, y3) as the Bézier control points. 
-The new current point shall be (x3, y3)'.
-	AppendCurveWithoutC2 namespacePath: #(#PDFtalk).
+	AppendRectangle category: 'PDFtalk Graphics Operations'.
+	AppendRectangle comment: 'Append a rectangle to the current path as a complete subpath, with lower-left corner (x, y) and dimensions width and height in user space. 
+The operation
+	x y width height re
+is equivalent to
+	x y m
+	(x + width) y l
+	(x + width) (y + height) l
+	x (y + height) l
+	h'.
+	AppendRectangle namespacePath: #(#PDFtalk).
 %
-# Define class FillEvenOddAndStroke
+# Define class FillAndStroke
 DoIt
 PathPaintingOperation
-	subclass: 'FillEvenOddAndStroke'
+	subclass: 'FillAndStroke'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59288,54 +59714,18 @@ PathPaintingOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	FillEvenOddAndStroke category: 'PDFtalk Graphics Operations'.
-	FillEvenOddAndStroke comment: 'Fill and then stroke the path, using the even-odd rule to determine the region to fill. 
-This operator shall produce the same result as B, except that the path is filled as if with f* instead of f'.
-	FillEvenOddAndStroke namespacePath: #(#PDFtalk).
-%
-# Define class StrokeClosed
-DoIt
-PathPaintingOperation
-	subclass: 'StrokeClosed'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StrokeClosed category: 'PDFtalk Graphics Operations'.
-	StrokeClosed comment: 'Close and stroke the path. 
-This operator shall have the same effect as the sequence h S'.
-	StrokeClosed namespacePath: #(#PDFtalk).
-%
-# Define class CompatibilityOperation
-DoIt
-Operation
-	subclass: 'CompatibilityOperation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CompatibilityOperation category: 'PDFtalk Graphics Operations'.
-	CompatibilityOperation comment: 'PDF Content Streams as defined in PDF 32000_2008.pdf, section 7.8.2, pp. 81.
+	FillAndStroke category: 'PDFtalk Graphics Operations'.
+	FillAndStroke comment: 'Fill and then stroke the path, using the nonzero winding number rule to determine the region to fill. 
+This operator shall produce the same result as constructing two identical path objects, painting the first with f and the second with S.
 
-Ordinarily, when a conforming reader encounters an operator in a content stream that it does not recognize, an error shall occur. 
-A pair of compatibility operators, BX and EX (PDF 1.1), shall modify this behaviour. 
-These operators shall occur in pairs and may be nested. 
-They bracket a compatibility section, a portion of a content stream within which unrecognized operators shall be ignored without error. 
-This mechanism enables a conforming writer to use operators defined in later versions of PDF without sacrificing compatibility with older applications. 
-It should be used only in cases where ignoring such newer operators is the appropriate thing to do. 
-The BX and EX operators are not themselves part of any graphics object or of the graphics state.'.
-	CompatibilityOperation namespacePath: #(#PDFtalk).
+NOTE
+The filling and stroking portions of the operation consult different values of several graphics state parameters, such as the current colour'.
+	FillAndStroke namespacePath: #(#PDFtalk).
 %
-# Define class EndCompatibility
+# Define class ShowTextOnNextLineWithSpacing
 DoIt
-CompatibilityOperation
-	subclass: 'EndCompatibility'
+TextShowingOperation
+	subclass: 'ShowTextOnNextLineWithSpacing'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59343,15 +59733,20 @@ CompatibilityOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	EndCompatibility category: 'PDFtalk Graphics Operations'.
-	EndCompatibility comment: 'End a compatibility section begun by a balancing BX operator. 
-Ignore any unrecognized operands and operators from previous matching BX onward.'.
-	EndCompatibility namespacePath: #(#PDFtalk).
+	ShowTextOnNextLineWithSpacing category: 'PDFtalk Graphics Operations'.
+	ShowTextOnNextLineWithSpacing comment: 'Move to the next line and show a text string, using aw as the word spacing and ac as the character spacing 
+(setting the corresponding parameters in the text state). 
+aw and ac shall be numbers expressed in unscaled text space units. 
+This operator shall have the same effect as this code:
+	aw Tw
+	ac Tc
+	string '''.
+	ShowTextOnNextLineWithSpacing namespacePath: #(#PDFtalk).
 %
-# Define class TextFont
+# Define class TextRise
 DoIt
 TextStateOperation
-	subclass: 'TextFont'
+	subclass: 'TextRise'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59359,35 +59754,15 @@ TextStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	TextFont category: 'PDFtalk Graphics Operations'.
-	TextFont comment: 'Set the text font, Tf, to font and the text font size, Tfs, to size. 
-font shall be the name of a font resource in the Font subdictionary of the current resource dictionary; 
-size shall be a number representing a scale factor. 
-There is no initial value for either font or size; they shall be specified explicitly by using Tf before any text is shown'.
-	TextFont namespacePath: #(#PDFtalk).
+	TextRise category: 'PDFtalk Graphics Operations'.
+	TextRise comment: 'Set the text rise, Trise, to rise, which shall be a number expressed in unscaled text space units. 
+Initial value: 0'.
+	TextRise namespacePath: #(#PDFtalk).
 %
-# Define class Leading
-DoIt
-TextStateOperation
-	subclass: 'Leading'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Leading category: 'PDFtalk Graphics Operations'.
-	Leading comment: 'Set the text leading, Tl, to leading, which shall be a number expressed in unscaled text space units. 
-Text leading shall be used only by the T*, '', and  operators. 
-Initial value: 0
-'.
-	Leading namespacePath: #(#PDFtalk).
-%
-# Define class SetCap
+# Define class SetDash
 DoIt
 GraphicsStateOperation
-	subclass: 'SetCap'
+	subclass: 'SetDash'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59395,156 +59770,9 @@ GraphicsStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetCap category: 'PDFtalk Graphics Operations'.
-	SetCap comment: 'Set the line cap style in the graphics state'.
-	SetCap namespacePath: #(#PDFtalk).
-%
-# Define class ShowText
-DoIt
-TextShowingOperation
-	subclass: 'ShowText'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ShowText category: 'PDFtalk Graphics Operations'.
-	ShowText comment: 'Show a text string'.
-	ShowText namespacePath: #(#PDFtalk).
-%
-# Define class FillOld
-DoIt
-PathPaintingOperation
-	subclass: 'FillOld'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FillOld category: 'PDFtalk Graphics Operations'.
-	FillOld comment: 'Equivalent to f; included only for compatibility. 
-Although PDF reader applications shall be able to accept this operator, PDF writer applications should use f instead'.
-	FillOld namespacePath: #(#PDFtalk).
-%
-# Define class SetNonStrokingColor
-DoIt
-ColourOperation
-	subclass: 'SetNonStrokingColor'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetNonStrokingColor category: 'PDFtalk Graphics Operations'.
-	SetNonStrokingColor comment: 'Same as SC but used for nonstroking operations.'.
-	SetNonStrokingColor namespacePath: #(#PDFtalk).
-%
-# Define class HorizontalScaling
-DoIt
-TextStateOperation
-	subclass: 'HorizontalScaling'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	HorizontalScaling category: 'PDFtalk Graphics Operations'.
-	HorizontalScaling comment: 'Set the horizontal scaling, Th, to (scale ÷ 100). 
-scale shall be a number specifying the percentage of the normal width. 
-Initial value: 100 (normal width)'.
-	HorizontalScaling namespacePath: #(#PDFtalk).
-%
-# Define class BeginMarkedContent
-DoIt
-MarkedContentOperation
-	subclass: 'BeginMarkedContent'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	BeginMarkedContent category: 'PDFtalk Graphics Operations'.
-	BeginMarkedContent comment: 'Begin a marked-content sequence terminated by a balancing EMC operator. 
-tag shall be a name object indicating the role or significance of the sequence'.
-	BeginMarkedContent namespacePath: #(#PDFtalk).
-%
-# Define class ShowTextOnNextLine
-DoIt
-TextShowingOperation
-	subclass: 'ShowTextOnNextLine'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ShowTextOnNextLine category: 'PDFtalk Graphics Operations'.
-	ShowTextOnNextLine comment: 'Move to the next line and show a text string. 
-This operator shall have the same effect as the code
-	T*
-	string Tj'.
-	ShowTextOnNextLine namespacePath: #(#PDFtalk).
-%
-# Define class BeginCompatibility
-DoIt
-CompatibilityOperation
-	subclass: 'BeginCompatibility'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	BeginCompatibility category: 'PDFtalk Graphics Operations'.
-	BeginCompatibility comment: 'Begin a compatibility section. 
-Unrecognized operators (along with their operands) shall be ignored without error until the balancing EX operator is encountered.'.
-	BeginCompatibility namespacePath: #(#PDFtalk).
-%
-# Define class SetStrokingColor
-DoIt
-ColourOperation
-	subclass: 'SetStrokingColor'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetStrokingColor category: 'PDFtalk Graphics Operations'.
-	SetStrokingColor comment: 'Set the colour to use for stroking operations in a device, CIE-based (other than ICCBased), or Indexed colour space. 
-The number of operands required and their interpretation depends on the current stroking colour space:
-For DeviceGray, CalGray, and Indexed colour spaces, one operand shall be required (n = 1).
-For DeviceRGB, CalRGB, and Lab colour spaces, three operands shall be required (n = 3).
-For DeviceCMYK, four operands shall be required (n = 4).'.
-	SetStrokingColor namespacePath: #(#PDFtalk).
-%
-# Define class Stroke
-DoIt
-PathPaintingOperation
-	subclass: 'Stroke'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Stroke category: 'PDFtalk Graphics Operations'.
-	Stroke comment: 'Stroke the path'.
-	Stroke namespacePath: #(#PDFtalk).
+	SetDash category: 'PDFtalk Graphics Operations'.
+	SetDash comment: 'Set the line dash pattern in the graphics state'.
+	SetDash namespacePath: #(#PDFtalk).
 %
 # Define class BeginInlineImage
 DoIt
@@ -59561,10 +59789,42 @@ DoIt
 	BeginInlineImage comment: 'Begin an inline image object'.
 	BeginInlineImage namespacePath: #(#PDFtalk).
 %
-# Define class SetStrokingGray
+# Define class AppendCurve
+DoIt
+PathConstructionOperation
+	subclass: 'AppendCurve'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	AppendCurve category: 'PDFtalk Graphics Operations'.
+	AppendCurve comment: 'Append a cubic Bézier curve to the current path. 
+The curve shall extend from the current point to the point (x3, y3), using (x1, y1) and (x2, y2) as the Bézier control points. 
+The new current point shall be (x3, y3)'.
+	AppendCurve namespacePath: #(#PDFtalk).
+%
+# Define class SaveState
+DoIt
+GraphicsStateOperation
+	subclass: 'SaveState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SaveState category: 'PDFtalk Graphics Operations'.
+	SaveState comment: 'Save the current graphics state on the graphics state stack'.
+	SaveState namespacePath: #(#PDFtalk).
+%
+# Define class SetStrokingColorSpecial
 DoIt
 ColourOperation
-	subclass: 'SetStrokingGray'
+	subclass: 'SetStrokingColorSpecial'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59572,15 +59832,20 @@ ColourOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetStrokingGray category: 'PDFtalk Graphics Operations'.
-	SetStrokingGray comment: 'Set the stroking colour space to DeviceGray (or the DefaultGray colour space) and set the gray level to use for stroking operations. 
-gray shall be a number between 0.0 (black) and 1.0 (white).'.
-	SetStrokingGray namespacePath: #(#PDFtalk).
+	SetStrokingColorSpecial category: 'PDFtalk Graphics Operations'.
+	SetStrokingColorSpecial comment: 'Same as SC but also supports Pattern, Separation, DeviceN and ICCBased colour spaces.
+If the current stroking colour space is a Separation, DeviceN, or ICCBased colour space, the operands c1…cn shall be numbers. 
+The number of operands and their interpretation depends on the colour space.
+
+If the current stroking colour space is a Pattern colour space, name shall be the name of an entry in the Pattern subdictionary of the current resource dictionary. 
+For an uncoloured tiling pattern (PatternType = 1 and PaintType = 2), c1…cn shall be component values specifying a colour in the pattern’s underlying colour space. 
+For other types of patterns, these operands shall not be specified.'.
+	SetStrokingColorSpecial namespacePath: #(#PDFtalk).
 %
-# Define class SetNonStrokingGray
+# Define class SetNonStrokingRGB
 DoIt
 ColourOperation
-	subclass: 'SetNonStrokingGray'
+	subclass: 'SetNonStrokingRGB'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59588,14 +59853,14 @@ ColourOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetNonStrokingGray category: 'PDFtalk Graphics Operations'.
-	SetNonStrokingGray comment: 'Same as G but used for nonstroking operations.'.
-	SetNonStrokingGray namespacePath: #(#PDFtalk).
+	SetNonStrokingRGB category: 'PDFtalk Graphics Operations'.
+	SetNonStrokingRGB comment: 'Same as RG but used for nonstroking operations.'.
+	SetNonStrokingRGB namespacePath: #(#PDFtalk).
 %
-# Define class ClipEvenOdd
+# Define class SetNonStrokingColor
 DoIt
-ClippingPathOperation
-	subclass: 'ClipEvenOdd'
+ColourOperation
+	subclass: 'SetNonStrokingColor'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59603,11 +59868,9 @@ ClippingPathOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	ClipEvenOdd category: 'PDFtalk Graphics Operations'.
-	ClipEvenOdd comment: 'Modify the current clipping path by intersecting it with the current path, 
-using the even-odd rule to determine which regions lie inside the clipping path.
-'.
-	ClipEvenOdd namespacePath: #(#PDFtalk).
+	SetNonStrokingColor category: 'PDFtalk Graphics Operations'.
+	SetNonStrokingColor comment: 'Same as SC but used for nonstroking operations.'.
+	SetNonStrokingColor namespacePath: #(#PDFtalk).
 %
 # Define class SetTextMatrix
 DoIt
@@ -59632,26 +59895,10 @@ The matrix specified by the operands shall not be concatenated onto the current 
 '.
 	SetTextMatrix namespacePath: #(#PDFtalk).
 %
-# Define class FillAndStrokeClosed
-DoIt
-PathPaintingOperation
-	subclass: 'FillAndStrokeClosed'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FillAndStrokeClosed category: 'PDFtalk Graphics Operations'.
-	FillAndStrokeClosed comment: 'Close, fill, and then stroke the path, using the nonzero winding number rule to determine the region to fill. 
-This operator shall have the same effect as the sequence h B'.
-	FillAndStrokeClosed namespacePath: #(#PDFtalk).
-%
-# Define class BeginMarkedContentWithProperties
+# Define class MarkedContentPoint
 DoIt
 MarkedContentOperation
-	subclass: 'BeginMarkedContentWithProperties'
+	subclass: 'MarkedContentPoint'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59659,17 +59906,15 @@ MarkedContentOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	BeginMarkedContentWithProperties category: 'PDFtalk Graphics Operations'.
-	BeginMarkedContentWithProperties comment: 'Begin a marked-content sequence with an associated property list, terminated by a balancing EMC operator. 
-tag shall be a name object indicating the role or significance of the sequence. 
-properties shall be either an inline dictionary containing the property list or a name object associated with it in the 
-Properties subdictionary of the current resource dictionary'.
-	BeginMarkedContentWithProperties namespacePath: #(#PDFtalk).
+	MarkedContentPoint category: 'PDFtalk Graphics Operations'.
+	MarkedContentPoint comment: 'Designate a marked-content point. 
+tag shall be a name object indicating the role or significance of the point'.
+	MarkedContentPoint namespacePath: #(#PDFtalk).
 %
-# Define class AppendRectangle
+# Define class StrokeClosed
 DoIt
-PathConstructionOperation
-	subclass: 'AppendRectangle'
+PathPaintingOperation
+	subclass: 'StrokeClosed'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59677,17 +59922,10 @@ PathConstructionOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	AppendRectangle category: 'PDFtalk Graphics Operations'.
-	AppendRectangle comment: 'Append a rectangle to the current path as a complete subpath, with lower-left corner (x, y) and dimensions width and height in user space. 
-The operation
-	x y width height re
-is equivalent to
-	x y m
-	(x + width) y l
-	(x + width) (y + height) l
-	x (y + height) l
-	h'.
-	AppendRectangle namespacePath: #(#PDFtalk).
+	StrokeClosed category: 'PDFtalk Graphics Operations'.
+	StrokeClosed comment: 'Close and stroke the path. 
+This operator shall have the same effect as the sequence h S'.
+	StrokeClosed namespacePath: #(#PDFtalk).
 %
 # Define class CharacterSpacing
 DoIt
@@ -59707,10 +59945,10 @@ Initial value: 0
 '.
 	CharacterSpacing namespacePath: #(#PDFtalk).
 %
-# Define class SetFlatness
+# Define class BeginCompatibility
 DoIt
-GraphicsStateOperation
-	subclass: 'SetFlatness'
+CompatibilityOperation
+	subclass: 'BeginCompatibility'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -59718,187 +59956,10 @@ GraphicsStateOperation
 	inDictionary: PDFtalk
 %
 DoIt
-	SetFlatness category: 'PDFtalk Graphics Operations'.
-	SetFlatness comment: 'Set the flatness tolerance in the graphics state. 
-flatness is a number in the range 0 to 100; 
-a value of 0 shall specify the output device’s default flatness tolerance'.
-	SetFlatness namespacePath: #(#PDFtalk).
-%
-# Define class EndText
-DoIt
-TextObjectOperation
-	subclass: 'EndText'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	EndText category: 'PDFtalk Graphics Operations'.
-	EndText comment: 'End a text object, discarding the text matrix'.
-	EndText namespacePath: #(#PDFtalk).
-%
-# Define class AppendCurve
-DoIt
-PathConstructionOperation
-	subclass: 'AppendCurve'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AppendCurve category: 'PDFtalk Graphics Operations'.
-	AppendCurve comment: 'Append a cubic Bézier curve to the current path. 
-The curve shall extend from the current point to the point (x3, y3), using (x1, y1) and (x2, y2) as the Bézier control points. 
-The new current point shall be (x3, y3)'.
-	AppendCurve namespacePath: #(#PDFtalk).
-%
-# Define class SetRenderingIntent
-DoIt
-GraphicsStateOperation
-	subclass: 'SetRenderingIntent'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetRenderingIntent category: 'PDFtalk Graphics Operations'.
-	SetRenderingIntent comment: 'Set the colour rendering intent in the graphics state'.
-	SetRenderingIntent namespacePath: #(#PDFtalk).
-%
-# Define class SetStrokingRGB
-DoIt
-ColourOperation
-	subclass: 'SetStrokingRGB'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetStrokingRGB category: 'PDFtalk Graphics Operations'.
-	SetStrokingRGB comment: 'Set the stroking colour space to DeviceRGB (or the DefaultRGB colour space) and set the colour to use for stroking operations. 
-Each operand shall be a number between 0.0 (minimum intensity) and 1.0 (maximum intensity).'.
-	SetStrokingRGB namespacePath: #(#PDFtalk).
-%
-# Define class SetStrokingColorSpace
-DoIt
-ColourOperation
-	subclass: 'SetStrokingColorSpace'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetStrokingColorSpace category: 'PDFtalk Graphics Operations'.
-	SetStrokingColorSpace comment: 'Set the current colour space to use for stroking operations. 
-The operand name shall be a name object. 
-If the colour space is one that can be specified by a name and no additional parameters (DeviceGray, DeviceRGB, DeviceCMYK, and certain cases of Pattern), 
-the name may be specified directly. 
-Otherwise, it shall be a name defined in the ColorSpace subdictionary of the current resource dictionary; 
-the associated value shall be an array describing the colour space.
-
-The names DeviceGray, DeviceRGB, DeviceCMYK, and Pattern always identify the corresponding colour spaces directly; 
-they never refer to resources in the ColorSpace subdictionary.
-
-The CS operator shall also set the current stroking colour to its initial value, which depends on the colour space:
-In a DeviceGray, DeviceRGB, CalGray, or CalRGB colour space, the initial colour shall have all components equal to 0.0.
-In a DeviceCMYK colour space, the initial colour shall be [0.0 0.0 0.0 1.0].
-In a Lab or ICCBased colour space, the initial colour shall have all components equal to 0.0 unless that falls outside the intervals specified by the space’s Range entry, in which case the nearest valid value shall be substituted.
-In an Indexed colour space, the initial colour value shall be 0.
-In a Separation or DeviceN colour space, the initial tint value shall be 1.0 for all colorants.
-In a Pattern colour space, the initial colour shall be a pattern object that causes nothing to be painted.'.
-	SetStrokingColorSpace namespacePath: #(#PDFtalk).
-%
-# Define class SetNonStrokingRGB
-DoIt
-ColourOperation
-	subclass: 'SetNonStrokingRGB'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetNonStrokingRGB category: 'PDFtalk Graphics Operations'.
-	SetNonStrokingRGB comment: 'Same as RG but used for nonstroking operations.'.
-	SetNonStrokingRGB namespacePath: #(#PDFtalk).
-%
-# Define class FillEvenOdd
-DoIt
-PathPaintingOperation
-	subclass: 'FillEvenOdd'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FillEvenOdd category: 'PDFtalk Graphics Operations'.
-	FillEvenOdd comment: 'Fill the path, using the even-odd rule to determine the region to fill'.
-	FillEvenOdd namespacePath: #(#PDFtalk).
-%
-# Define class SetGraphicsState
-DoIt
-GraphicsStateOperation
-	subclass: 'SetGraphicsState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SetGraphicsState category: 'PDFtalk Graphics Operations'.
-	SetGraphicsState comment: 'Set the specified parameters in the graphics state. 
-dictName shall be the name of a graphics state parameter dictionary in the ExtGState subdictionary of the current resource dictionary'.
-	SetGraphicsState namespacePath: #(#PDFtalk).
-%
-# Define class FillAndStroke
-DoIt
-PathPaintingOperation
-	subclass: 'FillAndStroke'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FillAndStroke category: 'PDFtalk Graphics Operations'.
-	FillAndStroke comment: 'Fill and then stroke the path, using the nonzero winding number rule to determine the region to fill. 
-This operator shall produce the same result as constructing two identical path objects, painting the first with f and the second with S.
-
-NOTE
-The filling and stroking portions of the operation consult different values of several graphics state parameters, such as the current colour'.
-	FillAndStroke namespacePath: #(#PDFtalk).
-%
-# Define class MarkedContentPointWithProperties
-DoIt
-MarkedContentOperation
-	subclass: 'MarkedContentPointWithProperties'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MarkedContentPointWithProperties category: 'PDFtalk Graphics Operations'.
-	MarkedContentPointWithProperties comment: 'Designate a marked-content point with an associated property list. 
-tag shall be a name object indicating the role or significance of the point. 
-properties shall be either an inline dictionary containing the property list or a name object associated with it in the Properties subdictionary of the current resource dictionary'.
-	MarkedContentPointWithProperties namespacePath: #(#PDFtalk).
+	BeginCompatibility category: 'PDFtalk Graphics Operations'.
+	BeginCompatibility comment: 'Begin a compatibility section. 
+Unrecognized operators (along with their operands) shall be ignored without error until the balancing EX operator is encountered.'.
+	BeginCompatibility namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -61547,7 +61608,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk XObjects'.
-	dict at: #storeVersion put: '2.0.0.11'.
+	dict at: #storeVersion put: '2.0.4.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -61555,60 +61616,9 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class GroupAttributes
-DoIt
-TypedDictionary
-	subclass: 'GroupAttributes'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GroupAttributes category: 'PDFtalk XObjects'.
-	GroupAttributes comment: 'PDF Group XObjects as defined in PDF 32000_2008.pdf, section 8.10.3, pp. 220.
-
-Every group XObject shall have a group subtype (specified by the S entry in the group attributes dictionary) that determines the format and meaning of the dictionary’s remaining entries. This specification only defines one subtype, a transparency group XObject (subtype Transparency) representing a transparency group for use in the transparent imaging model.'.
-	GroupAttributes namespacePath: #(#PDFtalk).
-%
-# Define class SoftMask
-DoIt
-TypedDictionary
-	subclass: 'SoftMask'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SoftMask category: 'PDFtalk XObjects'.
-	SoftMask comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 11.6.5.2, pp. 346.
-
-The most common way of defining a soft mask is with a soft-mask dictionary specified as the current soft mask in the graphics state.
-
-The mask values shall be derived from those of a transparency group, using one of the two methods described in "Deriving a Soft Mask from Group Alpha," and "Deriving a Soft Mask from Group Luminosity."
-The group shall be defined by a transparency group XObject designated by the G entry in the soft-mask dictionary.
-The S (subtype) entry shall specify which of the two derivation methods to use:
-	- If the subtype is Alpha, the transparency group XObject G shall be evaluated to compute a group alpha only.
-The colours of the constituent objects shall be ignored and the colour compositing computations shall not be performed.
-The transfer function TR shall then be applied to the computed group alpha to produce the mask values.
-Outside the bounding box of the transparency group, the mask value shall be the result of applying the transfer function to the input value 0.0.
-	- If the subtype is Luminosity, the transparency group XObject G shall be composited with a fully opaque backdrop whose colour is everywhere defined by the soft-mask dictionary’s BC entry.
-The computed result colour shall then be converted to a single-component luminosity value, and the transfer function TR shall be applied to this luminosity to produce the mask values. 
-Outside the transparency group’s bounding box, the mask value shall be derived by transforming the BC colour to luminosity and applying the transfer function to the result.
-
-The mask’s coordinate system shall be defined by concatenating the transformation matrix specified by the Matrix entry in the transparency group’s form dictionary with the current transformation matrix at the moment the soft mask is established in the graphics state with the gs operator.
-
-In a transparency group XObject that defines a soft mask, spot colour components shall never be available, even if they are available in the group or page on which the soft mask is used.
-If the group XObject’s content stream specifies a Separation or DeviceN colour space that uses spot colour components, the alternate colour space shall be substituted
-'.
-	SoftMask namespacePath: #(#PDFtalk).
-%
 # Define class XObject
 DoIt
-TypedStream
+PDFStream
 	subclass: 'XObject'
 	instVarNames: #()
 	classVars: #()
@@ -61699,6 +61709,23 @@ DoIt
 A transparency group is represented in PDF as a special type of group XObject called a transparency group XObject. A group XObject is in turn a type of form XObject, distinguished by the presence of a Group entry in its form dictionary. The value of this entry is a subsidiary group attributes dictionary defining the properties of the group. The format and meaning of the dictionary’s contents shall be determined by its group subtype, which is specified by the dictionary’s S entry.'.
 	TransparencyGroup namespacePath: #(#PDFtalk).
 %
+# Define class GroupAttributes
+DoIt
+TypedDictionary
+	subclass: 'GroupAttributes'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GroupAttributes category: 'PDFtalk XObjects'.
+	GroupAttributes comment: 'PDF Group XObjects as defined in PDF 32000_2008.pdf, section 8.10.3, pp. 220.
+
+Every group XObject shall have a group subtype (specified by the S entry in the group attributes dictionary) that determines the format and meaning of the dictionary’s remaining entries. This specification only defines one subtype, a transparency group XObject (subtype Transparency) representing a transparency group for use in the transparent imaging model.'.
+	GroupAttributes namespacePath: #(#PDFtalk).
+%
 # Define class TransparencyGroupAttributes
 DoIt
 GroupAttributes
@@ -61716,6 +61743,40 @@ DoIt
 A transparency group is represented in PDF as a special type of group XObject called a transparency group XObject. A group XObject is in turn a type of form XObject, distinguished by the presence of a Group entry in its form dictionary. The value of this entry is a subsidiary group attributes dictionary defining the properties of the group. The format and meaning of the dictionary’s contents shall be determined by its group subtype, which is specified by the dictionary’s S entry.
 A page object may also have a Group entry, whose value is a group attributes dictionary specifying the attributes of the page group. Some of the dictionary entries are interpreted slightly differently for a page group than for a transparency group XObject; see their descriptions in the table for details.'.
 	TransparencyGroupAttributes namespacePath: #(#PDFtalk).
+%
+# Define class SoftMask
+DoIt
+TypedDictionary
+	subclass: 'SoftMask'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SoftMask category: 'PDFtalk XObjects'.
+	SoftMask comment: 'PDF Image Dictionaries as defined in PDF 32000_2008.pdf, section 11.6.5.2, pp. 346.
+
+The most common way of defining a soft mask is with a soft-mask dictionary specified as the current soft mask in the graphics state.
+
+The mask values shall be derived from those of a transparency group, using one of the two methods described in "Deriving a Soft Mask from Group Alpha," and "Deriving a Soft Mask from Group Luminosity."
+The group shall be defined by a transparency group XObject designated by the G entry in the soft-mask dictionary.
+The S (subtype) entry shall specify which of the two derivation methods to use:
+	- If the subtype is Alpha, the transparency group XObject G shall be evaluated to compute a group alpha only.
+The colours of the constituent objects shall be ignored and the colour compositing computations shall not be performed.
+The transfer function TR shall then be applied to the computed group alpha to produce the mask values.
+Outside the bounding box of the transparency group, the mask value shall be the result of applying the transfer function to the input value 0.0.
+	- If the subtype is Luminosity, the transparency group XObject G shall be composited with a fully opaque backdrop whose colour is everywhere defined by the soft-mask dictionary’s BC entry.
+The computed result colour shall then be converted to a single-component luminosity value, and the transfer function TR shall be applied to this luminosity to produce the mask values. 
+Outside the transparency group’s bounding box, the mask value shall be derived by transforming the BC colour to luminosity and applying the transfer function to the result.
+
+The mask’s coordinate system shall be defined by concatenating the transformation matrix specified by the Matrix entry in the transparency group’s form dictionary with the current transformation matrix at the moment the soft mask is established in the graphics state with the gs operator.
+
+In a transparency group XObject that defines a soft mask, spot colour components shall never be available, even if they are available in the group or page on which the soft mask is used.
+If the group XObject’s content stream specifies a Separation or DeviceN colour space that uses spot colour components, the alternate colour space shall be substituted
+'.
+	SoftMask namespacePath: #(#PDFtalk).
 %
 # Define class PostScriptXObject
 DoIt
@@ -61782,6 +61843,14 @@ resourcePrefix
 classmethod: FormXObject
 subtype
 	^#Form
+%
+category: 'testing'
+classmethod: FormXObject
+isClassForStream: aStream
+	self == (PDF classAt: #FormXObject) ifFalse: [
+		^super isClassForStream: aStream].
+	^(super isClassForStream: aStream) and: [
+	(aStream hasKey: #Group) not]
 %
 category: 'accessing'
 method: FormXObject
@@ -61930,7 +61999,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Group
-		supertype: #FormXObject
+		supertype: #XObject
 		version: 4
 		section: '8.10.3'
 		documentation: 'A group XObject is a special type of form XObject that can be used to group graphical elements together as a unit for various purposes.
@@ -61943,9 +62012,8 @@ This specification only defines one subtype, a transparency group XObject (subty
 category: 'testing'
 classmethod: Group
 isClassForStream: aStream
-
-	^(super isClassForStream: aStream)
-		and: [aStream hasKey: #Group]
+	^(super isClassForStream: aStream) and: [
+	aStream hasKey: #Group]
 %
 category: 'accessing entries'
 method: Group
@@ -61966,7 +62034,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #GroupAttributes
-		supertype: #Object
+		supertype: #Dictionary
 		version: 4
 		section: '8.10.3'
 		documentation: 'Every group XObject shall have a group subtype (specified by the S entry in the group attributes dictionary) that determines the format and meaning of the dictionary’s remaining entries. 
@@ -62038,7 +62106,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #SoftMask
-		supertype: #Object
+		supertype: #Dictionary
 		section: '11.6.5.2'
 		documentation: 'The most common way of defining a soft mask is with a soft-mask dictionary specified as the current soft mask in the graphics state.
 
@@ -62115,9 +62183,8 @@ pdfTypeDefinition
 category: 'testing'
 classmethod: TransparencyGroup
 isClassForStream: aStream
-
-	^(super isClassForStream: aStream)
-		and: [((aStream at: #Group) content at: #S) asPDF = #Transparency asPDF]
+	^(super isClassForStream: aStream) and: [
+	((aStream at: #Group) content at: #S) asPDF = #Transparency asPDF]
 %
 category: 'accessing'
 classmethod: TransparencyGroupAttributes
@@ -62182,7 +62249,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #XObject
-		supertype: #Object
+		supertype: #Stream
 		section: '8.8'
 		documentation: 'An external object (commonly called an XObject) is a graphics object whose contents are defined by a self-contained stream, 
 separate from the content stream in which it is used. 
@@ -62246,8 +62313,14 @@ method: XObject
 Subtype
 	<type: #Name>
 	<required>
-	<attribute: 1 documentation: 'The type of XObject that this dictionary describes.'>
+	<attribute: 2 documentation: 'The type of XObject that this dictionary describes.'>
 	^self objectAt: #Subtype ifAbsent: [nil]
+%
+method: XObject
+Type
+	<type: #Name>
+	<attribute: 1 documentation: 'The type of PDF object that this dictionary describes; if present, shall be XObject.'>
+	^self objectAt: #Type ifAbsent: [#XObject asPDF]
 %
 category: 'actions'
 method: XObject
@@ -62287,7 +62360,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Images'.
-	dict at: #storeVersion put: '2.0.0.15'.
+	dict at: #storeVersion put: '2.0.0.16'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -62952,7 +63025,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #SoftMaskImage
-		supertype: #ImageXObject
+		supertype: #XObject
 		section: '11.6.5.3'
 		documentation: 'The second way to define a soft mask is by associating a soft-mask image with an image XObject. This is a subsidiary image XObject specified in the SMask entry of the parent XObject’s image dictionary (see “Image Dictionaries”). Entries in the subsidiary image dictionary for such a soft-mask image shall have the same format and meaning as in that of an ordinary image XObject (as described in Table 89 in “Image Dictionaries”), subject to the restrictions listed in Table 145. This type of image dictionary may contain an additional entry, Matte'
 %
@@ -63136,7 +63209,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Files'.
-	dict at: #storeVersion put: '2.0.0.18'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -63160,36 +63233,6 @@ DoIt
 
 The creation of these objects is done by the class method #readFrom: using a PDF.Reader.'.
 	FileEntity namespacePath: #(#PDFtalk).
-%
-# Define class File
-DoIt
-FileEntity
-	subclass: 'File'
-	instVarNames: #(subscriptionRegistry objects parser header crossReferences trailer)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	File category: 'PDFtalk Files'.
-	File comment: 'PDF File as defined in PDF 32000_2008.pdf pp. 38.'.
-	File namespacePath: #(#PDFtalk).
-%
-# Define class Header
-DoIt
-FileEntity
-	subclass: 'Header'
-	instVarNames: #(version)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Header category: 'PDFtalk Files'.
-	Header comment: 'PDF File Header as defined in PDF 32000_2008.pdf pp. 40.'.
-	Header namespacePath: #(#PDFtalk).
 %
 # Define class CrossReferences
 DoIt
@@ -63224,66 +63267,22 @@ Shares the access protocol with CrossReferenceStream:
 	#trailer'.
 	CrossReferences namespacePath: #(#PDFtalk).
 %
-# Define class CrossReferenceSubsection
+# Define class CrossReferenceSection
 DoIt
 FileEntity
-	subclass: 'CrossReferenceSubsection'
-	instVarNames: #(firstNumber entries)
+	subclass: 'CrossReferenceSection'
+	instVarNames: #(subsections)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	CrossReferenceSubsection category: 'PDFtalk Files'.
-	CrossReferenceSubsection comment: 'A Cross-Reference Subsection in a section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
+	CrossReferenceSection category: 'PDFtalk Files'.
+	CrossReferenceSection comment: 'A Cross-Reference Section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
 
-Each cross-reference subsection shall contain entries for a contiguous range of object numbers. The subsection shall begin with a line containing two numbers separated by a SPACE (20h), denoting the object number of the first object in this subsection and the number of entries in the subsection.'.
-	CrossReferenceSubsection namespacePath: #(#PDFtalk).
-%
-# Define class DocumentInformation
-DoIt
-PDFDictionary
-	subclass: 'DocumentInformation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	DocumentInformation category: 'PDFtalk Files'.
-	DocumentInformation comment: 'PDF Document Information Dictionary object as defined in PDF 32000_2008.pdf pp. 549.
-
-The optional Info entry in the trailer of a PDF file (see Trailer) shall hold a document information dictionary containing metadata for the document.
-Any entry whose value is not known should be omitted from the dictionary rather than included with an empty string as its value.
-
-Some conforming readers may choose to permit searches on the contents of the document information dictionary.
-To facilitate browsing and editing, all keys in the dictionary shall be fully spelled out, not abbreviated.
-New keys should be chosen with care so that they make sense to users.
-
-The value associated with any key not specifically mentioned in Table 317 shall be a text string.
-
-Although conforming readers may store custom metadata in the document information dictionary, they may not store private content or structural information there.
-Such information shall be stored in the document catalogue instead (see Catalog).'.
-	DocumentInformation namespacePath: #(#PDFtalk).
-%
-# Define class CrossReference
-DoIt
-Value
-	subclass: 'CrossReference'
-	instVarNames: #(value number generation)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReference category: 'PDFtalk Files'.
-	CrossReference comment: 'A Cross-Reference Entry in a subsection of a section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
-
-Each cross-reference entry shall be exactly 20 bytes long, including the end-of-line marker. There are two kinds of cross-reference entries: one for objects that are in use and another for objects that have been deleted and therefore are free. Both types of entries have similar basic formats, distinguished by the keyword n (for an in-use entry) or f (for a free entry).'.
-	CrossReference namespacePath: #(#PDFtalk).
+Each cross-reference section shall begin with a line containing the keyword xref. Following this line shall be one or more cross-reference subsections, which may appear in any order. For a file that has never been incrementally updated, the cross-reference section shall contain only one subsection, whose object numbering begins at 0.'.
+	CrossReferenceSection namespacePath: #(#PDFtalk).
 %
 # Define class FileIdentifier
 DoIt
@@ -63329,10 +63328,27 @@ For example, two implementations of the preceding algorithm might use different 
 '.
 	FileIdentifier namespacePath: #(#PDFtalk).
 %
-# Define class Trailer
+# Define class CrossReference
 DoIt
-PDFDictionary
-	subclass: 'Trailer'
+Value
+	subclass: 'CrossReference'
+	instVarNames: #(value number generation)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReference category: 'PDFtalk Files'.
+	CrossReference comment: 'A Cross-Reference Entry in a subsection of a section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
+
+Each cross-reference entry shall be exactly 20 bytes long, including the end-of-line marker. There are two kinds of cross-reference entries: one for objects that are in use and another for objects that have been deleted and therefore are free. Both types of entries have similar basic formats, distinguished by the keyword n (for an in-use entry) or f (for a free entry).'.
+	CrossReference namespacePath: #(#PDFtalk).
+%
+# Define class UsedReference
+DoIt
+CrossReference
+	subclass: 'UsedReference'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -63340,26 +63356,37 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	Trailer category: 'PDFtalk Files'.
-	Trailer comment: 'PDF File Trailer as defined in PDF 32000_2008.pdf pp. 42.'.
-	Trailer namespacePath: #(#PDFtalk).
+	UsedReference category: 'PDFtalk Files'.
+	UsedReference comment: 'A Cross-Reference in-use Entry as defined in PDF 32000_2008.pdf pp. 40.
+
+The format of an in-use entry shall be:
+
+	nnnnnnnnnn ggggg n eol
+
+where:
+
+	nnnnnnnnnn shall be a 10-digit byte offset in the decoded stream
+	ggggg shall be a 5-digit generation number
+	n shall be a keyword identifying this as an in-use entry
+	eol shall be a 2-character end-of-line sequence
+
+The byte offset in the decoded stream shall be a 10-digit number, padded with leading zeros if necessary, giving the number of bytes from the beginning of the file to the beginning of the object. It shall be separated from the generation number by a single SPACE. The generation number shall be a 5-digit number, also padded with leading zeros if necessary. Following the generation number shall be a single SPACE, the keyword n, and a 2-character end-of-line sequence consisting of one of the following: SP CR, SP LF, or CR LF. Thus, the overall length of the entry shall always be exactly 20 bytes.'.
+	UsedReference namespacePath: #(#PDFtalk).
 %
-# Define class ObjectRead
+# Define class StreamReference
 DoIt
-Announcement
-	subclass: 'ObjectRead'
-	instVarNames: #(reference object)
+UsedReference
+	subclass: 'StreamReference'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	ObjectRead category: 'PDFtalk Files'.
-	ObjectRead comment: 'Announced when an object was read from the stream.
-
-Includes the reference and the object'.
-	ObjectRead namespacePath: #(#PDFtalk).
+	StreamReference category: 'PDFtalk Files'.
+	StreamReference comment: 'A Cross-Reference in-use Entry for an object in an object stream as defined in PDF 32000_2008.pdf pp. 51.'.
+	StreamReference namespacePath: #(#PDFtalk).
 %
 # Define class Encryption
 DoIt
@@ -63410,6 +63437,102 @@ PDF’s standard security handler shall allow access permissions and up to two p
 An application’s decision to encrypt a document shall be based on whether the user creating the document specifies any passwords or access restrictions.'.
 	StandardEncryption namespacePath: #(#PDFtalk).
 %
+# Define class Header
+DoIt
+FileEntity
+	subclass: 'Header'
+	instVarNames: #(version)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Header category: 'PDFtalk Files'.
+	Header comment: 'PDF File Header as defined in PDF 32000_2008.pdf pp. 40.'.
+	Header namespacePath: #(#PDFtalk).
+%
+# Define class ObjectRead
+DoIt
+Announcement
+	subclass: 'ObjectRead'
+	instVarNames: #(reference object)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectRead category: 'PDFtalk Files'.
+	ObjectRead comment: 'Announced when an object was read from the stream.
+
+Includes the reference and the object'.
+	ObjectRead namespacePath: #(#PDFtalk).
+%
+# Define class Trailer
+DoIt
+PDFDictionary
+	subclass: 'Trailer'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Trailer category: 'PDFtalk Files'.
+	Trailer comment: 'PDF File Trailer as defined in PDF 32000_2008.pdf pp. 42.'.
+	Trailer namespacePath: #(#PDFtalk).
+%
+# Define class ObjectStream
+DoIt
+TypedStream
+	subclass: 'ObjectStream'
+	instVarNames: #(parser offsets)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectStream category: 'PDFtalk Files'.
+	ObjectStream comment: 'PDF Object Stream as defined in PDF 32000_2008.pdf pp. 45.
+
+An object stream, is a stream object in which a sequence of indirect objects may be stored, as an alternative to their being stored at the outermost file level.'.
+	ObjectStream namespacePath: #(#PDFtalk).
+%
+# Define class CrossReferenceSubsection
+DoIt
+FileEntity
+	subclass: 'CrossReferenceSubsection'
+	instVarNames: #(firstNumber entries)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReferenceSubsection category: 'PDFtalk Files'.
+	CrossReferenceSubsection comment: 'A Cross-Reference Subsection in a section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
+
+Each cross-reference subsection shall contain entries for a contiguous range of object numbers. The subsection shall begin with a line containing two numbers separated by a SPACE (20h), denoting the object number of the first object in this subsection and the number of entries in the subsection.'.
+	CrossReferenceSubsection namespacePath: #(#PDFtalk).
+%
+# Define class File
+DoIt
+FileEntity
+	subclass: 'File'
+	instVarNames: #(subscriptionRegistry objects parser header crossReferences trailer)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	File category: 'PDFtalk Files'.
+	File comment: 'PDF File as defined in PDF 32000_2008.pdf pp. 38.'.
+	File namespacePath: #(#PDFtalk).
+%
 # Define class XRefStream
 DoIt
 TypedStream
@@ -63432,51 +63555,6 @@ Shares the access protocol with CrossReferences:
 	#freeReferences
 	#trailer'.
 	XRefStream namespacePath: #(#PDFtalk).
-%
-# Define class UsedReference
-DoIt
-CrossReference
-	subclass: 'UsedReference'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	UsedReference category: 'PDFtalk Files'.
-	UsedReference comment: 'A Cross-Reference in-use Entry as defined in PDF 32000_2008.pdf pp. 40.
-
-The format of an in-use entry shall be:
-
-	nnnnnnnnnn ggggg n eol
-
-where:
-
-	nnnnnnnnnn shall be a 10-digit byte offset in the decoded stream
-	ggggg shall be a 5-digit generation number
-	n shall be a keyword identifying this as an in-use entry
-	eol shall be a 2-character end-of-line sequence
-
-The byte offset in the decoded stream shall be a 10-digit number, padded with leading zeros if necessary, giving the number of bytes from the beginning of the file to the beginning of the object. It shall be separated from the generation number by a single SPACE. The generation number shall be a 5-digit number, also padded with leading zeros if necessary. Following the generation number shall be a single SPACE, the keyword n, and a 2-character end-of-line sequence consisting of one of the following: SP CR, SP LF, or CR LF. Thus, the overall length of the entry shall always be exactly 20 bytes.'.
-	UsedReference namespacePath: #(#PDFtalk).
-%
-# Define class ObjectStream
-DoIt
-TypedStream
-	subclass: 'ObjectStream'
-	instVarNames: #(parser offsets)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ObjectStream category: 'PDFtalk Files'.
-	ObjectStream comment: 'PDF Object Stream as defined in PDF 32000_2008.pdf pp. 45.
-
-An object stream, is a stream object in which a sequence of indirect objects may be stored, as an alternative to their being stored at the outermost file level.'.
-	ObjectStream namespacePath: #(#PDFtalk).
 %
 # Define class FreeReference
 DoIt
@@ -63507,10 +63585,10 @@ There are two ways an entry may be a member of the free entries list. Using the 
 Except for object number 0, all objects in the cross-reference table shall initially have generation numbers of 0. When an indirect object is deleted, its cross-reference entry shall be marked free and it shall be added to the linked list of free entries. The entry’s generation number shall be incremented by 1 to indicate the generation number to be used the next time an object with that object number is created. Thus, each time the entry is reused, it is given a new generation number. The maximum generation number is 65,535; when a cross-reference entry reaches this value, it shall never be reused.'.
 	FreeReference namespacePath: #(#PDFtalk).
 %
-# Define class StreamReference
+# Define class DocumentInformation
 DoIt
-UsedReference
-	subclass: 'StreamReference'
+PDFDictionary
+	subclass: 'DocumentInformation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -63518,26 +63596,21 @@ UsedReference
 	inDictionary: PDFtalk
 %
 DoIt
-	StreamReference category: 'PDFtalk Files'.
-	StreamReference comment: 'A Cross-Reference in-use Entry for an object in an object stream as defined in PDF 32000_2008.pdf pp. 51.'.
-	StreamReference namespacePath: #(#PDFtalk).
-%
-# Define class CrossReferenceSection
-DoIt
-FileEntity
-	subclass: 'CrossReferenceSection'
-	instVarNames: #(subsections)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReferenceSection category: 'PDFtalk Files'.
-	CrossReferenceSection comment: 'A Cross-Reference Section of the cross-reference table as defined in PDF 32000_2008.pdf pp. 40.
+	DocumentInformation category: 'PDFtalk Files'.
+	DocumentInformation comment: 'PDF Document Information Dictionary object as defined in PDF 32000_2008.pdf pp. 549.
 
-Each cross-reference section shall begin with a line containing the keyword xref. Following this line shall be one or more cross-reference subsections, which may appear in any order. For a file that has never been incrementally updated, the cross-reference section shall contain only one subsection, whose object numbering begins at 0.'.
-	CrossReferenceSection namespacePath: #(#PDFtalk).
+The optional Info entry in the trailer of a PDF file (see Trailer) shall hold a document information dictionary containing metadata for the document.
+Any entry whose value is not known should be omitted from the dictionary rather than included with an empty string as its value.
+
+Some conforming readers may choose to permit searches on the contents of the document information dictionary.
+To facilitate browsing and editing, all keys in the dictionary shall be fully spelled out, not abbreviated.
+New keys should be chosen with care so that they make sense to users.
+
+The value associated with any key not specifically mentioned in Table 317 shall be a text string.
+
+Although conforming readers may store custom metadata in the document information dictionary, they may not store private content or structural information there.
+Such information shall be stored in the document catalogue instead (see Catalog).'.
+	DocumentInformation namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -63774,8 +63847,9 @@ readWith: aFile
 	crossReferenceSection := CrossReferenceSection readFrom: aFile parser.
 	trailer := (PDF classAt: #Trailer) readWith: aFile from: aFile parser.
 	previous := trailer Prev asSmalltalkValue ifNotNil: [:prevNumber |
-		aFile parser position: prevNumber.
-		self readWith: aFile].
+		prevNumber isZero ifFalse: [		"some stupid writer put a (/Prev 0) into the Trailer"
+			aFile parser position: prevNumber.
+			self readWith: aFile]].
 	stream := trailer XRefStm asSmalltalkValue ifNotNil: [:xRefStmNumber |
 		aFile parser position: xRefStmNumber.
 		(PDF classAt: #XRefStream) readWith: aFile].
@@ -64158,7 +64232,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #DocumentInformation
-		supertype: #Object
+		supertype: #Dictionary
 		section: '14.3.3'
 		documentation: 'The optional Info entry in the trailer of a PDF file (see Trailer) shall hold a document information dictionary containing metadata for the document.
 Any entry whose value is not known should be omitted from the dictionary rather than included with an empty string as its value.
@@ -64271,7 +64345,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Encryption
-		supertype: #Object
+		supertype: #Dictionary
 		version: 1
 		section: '7.6'
 		documentation: 'A PDF document can be encrypted to protect its contents from unauthorized access.
@@ -64463,7 +64537,6 @@ This is not a limit as such, but arises from the fact that q and Q are implement
 category: 'reading'
 classmethod: File
 binaryReadStreamOn: aFilename
-
 	^GsFile open: aFilename mode: 'rb' onClient: false
 %
 classmethod: File
@@ -64648,7 +64721,7 @@ readObjectFor: aReference
 method: File
 announce: anAnnouncement
 	"do nothing on Gemstone - only used for UI feedback"
-	
+
 %
 category: 'testing'
 method: File
@@ -64825,7 +64898,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ObjectStream
-		supertype: #Object
+		supertype: #Stream
 		version: 5
 		section: '7.6.3.2'
 		documentation: 'An object stream, is a stream object in which a sequence of indirect objects may be stored, as an alternative to their being stored at the outermost file level.'
@@ -64905,7 +64978,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #StandardEncryption
-		supertype: #Object
+		supertype: #Dictionary
 		version: 1
 		section: '7.6.3.2'
 		documentation: 'PDF’s standard security handler shall allow access permissions and up to two passwords to be specified for a document: an owner password and a user password.
@@ -65001,7 +65074,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Trailer
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.5.5'
 		documentation: 'The trailer of a PDF file enables a conforming reader to quickly find the cross-reference table and certain special objects. Conforming readers should read a PDF file from its end. The last line of the file shall contain only the end-of-file marker, %%EOF. The two preceding lines shall contain, one per line and in order, the keyword startxref and the byte offset in the decoded stream from the beginning of the file to the beginning of the xref keyword in the last cross-reference section. The startxref line shall be preceded by the trailer dictionary, consisting of the keyword trailer followed by a series of key-value pairs enclosed in double angle brackets (<<…>>) (using LESS-THAN SIGNs (3Ch) and GREATER-THAN SIGNs (3Eh)).'
 %
@@ -65143,9 +65216,9 @@ md5HashOf: aByteString
 	largeInteger := aByteString md5sum.
 	wst := ByteArray new writeStream.
 	rest := largeInteger.
-	[rest > 0] whileTrue: 
-			[wst nextPut: (rest bitAnd: 16rFF).
-			rest := rest // 16r100].
+	[rest > 0] whileTrue: [
+		wst nextPut: (rest bitAnd: 16rFF).
+		rest := rest // 16r100].
 	^wst contents reverse
 %
 method: Trailer
@@ -65197,7 +65270,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #XRefStream
-		supertype: #Object
+		supertype: #Stream
 		version: 5
 		section: '7.5.8'
 		documentation: 'Shares the access protocol with CrossReferences:
@@ -65474,212 +65547,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Document'.
-	dict at: #storeVersion put: '2.0.0.15'.
+	dict at: #storeVersion put: '2.0.4.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
 %
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
-%
-# Define class Names
-DoIt
-PDFDictionary
-	subclass: 'Names'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Names category: 'PDFtalk Document'.
-	Names comment: 'PDF Names as defined in PDF 32000_2008.pdf pp. 80.
-
-Some categories of objects in a PDF file can be referred to by name rather than by object reference.
-The correspondence between names and objects is established by the document’s name dictionary (PDF 1.2), located by means of the Names entry in the document’s catalog.
-Each entry in this dictionary designates the root of a name tree defining names for a particular category of objects.'.
-	Names namespacePath: #(#PDFtalk).
-%
-# Define class PieceInfo
-DoIt
-PDFDictionary
-	subclass: 'PieceInfo'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PieceInfo category: 'PDFtalk Document'.
-	PieceInfo comment: 'PDF Page-Piece Dictionaries as defined in PDF 32000_2008.pdf, section 14.5, pp. 551.
-
-A page-piece dictionary (PDF 1.3) may be used to hold private conforming product data. The data may be associated with a page or form XObject by means of the optional PieceInfo entry in the page object or form dictionary. Beginning with PDF 1.4, private data may also be associated with the PDF document by means of the PieceInfo entry in the document catalogue.
-
-NOTE 1		Conforming products may use this dictionary as a place to store private data in connection with that document, page, or form. Such private data can convey information meaningful to the conforming product that produces it (such as information on object grouping for a graphics editor or the layer information used by Adobe Photoshop®) but may be ignored by general-purpose conforming readers.
-
-A page-piece dictionary may contain any number of entries, each keyed by the name of a distinct conforming product or of a well-known data type recognized by a family of conforming products. The value associated with each key shall be a data dictionary containing the private data that shall be used by the conforming product. The Private entry may have a value of any data type, but typically it is a dictionary containing all of the private data needed by the conforming product other than the actual content of the document, page, or form.
-'.
-	PieceInfo namespacePath: #(#PDFtalk).
-%
-# Define class Resources
-DoIt
-PDFDictionary
-	subclass: 'Resources'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Resources category: 'PDFtalk Document'.
-	Resources comment: 'PDF Catalog as defined in PDF 32000_2008.pdf pp. 82.
-
-The operands supplied to operators in a content stream shall only be direct objects; indirect objects and object references shall not be permitted.
-In some cases, an operator shall refer to a PDF object that is defined outside the content stream, such as a font dictionary or a stream containing image data.
-This shall be accomplished by defining such objects as named resources and referring to them by name from within the content stream.
-
-Named resources shall be meaningful only in the context of a content stream.
-The scope of a resource name shall be local to a particular content stream and shall be unrelated to externally known identifiers for objects such as fonts.
-References from one object outside of content streams to another outside of content streams shall be made by means of indirect object references rather than named resources.
-
-A content stream’s named resources shall be defined by a resource dictionary, which shall enumerate the named resources needed by the operators in the content stream and the names by which they can be referred to.'.
-	Resources namespacePath: #(#PDFtalk).
-%
-# Define class Document
-DoIt
-Object
-	subclass: 'Document'
-	instVarNames: #(root info version previousId)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Document category: 'PDFtalk Document'.
-	Document comment: 'A PDF Document represents a sequence of PDF objects for generating a PDF file.
-
-The Document shall be created programatically by adding PDF objects to it.
-A Document writes its objects to a PDF file and takes care of cross references and the file structure.'.
-	Document namespacePath: #(#PDFtalk).
-%
-# Define class PageTree
-DoIt
-TypedDictionary
-	subclass: 'PageTree'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PageTree category: 'PDFtalk Document'.
-	PageTree comment: 'PDF Page Tree as defined in PDF 32000_2008.pdf pp. 75.
-
-The pages of a document are accessed through a structure known as the page tree, which defines the ordering of pages in the document.
-Using the tree structure, conforming readers using only limited memory, can quickly open a document containing thousands of pages.
-The tree contains nodes of two types—intermediate nodes, called page tree nodes, and leaf nodes, called page objects.
-Conforming products shall be prepared to handle any form of tree structure built of such nodes.'.
-	PageTree namespacePath: #(#PDFtalk).
-%
-# Define class Pages
-DoIt
-PageTree
-	subclass: 'Pages'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Pages category: 'PDFtalk Document'.
-	Pages comment: 'PDF Pages as defined in PDF 32000_2008.pdf pp. 75.
-
-The pages of a document are accessed through a structure known as the page tree, which defines the ordering of pages in the document. Using the tree structure, conforming readers using only limited memory, can quickly open a document containing thousands of pages. The tree contains nodes of two types—intermediate nodes, called page tree nodes, and leaf nodes, called page objects—whose form is described in the subsequent sub-clauses. Conforming products shall be prepared to handle any form of tree structure built of such nodes.
-
-NOTE
-The simplest structure can consist of a single page tree node that references all of the document’s page objects directly. However, to optimize application performance, a conforming writer can construct trees of a particular form, known as balanced trees. Further information on this form of tree can be found in Data Structures and Algorithms, by Aho, Hopcroft, and Ullman (see the Bibliography).'.
-	Pages namespacePath: #(#PDFtalk).
-%
-# Define class Contents
-DoIt
-PDFStream
-	subclass: 'Contents'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Contents category: 'PDFtalk Document'.
-	Contents comment: 'PDF Catalog as defined in PDF 32000_2008.pdf pp. 81.
-
-Content streams are the primary means for describing the appearance of pages and other graphical elements.
-A content stream depends on information contained in an associated resource dictionary; in combination, these two objects form a self-contained entity.'.
-	Contents namespacePath: #(#PDFtalk).
-%
-# Define class Page
-DoIt
-PageTree
-	subclass: 'Page'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Page category: 'PDFtalk Document'.
-	Page comment: 'PDF Page as defined in PDF 32000_2008.pdf pp. 77.
-
-The leaves of the page tree are page objects, each of which is a dictionary specifying the attributes of a single page of the document.
-The table also identifies which attributes a page may inherit from its ancestor nodes in the page tree.
-Attributes that are not explicitly identified in the table as inheritable shall not be inherited.'.
-	Page namespacePath: #(#PDFtalk).
-%
-# Define class OutputIntent
-DoIt
-TypedDictionary
-	subclass: 'OutputIntent'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OutputIntent category: 'PDFtalk Document'.
-	OutputIntent comment: 'PDF OutputIntent as defined in PDF 32000_2008.pdf pp. 633.
-
-Output intents (PDF 1.4) provide a means for matching the colour characteristics of a PDF document with 
-those of a target output device or production environment in which the document will be printed. 
-The optional OutputIntents entry in the document catalogue holds an array of output intent dictionaries, 
-each describing the colour reproduction characteristics of a possible output device or production condition. 
-The contents of these dictionaries may vary for different devices and conditions. 
-The dictionary’s Sentry specifies an output intent subtype that determines the format and meaning of the remaining entries.
-
-NOTE 1
-This use of multiple output intents allows the production process to be customized to the expected workflow and the specific tools available. 
-For example, one production facility might process files conforming to a recognized standard such as PDF/X-1, 
-while another uses the PDF/A standard to produce RGB output for document distribution on the Web. 
-Each of these workflows would require different sets of output intent information. 
-Multiple output intents also allow the same PDF file to be distributed unmodified to multiple production facilities. 
-The choice of which output intent to use in a given production environment is a matter for agreement between the purchaser and provider of production services. 
-PDF intentionally does not include a selector for choosing a particular output intent from within the PDF file.
-
-At the time of publication, three output intent subtypes have been defined: 
-	GTS_PDFX corresponding to the PDF/X format standard specified in ISO 15930, 
-	GTS_PDFA1 corresponding to the PDF/A standard as defined by ISO 19005, and 
-	ISO_PDFE1 corresponding to the PDF/E standard as defined by ISO 24517. 
-
-Other subtypes may be added in the future; the names of any such additional subtypes shall conform to the naming guidelines.'.
-	OutputIntent namespacePath: #(#PDFtalk).
 %
 # Define class Metadata
 DoIt
@@ -65745,6 +65619,205 @@ The root of a document’s object hierarchy is the catalog dictionary, located b
 The catalog contains references to other objects defining the document’s contents, outline, article threads, named destinations, and other attributes. In addition, it contains information about how the document shall be displayed on the screen, such as whether its outline and thumbnail page images shall be displayed automatically and whether some location other than the first page shall be shown when the document is opened.'.
 	Catalog namespacePath: #(#PDFtalk).
 %
+# Define class PageTree
+DoIt
+TypedDictionary
+	subclass: 'PageTree'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PageTree category: 'PDFtalk Document'.
+	PageTree comment: 'PDF Page Tree as defined in PDF 32000_2008.pdf pp. 75.
+
+The pages of a document are accessed through a structure known as the page tree, which defines the ordering of pages in the document.
+Using the tree structure, conforming readers using only limited memory, can quickly open a document containing thousands of pages.
+The tree contains nodes of two types—intermediate nodes, called page tree nodes, and leaf nodes, called page objects.
+Conforming products shall be prepared to handle any form of tree structure built of such nodes.'.
+	PageTree namespacePath: #(#PDFtalk).
+%
+# Define class Pages
+DoIt
+PageTree
+	subclass: 'Pages'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Pages category: 'PDFtalk Document'.
+	Pages comment: 'PDF Pages as defined in PDF 32000_2008.pdf pp. 75.
+
+The pages of a document are accessed through a structure known as the page tree, which defines the ordering of pages in the document. Using the tree structure, conforming readers using only limited memory, can quickly open a document containing thousands of pages. The tree contains nodes of two types—intermediate nodes, called page tree nodes, and leaf nodes, called page objects—whose form is described in the subsequent sub-clauses. Conforming products shall be prepared to handle any form of tree structure built of such nodes.
+
+NOTE
+The simplest structure can consist of a single page tree node that references all of the document’s page objects directly. However, to optimize application performance, a conforming writer can construct trees of a particular form, known as balanced trees. Further information on this form of tree can be found in Data Structures and Algorithms, by Aho, Hopcroft, and Ullman (see the Bibliography).'.
+	Pages namespacePath: #(#PDFtalk).
+%
+# Define class Document
+DoIt
+Object
+	subclass: 'Document'
+	instVarNames: #(root info version previousId)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Document category: 'PDFtalk Document'.
+	Document comment: 'A PDF Document represents a sequence of PDF objects for generating a PDF file.
+
+The Document shall be created programatically by adding PDF objects to it.
+A Document writes its objects to a PDF file and takes care of cross references and the file structure.'.
+	Document namespacePath: #(#PDFtalk).
+%
+# Define class Names
+DoIt
+PDFDictionary
+	subclass: 'Names'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Names category: 'PDFtalk Document'.
+	Names comment: 'PDF Names as defined in PDF 32000_2008.pdf pp. 80.
+
+Some categories of objects in a PDF file can be referred to by name rather than by object reference.
+The correspondence between names and objects is established by the document’s name dictionary (PDF 1.2), located by means of the Names entry in the document’s catalog.
+Each entry in this dictionary designates the root of a name tree defining names for a particular category of objects.'.
+	Names namespacePath: #(#PDFtalk).
+%
+# Define class PieceInfo
+DoIt
+PDFDictionary
+	subclass: 'PieceInfo'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PieceInfo category: 'PDFtalk Document'.
+	PieceInfo comment: 'PDF Page-Piece Dictionaries as defined in PDF 32000_2008.pdf, section 14.5, pp. 551.
+
+A page-piece dictionary (PDF 1.3) may be used to hold private conforming product data. The data may be associated with a page or form XObject by means of the optional PieceInfo entry in the page object or form dictionary. Beginning with PDF 1.4, private data may also be associated with the PDF document by means of the PieceInfo entry in the document catalogue.
+
+NOTE 1		Conforming products may use this dictionary as a place to store private data in connection with that document, page, or form. Such private data can convey information meaningful to the conforming product that produces it (such as information on object grouping for a graphics editor or the layer information used by Adobe Photoshop®) but may be ignored by general-purpose conforming readers.
+
+A page-piece dictionary may contain any number of entries, each keyed by the name of a distinct conforming product or of a well-known data type recognized by a family of conforming products. The value associated with each key shall be a data dictionary containing the private data that shall be used by the conforming product. The Private entry may have a value of any data type, but typically it is a dictionary containing all of the private data needed by the conforming product other than the actual content of the document, page, or form.
+'.
+	PieceInfo namespacePath: #(#PDFtalk).
+%
+# Define class Contents
+DoIt
+PDFStream
+	subclass: 'Contents'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Contents category: 'PDFtalk Document'.
+	Contents comment: 'PDF Catalog as defined in PDF 32000_2008.pdf pp. 81.
+
+Content streams are the primary means for describing the appearance of pages and other graphical elements.
+A content stream depends on information contained in an associated resource dictionary; in combination, these two objects form a self-contained entity.'.
+	Contents namespacePath: #(#PDFtalk).
+%
+# Define class Resources
+DoIt
+PDFDictionary
+	subclass: 'Resources'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Resources category: 'PDFtalk Document'.
+	Resources comment: 'PDF Catalog as defined in PDF 32000_2008.pdf pp. 82.
+
+The operands supplied to operators in a content stream shall only be direct objects; indirect objects and object references shall not be permitted.
+In some cases, an operator shall refer to a PDF object that is defined outside the content stream, such as a font dictionary or a stream containing image data.
+This shall be accomplished by defining such objects as named resources and referring to them by name from within the content stream.
+
+Named resources shall be meaningful only in the context of a content stream.
+The scope of a resource name shall be local to a particular content stream and shall be unrelated to externally known identifiers for objects such as fonts.
+References from one object outside of content streams to another outside of content streams shall be made by means of indirect object references rather than named resources.
+
+A content stream’s named resources shall be defined by a resource dictionary, which shall enumerate the named resources needed by the operators in the content stream and the names by which they can be referred to.'.
+	Resources namespacePath: #(#PDFtalk).
+%
+# Define class Page
+DoIt
+PageTree
+	subclass: 'Page'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Page category: 'PDFtalk Document'.
+	Page comment: 'PDF Page as defined in PDF 32000_2008.pdf pp. 77.
+
+The leaves of the page tree are page objects, each of which is a dictionary specifying the attributes of a single page of the document.
+The table also identifies which attributes a page may inherit from its ancestor nodes in the page tree.
+Attributes that are not explicitly identified in the table as inheritable shall not be inherited.'.
+	Page namespacePath: #(#PDFtalk).
+%
+# Define class OutputIntent
+DoIt
+TypedDictionary
+	subclass: 'OutputIntent'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OutputIntent category: 'PDFtalk Document'.
+	OutputIntent comment: 'PDF OutputIntent as defined in PDF 32000_2008.pdf pp. 633.
+
+Output intents (PDF 1.4) provide a means for matching the colour characteristics of a PDF document with 
+those of a target output device or production environment in which the document will be printed. 
+The optional OutputIntents entry in the document catalogue holds an array of output intent dictionaries, 
+each describing the colour reproduction characteristics of a possible output device or production condition. 
+The contents of these dictionaries may vary for different devices and conditions. 
+The dictionary’s Sentry specifies an output intent subtype that determines the format and meaning of the remaining entries.
+
+NOTE 1
+This use of multiple output intents allows the production process to be customized to the expected workflow and the specific tools available. 
+For example, one production facility might process files conforming to a recognized standard such as PDF/X-1, 
+while another uses the PDF/A standard to produce RGB output for document distribution on the Web. 
+Each of these workflows would require different sets of output intent information. 
+Multiple output intents also allow the same PDF file to be distributed unmodified to multiple production facilities. 
+The choice of which output intent to use in a given production environment is a matter for agreement between the purchaser and provider of production services. 
+PDF intentionally does not include a selector for choosing a particular output intent from within the PDF file.
+
+At the time of publication, three output intent subtypes have been defined: 
+	GTS_PDFX corresponding to the PDF/X format standard specified in ISO 15930, 
+	GTS_PDFA1 corresponding to the PDF/A standard as defined by ISO 19005, and 
+	ISO_PDFE1 corresponding to the PDF/E standard as defined by ISO 24517. 
+
+Other subtypes may be added in the future; the names of any such additional subtypes shall conform to the naming guidelines.'.
+	OutputIntent namespacePath: #(#PDFtalk).
+%
 DoIt
 System myUserProfile removeDictionaryAt: 1.
 %
@@ -65757,7 +65830,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Catalog
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.7.2'
 		documentation: 'The root of a document’s object hierarchy is the catalog dictionary, located by means of the Root entry in the trailer of the PDF file (see Trailer). 
 The catalog contains references to other objects defining the document’s contents, outline, article threads, named destinations, and other attributes. In addition, it contains information about how the document shall be displayed on the screen, such as whether its outline and thumbnail page images shall be displayed automatically and whether some location other than the first page shall be shown when the document is opened.'
@@ -66023,6 +66096,13 @@ addPage: aPage
 	self addPageTree: aPage
 %
 method: Catalog
+addPageReference: aPageReference
+	"add aPage as last element of the top Pages.
+	Convenience method. The use of #addPageTree: is preferred"
+
+	self Pages addPageTreeReference: aPageReference withParent: (self at: #Pages)
+%
+method: Catalog
 addPageTree: aPageTree
 	"add aPageTree (a Page or a Pages) as last element of the top Pages"
 
@@ -66039,7 +66119,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Contents
-		supertype: #Object
+		supertype: #Stream
 		section: '7.8'
 		documentation: 'Content streams are the primary means for describing the appearance of pages and other graphical elements.
 A content stream depends on information contained in an associated resource dictionary; in combination, these two objects form a self-contained entity.'
@@ -66105,7 +66185,6 @@ assignObjectNumbersTo: someReferences
 %
 method: Document
 binaryWriteStreamOn: aFilenameString
-
 	^GsFile open: aFilenameString mode: 'wb' onClient: false
 %
 method: Document
@@ -66175,7 +66254,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Metadata
-		supertype: #Object
+		supertype: #Stream
 		version: 4
 		section: '14.3'
 		documentation: 'A PDF document may include general information, such as the document’s title, author, and creation and modification dates. 
@@ -66223,7 +66302,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Names
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '7.7.4'
 		documentation: 'A PDF document may include general information, such as the document’s title, author, and creation and modification dates. 
@@ -66334,7 +66413,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OutputIntent
-		supertype: #Object
+		supertype: #Dictionary
 		version: 4
 		section: '14.11.6'
 		documentation: 'Output intents provide a means for matching the colour characteristics of a PDF document with 
@@ -66434,17 +66513,20 @@ method: Page
 contentString
 	"<String>
 	all decoded content of Contents"
-	self Contents ifNil: [^''].
-	self Contents isPDFArray
-		ifTrue: 
-			[| wst |
-			wst := String new writeStream.
-			self Contents objects do: 
-					[:contents |
-					wst
-						nextPutAll: (contents encrypted ifTrue: [''] ifFalse: [contents internal])].
-			^wst contents].
-	self Contents encrypted ifTrue: [^''].
+
+	self Contents ifNil: [
+		^''].
+	(self Contents isKindOf: PDF Array) ifTrue: [
+		| wst |
+		wst := String new writeStream.
+		self Contents objects do: [:contents |
+			wst nextPutAll: (contents encrypted
+				ifTrue: ['']
+				ifFalse: [
+				contents internal])].
+		^wst contents].
+	self Contents encrypted ifTrue: [
+		^''].
 	^self Contents internal
 %
 method: Page
@@ -66455,7 +66537,8 @@ method: Page
 firstContents
 	"<Contents>"
 
-	self Contents isPDFArray ifTrue: [^self Contents first].
+	(self Contents isKindOf: PDF Array) ifTrue: [
+		^self Contents first].
 	^self Contents
 %
 method: Page
@@ -66799,8 +66882,12 @@ addPageTree: aPageTree
 %
 method: Pages
 addPageTree: aPageTree withParent: aReferenceToSelf
-	aPageTree at: #Parent put: aReferenceToSelf.
-	self at: #Kids put: (self Kids with: aPageTree newReference).
+	self addPageTreeReference: aPageTree newReference withParent: aReferenceToSelf
+%
+method: Pages
+addPageTreeReference: aPageTreeReference withParent: aReferenceToSelf
+	aPageTreeReference referent at: #Parent put: aReferenceToSelf.
+	self at: #Kids put: (self Kids with: aPageTreeReference).
 	self at: #Count put: self count.
 	self Parent notEmpty ifTrue: [
 		self Parent updateCount]
@@ -66820,7 +66907,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #PageTree
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.7.3.2'
 		documentation: 'The pages of a document are accessed through a structure known as the page tree, which defines the ordering of pages in the document.
 Using the tree structure, conforming readers using only limited memory, can quickly open a document containing thousands of pages.
@@ -66919,7 +67006,7 @@ Parent
 %
 method: PageTree
 Resources
-	<type: #Dictionary>
+	<type: #Resources>
 	<inheritable>
 	<attribute: 2 documentation: 'A dictionary containing any resources required by the page.
 If the page requires no resources, the value of this entry shall be an empty dictionary.
@@ -66955,7 +67042,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #PieceInfo
-		supertype: #Object
+		supertype: #Dictionary
 		version: 3
 		section: '14.11.6'
 		documentation: 'A page-piece dictionary (PDF 1.3) may be used to hold private conforming product data. The data may be associated with a page or form XObject by means of the optional PieceInfo entry in the page object or form dictionary. Beginning with PDF 1.4, private data may also be associated with the PDF document by means of the PieceInfo entry in the document catalogue.
@@ -66984,7 +67071,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Resources
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.8.3'
 		documentation: 'The operands supplied to operators in a content stream shall only be direct objects; indirect objects and object references shall not be permitted.
 In some cases, an operator shall refer to a PDF object that is defined outside the content stream, such as a font dictionary or a stream containing image data.
@@ -67026,8 +67113,10 @@ newIdFor: aResourceObject in: aResourceDictionary
 
 	| prefix existingObjects |
 	prefix := aResourceObject class resourcePrefix.
-	existingObjects := aResourceDictionary keys
-				select: [:key | key matchPattern: (Array with: prefix with: $*)].
+	existingObjects := aResourceDictionary keys select: [:key |
+		key matchPattern: (Array
+			with: prefix
+			with: $*)].
 	^(prefix , (existingObjects size + 1) printString) asSymbol
 %
 method: Resources
@@ -67898,6 +67987,43 @@ See ShadingDictionary
 '.
 	ShadingStream namespacePath: #(#PDFtalk).
 %
+# Define class FreeFormGouraudShadedMesh
+DoIt
+ShadingStream
+	subclass: 'FreeFormGouraudShadedMesh'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FreeFormGouraudShadedMesh category: 'PDFtalk Shading'.
+	FreeFormGouraudShadedMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 189.
+
+Type 4 shadings (free-form Gouraud-shaded triangle meshes) are commonly used to represent complex coloured and shaded three-dimensional shapes.
+The area to be shaded is defined by a path composed entirely of triangles.
+The colour at each vertex of the triangles is specified, and a technique known as Gouraud interpolation is used to colour the interiors.
+The interpolation functions defining the shading may be linear or nonlinear.'.
+	FreeFormGouraudShadedMesh namespacePath: #(#PDFtalk).
+%
+# Define class Shading
+DoIt
+Objecttype
+	subclass: 'Shading'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Shading category: 'PDFtalk Shading'.
+	Shading comment: 'PDF Shading Pattern as defined in PDF 32000_2008.pdf, section 8.7.4, pp. 181
+
+Shading patterns (PDF 1.3) provide a smooth transition between colours across an area to be painted, independent of the resolution of any particular output device and without specifying the number of steps in the colour transition. Patterns of this type shall be described by pattern dictionaries with a pattern type of 2.'.
+	Shading namespacePath: #(#PDFtalk).
+%
 # Define class LatticeFormGouraudShadedMesh
 DoIt
 ShadingStream
@@ -67915,26 +68041,6 @@ DoIt
 Type 5 shadings (lattice-form Gouraud-shaded triangle meshes) are similar to type 4, but instead of using free-form geometry, their vertices are arranged in a pseudorectangular lattice, which is topologically equivalent to a rectangular grid.
 The vertices are organized into rows, which need not be geometrically linear.'.
 	LatticeFormGouraudShadedMesh namespacePath: #(#PDFtalk).
-%
-# Define class TensorProductPatchMesh
-DoIt
-ShadingStream
-	subclass: 'TensorProductPatchMesh'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TensorProductPatchMesh category: 'PDFtalk Shading'.
-	TensorProductPatchMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 198.
-
-Type 7 shadings (tensor-product patch meshes) are identical to type 6, except that they are based on a bicubic tensor-product patch defined by 16 control points instead of the 12 control points that define a Coons patch.
-The shading dictionaries representing the two patch types differ only in the value of the ShadingType entry and in the number of control points specified for each patch in the data stream.
-
-NOTE	Although the Coons patch is more concise and easier to use, the tensor-product patch affords greater control over colour mapping'.
-	TensorProductPatchMesh namespacePath: #(#PDFtalk).
 %
 # Define class ShadingDictionary
 DoIt
@@ -67976,29 +68082,6 @@ This type of shading shall not be used with an Indexed colour space.
 '.
 	RadialShading namespacePath: #(#PDFtalk).
 %
-# Define class CoonsPatchMesh
-DoIt
-ShadingStream
-	subclass: 'CoonsPatchMesh'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CoonsPatchMesh category: 'PDFtalk Shading'.
-	CoonsPatchMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 194.
-
-Type 6 shadings (Coons patch meshes) are constructed from one or more colour patches, each bounded by four cubic Bézier curves.
-Degenerate Bézier curves are allowed and are useful for certain graphical effects.
-At least one complete patch shall be specified.
-A Coons patch generally has two independent aspects:
-- Colours are specified for each corner of the unit square, and bilinear interpolation is used to fill in colours over the entire unit square.
-- Coordinates are mapped from the unit square into a four-sided patch whose sides are not necessarily linear.
-The mapping is continuous: the corners of the unit square map to corners of the patch and the sides of the unit square map to sides of the patch.'.
-	CoonsPatchMesh namespacePath: #(#PDFtalk).
-%
 # Define class AxialShading
 DoIt
 ShadingDictionary
@@ -68018,10 +68101,10 @@ Type 2 (axial) shadings define a colour blend that varies along a linear axis be
 This type of shading shall not be used with an Indexed colour space.'.
 	AxialShading namespacePath: #(#PDFtalk).
 %
-# Define class FreeFormGouraudShadedMesh
+# Define class TensorProductPatchMesh
 DoIt
 ShadingStream
-	subclass: 'FreeFormGouraudShadedMesh'
+	subclass: 'TensorProductPatchMesh'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68029,14 +68112,14 @@ ShadingStream
 	inDictionary: PDFtalk
 %
 DoIt
-	FreeFormGouraudShadedMesh category: 'PDFtalk Shading'.
-	FreeFormGouraudShadedMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 189.
+	TensorProductPatchMesh category: 'PDFtalk Shading'.
+	TensorProductPatchMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 198.
 
-Type 4 shadings (free-form Gouraud-shaded triangle meshes) are commonly used to represent complex coloured and shaded three-dimensional shapes.
-The area to be shaded is defined by a path composed entirely of triangles.
-The colour at each vertex of the triangles is specified, and a technique known as Gouraud interpolation is used to colour the interiors.
-The interpolation functions defining the shading may be linear or nonlinear.'.
-	FreeFormGouraudShadedMesh namespacePath: #(#PDFtalk).
+Type 7 shadings (tensor-product patch meshes) are identical to type 6, except that they are based on a bicubic tensor-product patch defined by 16 control points instead of the 12 control points that define a Coons patch.
+The shading dictionaries representing the two patch types differ only in the value of the ShadingType entry and in the number of control points specified for each patch in the data stream.
+
+NOTE	Although the Coons patch is more concise and easier to use, the tensor-product patch affords greater control over colour mapping'.
+	TensorProductPatchMesh namespacePath: #(#PDFtalk).
 %
 # Define class FunctionBasedShading
 DoIt
@@ -68060,10 +68143,10 @@ This type of shading shall not be used with an Indexed colour space.
 '.
 	FunctionBasedShading namespacePath: #(#PDFtalk).
 %
-# Define class Shading
+# Define class CoonsPatchMesh
 DoIt
-Objecttype
-	subclass: 'Shading'
+ShadingStream
+	subclass: 'CoonsPatchMesh'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68071,11 +68154,17 @@ Objecttype
 	inDictionary: PDFtalk
 %
 DoIt
-	Shading category: 'PDFtalk Shading'.
-	Shading comment: 'PDF Shading Pattern as defined in PDF 32000_2008.pdf, section 8.7.4, pp. 181
+	CoonsPatchMesh category: 'PDFtalk Shading'.
+	CoonsPatchMesh comment: 'PDF Shading as defined in PDF 32000_2008.pdf pp. 194.
 
-Shading patterns (PDF 1.3) provide a smooth transition between colours across an area to be painted, independent of the resolution of any particular output device and without specifying the number of steps in the colour transition. Patterns of this type shall be described by pattern dictionaries with a pattern type of 2.'.
-	Shading namespacePath: #(#PDFtalk).
+Type 6 shadings (Coons patch meshes) are constructed from one or more colour patches, each bounded by four cubic Bézier curves.
+Degenerate Bézier curves are allowed and are useful for certain graphical effects.
+At least one complete patch shall be specified.
+A Coons patch generally has two independent aspects:
+- Colours are specified for each corner of the unit square, and bilinear interpolation is used to fill in colours over the entire unit square.
+- Coordinates are mapped from the unit square into a four-sided patch whose sides are not necessarily linear.
+The mapping is continuous: the corners of the unit square map to corners of the patch and the sides of the unit square map to sides of the patch.'.
+	CoonsPatchMesh namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -68587,7 +68676,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Interactive Features'.
-	dict at: #storeVersion put: '2.0.0.14'.
+	dict at: #storeVersion put: '2.0.3.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -68654,10 +68743,10 @@ Polyline annotations are similar to polygons, except that the first and last ver
 '.
 	PolygonPolyline namespacePath: #(#PDFtalk).
 %
-# Define class SquareCircle
+# Define class PolyLineAnnotation
 DoIt
-Markup
-	subclass: 'SquareCircle'
+PolygonPolyline
+	subclass: 'PolyLineAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68665,21 +68754,19 @@ Markup
 	inDictionary: PDFtalk
 %
 DoIt
-	SquareCircle category: 'PDFtalk Interactive Features'.
-	SquareCircle comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
+	PolyLineAnnotation category: 'PDFtalk Interactive Features'.
+	PolyLineAnnotation comment: 'PDF Polygon and Polyline Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.9, pp. 402.
 
-Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
-When opened, they shall display a pop-up window containing the text of the associated note.
-The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
-
-Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
+Polygon annotations display closed polygons on the page.
+Such polygons may have any number of vertices connected by straight lines.
+Polyline annotations are similar to polygons, except that the first and last vertex are not implicitly connected.
 '.
-	SquareCircle namespacePath: #(#PDFtalk).
+	PolyLineAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class SoundAnnotation
+# Define class ThreeDActivation
 DoIt
-Markup
-	subclass: 'SoundAnnotation'
+PDFDictionary
+	subclass: 'ThreeDActivation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68687,55 +68774,17 @@ Markup
 	inDictionary: PDFtalk
 %
 DoIt
-	SoundAnnotation category: 'PDFtalk Interactive Features'.
-	SoundAnnotation comment: 'PDF Sound Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.16, pp. 406.
+	ThreeDActivation category: 'PDFtalk Interactive Features'.
+	ThreeDActivation comment: 'PDF 3D Annotations as defined in PDF 32000_2008.pdf, section 13.6.2, pp. 514.
 
-A sound annotation shall analogous to a text annotation except that instead of a text note, it contains sound recorded from the computer’s microphone or imported from a file.
-When the annotation is activated, the sound shall be played.
-The annotation shall behave like a text annotation in most ways, with a different icon (by default, a speaker) to indicate that it represents a sound.'.
-	SoundAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class LineAnnotation
-DoIt
-Markup
-	subclass: 'LineAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LineAnnotation category: 'PDFtalk Interactive Features'.
-	LineAnnotation comment: 'PDF Line Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.7, pp. 397.
-
-The purpose of a line annotation is to display a single straight line on the page.
-When opened, it shall display a pop-up window containing the text of the associated note.'.
-	LineAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class FreeTextAnnotation
-DoIt
-Markup
-	subclass: 'FreeTextAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FreeTextAnnotation category: 'PDFtalk Interactive Features'.
-	FreeTextAnnotation comment: 'PDF Free Text Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.6, pp. 395.
-
-A free text annotation displays text directly on the page.
-Unlike an ordinary text annotation, a free text annotation has no open or closed state; instead of being displayed in a pop-up window, the text shall be always visible.
+An activation dictionary determines how the state of the annotation and its associated artwork may change.
 '.
-	FreeTextAnnotation namespacePath: #(#PDFtalk).
+	ThreeDActivation namespacePath: #(#PDFtalk).
 %
-# Define class FileAttachmentAnnotation
+# Define class ScreenAnnotation
 DoIt
-Markup
-	subclass: 'FileAttachmentAnnotation'
+Annot
+	subclass: 'ScreenAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68743,21 +68792,17 @@ Markup
 	inDictionary: PDFtalk
 %
 DoIt
-	FileAttachmentAnnotation category: 'PDFtalk Interactive Features'.
-	FileAttachmentAnnotation comment: 'PDF File Attachment Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.15, pp. 406.
+	ScreenAnnotation category: 'PDFtalk Interactive Features'.
+	ScreenAnnotation comment: 'PDF Screen Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.18, pp. 407.
 
-A file attachment annotation contains a reference to a file, which typically shall be embedded in the PDF file.
-
-NOTE	A table of data might use a file attachment annotation to link to a spreadsheet file based on that data; activating the annotation extracts the embedded file and gives the user an opportunity to view it or store it in the file system.
-
-The Contents entry of the annotation dictionary may specify descriptive text relating to the attached file.
-Conforming readers shall use this entry rather than the optional Desc entry in the file specification dictionary identified by the annotation’s FS entry.'.
-	FileAttachmentAnnotation namespacePath: #(#PDFtalk).
+A screen annotation specifies a region of a page upon which media clips may be played.
+It also serves as an object from which actions can be triggered.'.
+	ScreenAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class BorderStyle
+# Define class TrapNetAnnotation
 DoIt
-TypedDictionary
-	subclass: 'BorderStyle'
+Annot
+	subclass: 'TrapNetAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68765,104 +68810,15 @@ TypedDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	BorderStyle category: 'PDFtalk Interactive Features'.
-	BorderStyle comment: 'PDF border style dictionary as defined in PDF 32000_2008.pdf, section 12.5.4, pp. 386.
+	TrapNetAnnotation category: 'PDFtalk Interactive Features'.
+	TrapNetAnnotation comment: 'PDF Trap Network Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.21, pp. 410.
+and 
+PDF Trapping Support as defined in PDF 32000_2008.pdf, section 14.11.6.2, pp. 636.
 
-An annotation may optionally be surrounded by a border when displayed or printed.
-If present, the border shall be drawn completely inside the annotation rectangle.
-In PDF 1.1, the characteristics of the border shall be specified by the Border entry in the annotation dictionary.
-Beginning with PDF 1.2, the border characteristics for some types of annotations may instead be specified in a border style dictionary designated by the annotation’s BS entry.
-Such dictionaries may also be used to specify the width and dash pattern for the lines drawn by line, square, circle, and ink annotations.
-If neither the Border nor the BS entry is present, the border shall be drawn as a solid line with a width of 1 point.'.
-	BorderStyle namespacePath: #(#PDFtalk).
-%
-# Define class RedactAnnotation
-DoIt
-Markup
-	subclass: 'RedactAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	RedactAnnotation category: 'PDFtalk Interactive Features'.
-	RedactAnnotation comment: 'PDF Redaction Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.23, pp. 412.
-
-A redaction annotation identifies content that is intended to be removed from the document.
-The intent of redaction annotations is to enable the following process:
-	a)	Content identification. A user applies redact annotations that specify the pieces or regions of content that should be removed.
-		Up until the next step is performed, the user can see, move and redefine these annotations.
-	b)	Content removal. The user instructs the viewer application to apply the redact annotations, after which the content in the area specified by the redact annotations is removed.
-		In the removed content’s place, some marking appears to indicate the area has been redacted.
-		Also, the redact annotations are removed from the PDF document.
-
-Redaction annotations provide a mechanism for the first step in the redaction process (content identification).
-This allows content to be marked for redaction in a non-destructive way, thus enabling a review process for evaluating potential redactions prior to removing the specified content.
-
-Redaction annotations shall provide enough information to be used in the second phase of the redaction process (content removal).
-This phase is application-specific and requires the conforming reader to remove all content identified by the redaction annotation, as well as the annotation itself.'.
-	RedactAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class CaretAnnotation
-DoIt
-Markup
-	subclass: 'CaretAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CaretAnnotation category: 'PDFtalk Interactive Features'.
-	CaretAnnotation comment: 'PDF Caret Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.11, pp. 404.
-
-A caret annotation is a visual symbol that indicates the presence of text edits.'.
-	CaretAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class FixedPrint
-DoIt
-TypedDictionary
-	subclass: 'FixedPrint'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FixedPrint category: 'PDFtalk Interactive Features'.
-	FixedPrint comment: 'PDF Watermark Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.22, pp. 410.
-
-A watermark annotation shall be used to represent graphics that shall be printed at a fixed size and position on a page, regardless of the dimensions of the printed page.
-The FixedPrint entry of a watermark annotation dictionary shall be a dictionary that contains values for specifying the size and position of the annotation.
-
-Watermark annotations shall have no pop-up window or other interactive elements.
-When displaying a watermark annotation on-screen, conforming readers shall use the dimensions of the media box as the page size so that the scroll and zoom behaviour is the same as for other annotations.
-
-	NOTE	Since many printing devices have non printable margins, such margins should be taken into consideration when positioning watermark annotations near the edge of a page.
-'.
-	FixedPrint namespacePath: #(#PDFtalk).
-%
-# Define class InkAnnotation
-DoIt
-Markup
-	subclass: 'InkAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	InkAnnotation category: 'PDFtalk Interactive Features'.
-	InkAnnotation comment: 'PDF Ink Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.13, pp. 405.
-
-An ink annotation represents a freehand “scribble” composed of one or more disjoint paths.
-When opened, it shall display a pop-up window containing the text of the associated note.'.
-	InkAnnotation namespacePath: #(#PDFtalk).
+A trap network annotation may be used to define the trapping characteristics for a page of a PDF document.
+	NOTE	Trapping is the process of adding marks to a page along colour boundaries to avoid unwanted visual artifacts resulting from misregistration of colorants when the page is printed.
+A page shall have no more than one trap network annotation, whose Subtype entry has the value TrapNet and which shall always be the last element in the page object’s Annots array.'.
+	TrapNetAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class Action
 DoIt
@@ -68880,6 +68836,42 @@ DoIt
 
 An action dictionary defines the characteristics and behaviour of an action.'.
 	Action namespacePath: #(#PDFtalk).
+%
+# Define class ViewerPreferences
+DoIt
+PDFDictionary
+	subclass: 'ViewerPreferences'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ViewerPreferences category: 'PDFtalk Interactive Features'.
+	ViewerPreferences comment: 'PDF ViewerPreferences as defined in PDF 32000_2008.pdf, section 12.2,  pp. 362.
+
+The ViewerPreferences entry in a document’s catalogue designates a viewer preferences dictionary (PDF 1.2) controlling the way the document shall be presented on the screen or in print.
+If no such dictionary is specified, conforming readers should behave in accordance with their own current user preference settings.'.
+	ViewerPreferences namespacePath: #(#PDFtalk).
+%
+# Define class MovieAnnotation
+DoIt
+Annot
+	subclass: 'MovieAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MovieAnnotation category: 'PDFtalk Interactive Features'.
+	MovieAnnotation comment: 'PDF Movie Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.17, pp. 407.
+
+A movie annotation contains animated graphics and sound to be presented on the computer screen and through the speakers.
+When the annotation is activated, the movie shall be played.'.
+	MovieAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class TextAnnotation
 DoIt
@@ -68900,10 +68892,10 @@ When closed, the annotation shall appear as an icon; when open, it shall display
 Text annotations shall not scale and rotate with the page; they shall behave as if the NoZoom and NoRotate annotation flags were always set.'.
 	TextAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class Outlines
+# Define class FreeTextAnnotation
 DoIt
-TypedDictionary
-	subclass: 'Outlines'
+Markup
+	subclass: 'FreeTextAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -68911,41 +68903,13 @@ TypedDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	Outlines category: 'PDFtalk Interactive Features'.
-	Outlines comment: 'PDF Outline dictionary as defined in PDF 32000_2008.pdf, section 12.3.3,  pp. 367.
+	FreeTextAnnotation category: 'PDFtalk Interactive Features'.
+	FreeTextAnnotation comment: 'PDF Free Text Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.6, pp. 395.
 
-A PDF document may contain a document outline that the conforming reader may display on the screen, allowing the user to navigate interactively from one part of the document to another.
-The outline consists of a tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of contents to display the document’s structure to the user.
-The user may interactively open and close individual items by clicking them with the mouse.
-When an item is open, its immediate children in the hierarchy shall become visible on the screen; each child may in turn be open or closed, selectively revealing or hiding further parts of the hierarchy. 
-When an item is closed, all of its descendants in the hierarchy shall be hidden.
-Clicking the text of any visible item activates the item, causing the conforming reader to jump to a destination or trigger an action associated with the item.
-
-The root of a document’s outline hierarchy is an outline dictionary specified by the Outlines entry in the document catalogue.
-Each individual outline item within the hierarchy shall be defined by an outline item dictionary.
-The items at each level of the hierarchy form a linked list, chained together through their Prev and Next entries and accessed through the First and Last entries in the parent item (or in the outline dictionary in the case of top-level items).
-When displayed on the screen, the items at a given level shall appear in the order in which they occur in the linked list.
+A free text annotation displays text directly on the page.
+Unlike an ordinary text annotation, a free text annotation has no open or closed state; instead of being displayed in a pop-up window, the text shall be always visible.
 '.
-	Outlines namespacePath: #(#PDFtalk).
-%
-# Define class FileSpecification
-DoIt
-TypedDictionary
-	subclass: 'FileSpecification'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FileSpecification category: 'PDFtalk Interactive Features'.
-	FileSpecification comment: 'PDF File Specification Annotations as defined in PDF 32000_2008.pdf, section 7.11.3, pp. 102.
-
-The dictionary form of file specification provides more flexibility than the string form, allowing different files to be specified for different file systems or platforms, or for file systems other than the standard ones (DOS/Windows, Mac OS, and UNIX).
-Regardless of the platform, conforming readers should use the F and UF (beginning with PDF 1.7) entries to specify files.
-The UF entry is optional, but should be included because it enables cross-platform and cross-language compatibility.'.
-	FileSpecification namespacePath: #(#PDFtalk).
+	FreeTextAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class OutlineItem
 DoIt
@@ -68993,10 +68957,10 @@ When opened, they shall display a pop-up window containing the text of the assoc
 '.
 	TextMarkup namespacePath: #(#PDFtalk).
 %
-# Define class HighlightAnnotation
+# Define class StrikeOutAnnotation
 DoIt
 TextMarkup
-	subclass: 'HighlightAnnotation'
+	subclass: 'StrikeOutAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69004,18 +68968,18 @@ TextMarkup
 	inDictionary: PDFtalk
 %
 DoIt
-	HighlightAnnotation category: 'PDFtalk Interactive Features'.
-	HighlightAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+	StrikeOutAnnotation category: 'PDFtalk Interactive Features'.
+	StrikeOutAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
 
 Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
 When opened, they shall display a pop-up window containing the text of the associated note.
 '.
-	HighlightAnnotation namespacePath: #(#PDFtalk).
+	StrikeOutAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class ViewerPreferences
+# Define class FixedPrint
 DoIt
-PDFDictionary
-	subclass: 'ViewerPreferences'
+TypedDictionary
+	subclass: 'FixedPrint'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69023,56 +68987,23 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	ViewerPreferences category: 'PDFtalk Interactive Features'.
-	ViewerPreferences comment: 'PDF ViewerPreferences as defined in PDF 32000_2008.pdf, section 12.2,  pp. 362.
+	FixedPrint category: 'PDFtalk Interactive Features'.
+	FixedPrint comment: 'PDF Watermark Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.22, pp. 410.
 
-The ViewerPreferences entry in a document’s catalogue designates a viewer preferences dictionary (PDF 1.2) controlling the way the document shall be presented on the screen or in print.
-If no such dictionary is specified, conforming readers should behave in accordance with their own current user preference settings.'.
-	ViewerPreferences namespacePath: #(#PDFtalk).
-%
-# Define class SquareAnnotation
-DoIt
-SquareCircle
-	subclass: 'SquareAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	SquareAnnotation category: 'PDFtalk Interactive Features'.
-	SquareAnnotation comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
+A watermark annotation shall be used to represent graphics that shall be printed at a fixed size and position on a page, regardless of the dimensions of the printed page.
+The FixedPrint entry of a watermark annotation dictionary shall be a dictionary that contains values for specifying the size and position of the annotation.
 
-Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
-When opened, they shall display a pop-up window containing the text of the associated note.
-The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
+Watermark annotations shall have no pop-up window or other interactive elements.
+When displaying a watermark annotation on-screen, conforming readers shall use the dimensions of the media box as the page size so that the scroll and zoom behaviour is the same as for other annotations.
 
-Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
+	NOTE	Since many printing devices have non printable margins, such margins should be taken into consideration when positioning watermark annotations near the edge of a page.
 '.
-	SquareAnnotation namespacePath: #(#PDFtalk).
+	FixedPrint namespacePath: #(#PDFtalk).
 %
-# Define class AppearanceCharacteristics
-DoIt
-PDFDictionary
-	subclass: 'AppearanceCharacteristics'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AppearanceCharacteristics category: 'PDFtalk Interactive Features'.
-	AppearanceCharacteristics comment: 'PDF Widget Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.19, pp. 409.
-
-The MK entry may be used to provide an appearance characteristics dictionary containing additional information for constructing the annotation’s appearance stream.'.
-	AppearanceCharacteristics namespacePath: #(#PDFtalk).
-%
-# Define class UnderlineAnnotation
+# Define class SquigglyAnnotation
 DoIt
 TextMarkup
-	subclass: 'UnderlineAnnotation'
+	subclass: 'SquigglyAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69080,18 +69011,18 @@ TextMarkup
 	inDictionary: PDFtalk
 %
 DoIt
-	UnderlineAnnotation category: 'PDFtalk Interactive Features'.
-	UnderlineAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+	SquigglyAnnotation category: 'PDFtalk Interactive Features'.
+	SquigglyAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
 
 Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
 When opened, they shall display a pop-up window containing the text of the associated note.
 '.
-	UnderlineAnnotation namespacePath: #(#PDFtalk).
+	SquigglyAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class BorderEffect
+# Define class FileAttachmentAnnotation
 DoIt
-PDFDictionary
-	subclass: 'BorderEffect'
+Markup
+	subclass: 'FileAttachmentAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69099,61 +69030,16 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	BorderEffect category: 'PDFtalk Interactive Features'.
-	BorderEffect comment: 'PDF border effect dictionary as defined in PDF 32000_2008.pdf, section 12.5.4, pp. 387.
+	FileAttachmentAnnotation category: 'PDFtalk Interactive Features'.
+	FileAttachmentAnnotation comment: 'PDF File Attachment Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.15, pp. 406.
 
-Beginning with PDF 1.5, some annotations (square, circle, and polygon) may have a BE entry, which is a border effect dictionary that specifies an effect that shall be applied to the border of the annotations.
-Beginning with PDF 1.6, the free text annotation may also have a BE entry. Table 167 describes the entries in a border effect dictionary.'.
-	BorderEffect namespacePath: #(#PDFtalk).
-%
-# Define class Appearance
-DoIt
-PDFDictionary
-	subclass: 'Appearance'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Appearance category: 'PDFtalk Interactive Features'.
-	Appearance comment: 'PDF appearance dictionary as defined in PDF 32000_2008.pdf, section 12.5.5, pp. 389.
+A file attachment annotation contains a reference to a file, which typically shall be embedded in the PDF file.
 
-An annotation may define as many as three separate appearances:
+NOTE	A table of data might use a file attachment annotation to link to a spreadsheet file based on that data; activating the annotation extracts the embedded file and gives the user an opportunity to view it or store it in the file system.
 
-• The normal appearance shall be used when the annotation is not interacting with the user. This appearance is also used for printing the annotation.
-
-• The rollover appearance shall be used when the user moves the cursor into the annotation’s active area without pressing the mouse button.
-
-• The down appearance shall be used when the mouse button is pressed or held down within the annotation’s active area.
-
-NOTE As used here, the term mouse denotes a generic pointing device that controls the location of a cursor on the screen and has at least one button that can be pressed, held down, and released.
-
-The normal, rollover, and down appearances shall be defined in an appearance dictionary, which in turn is the value of the AP entry in the annotation dictionary.'.
-	Appearance namespacePath: #(#PDFtalk).
-%
-# Define class CircleAnnotation
-DoIt
-SquareCircle
-	subclass: 'CircleAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CircleAnnotation category: 'PDFtalk Interactive Features'.
-	CircleAnnotation comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
-
-Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
-When opened, they shall display a pop-up window containing the text of the associated note.
-The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
-
-Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
-'.
-	CircleAnnotation namespacePath: #(#PDFtalk).
+The Contents entry of the annotation dictionary may specify descriptive text relating to the attached file.
+Conforming readers shall use this entry rather than the optional Desc entry in the file specification dictionary identified by the annotation’s FS entry.'.
+	FileAttachmentAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class PolygonAnnotation
 DoIt
@@ -69175,10 +69061,32 @@ Polyline annotations are similar to polygons, except that the first and last ver
 '.
 	PolygonAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class ThreeDActivation
+# Define class BorderStyle
+DoIt
+TypedDictionary
+	subclass: 'BorderStyle'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BorderStyle category: 'PDFtalk Interactive Features'.
+	BorderStyle comment: 'PDF border style dictionary as defined in PDF 32000_2008.pdf, section 12.5.4, pp. 386.
+
+An annotation may optionally be surrounded by a border when displayed or printed.
+If present, the border shall be drawn completely inside the annotation rectangle.
+In PDF 1.1, the characteristics of the border shall be specified by the Border entry in the annotation dictionary.
+Beginning with PDF 1.2, the border characteristics for some types of annotations may instead be specified in a border style dictionary designated by the annotation’s BS entry.
+Such dictionaries may also be used to specify the width and dash pattern for the lines drawn by line, square, circle, and ink annotations.
+If neither the Border nor the BS entry is present, the border shall be drawn as a solid line with a width of 1 point.'.
+	BorderStyle namespacePath: #(#PDFtalk).
+%
+# Define class AppearanceCharacteristics
 DoIt
 PDFDictionary
-	subclass: 'ThreeDActivation'
+	subclass: 'AppearanceCharacteristics'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69186,17 +69094,16 @@ PDFDictionary
 	inDictionary: PDFtalk
 %
 DoIt
-	ThreeDActivation category: 'PDFtalk Interactive Features'.
-	ThreeDActivation comment: 'PDF 3D Annotations as defined in PDF 32000_2008.pdf, section 13.6.2, pp. 514.
+	AppearanceCharacteristics category: 'PDFtalk Interactive Features'.
+	AppearanceCharacteristics comment: 'PDF Widget Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.19, pp. 409.
 
-An activation dictionary determines how the state of the annotation and its associated artwork may change.
-'.
-	ThreeDActivation namespacePath: #(#PDFtalk).
+The MK entry may be used to provide an appearance characteristics dictionary containing additional information for constructing the annotation’s appearance stream.'.
+	AppearanceCharacteristics namespacePath: #(#PDFtalk).
 %
-# Define class SquigglyAnnotation
+# Define class Sound
 DoIt
-TextMarkup
-	subclass: 'SquigglyAnnotation'
+TypedStream
+	subclass: 'Sound'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69204,13 +69111,38 @@ TextMarkup
 	inDictionary: PDFtalk
 %
 DoIt
-	SquigglyAnnotation category: 'PDFtalk Interactive Features'.
-	SquigglyAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+	Sound category: 'PDFtalk Interactive Features'.
+	Sound comment: 'PDF Sounds as defined in PDF 32000_2008.pdf, section 13.3, pp. 506.
 
-Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
-When opened, they shall display a pop-up window containing the text of the associated note.
-'.
-	SquigglyAnnotation namespacePath: #(#PDFtalk).
+A sound object shall be a stream containing sample values that define a sound to be played through the computer’s speakers.
+The Sound entry in a sound annotation or sound action dictionary shall identify a sound object representing the sound to be played when the annotation is activated.
+
+Since a sound object is a stream, it may contain any of the standard entries common to all streams.
+In particular, if it contains an F (file specification) entry, the sound shall be defined in an external file.
+This sound file shall be self-describing, containing all information needed to render the sound; no additional information need be present in the PDF file.
+
+	NOTE	The AIFF, AIFF-C (Mac OS), RIFF (.wav), and snd (.au) file formats are all self-describing.
+
+If no F entry is present, the sound object itself shall contain the sample data and all other information needed to define the sound.'.
+	Sound namespacePath: #(#PDFtalk).
+%
+# Define class StampAnnotation
+DoIt
+Markup
+	subclass: 'StampAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StampAnnotation category: 'PDFtalk Interactive Features'.
+	StampAnnotation comment: 'PDF Rubber Stamp Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.12, pp. 404.
+
+A rubber stamp annotation displays text or graphics intended to look as if they were stamped on the page with a rubber stamp.
+When opened, it shall display a pop-up window containing the text of the associated note.'.
+	StampAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class Movie
 DoIt
@@ -69234,10 +69166,10 @@ Despite the name, a movie may consist entirely of sound with no visible images t
 The Movie and A (activation) entries in the movie annotation dictionary shall refer, respectively, to a movie dictionary that shall describe the static characteristics of the movie and a movie activation dictionary that shall specify how it shall be presented.'.
 	Movie namespacePath: #(#PDFtalk).
 %
-# Define class StrikeOutAnnotation
+# Define class SquareCircle
 DoIt
-TextMarkup
-	subclass: 'StrikeOutAnnotation'
+Markup
+	subclass: 'SquareCircle'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69245,13 +69177,182 @@ TextMarkup
 	inDictionary: PDFtalk
 %
 DoIt
-	StrikeOutAnnotation category: 'PDFtalk Interactive Features'.
-	StrikeOutAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+	SquareCircle category: 'PDFtalk Interactive Features'.
+	SquareCircle comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
 
-Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
+Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
 When opened, they shall display a pop-up window containing the text of the associated note.
+The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
+
+Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
 '.
-	StrikeOutAnnotation namespacePath: #(#PDFtalk).
+	SquareCircle namespacePath: #(#PDFtalk).
+%
+# Define class SquareAnnotation
+DoIt
+SquareCircle
+	subclass: 'SquareAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SquareAnnotation category: 'PDFtalk Interactive Features'.
+	SquareAnnotation comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
+
+Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
+When opened, they shall display a pop-up window containing the text of the associated note.
+The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
+
+Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
+'.
+	SquareAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class URI
+DoIt
+Action
+	subclass: 'URI'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	URI category: 'PDFtalk Interactive Features'.
+	URI comment: 'PDF URI Action as defined in PDF 32000_2008.pdf, section 12.6.4.7, pp. 423.
+
+A uniform resource identifier (URI) is a string that identifies (resolves to) a resource on the Internet—typically a file that is the destination of a hypertext link, although it may also resolve to a query or other entity.
+(URIs are described in Internet RFC 2396, Uniform Resource Identifiers (URI): Generic Syntax)
+
+A URI action causes a URI to be resolved'.
+	URI namespacePath: #(#PDFtalk).
+%
+# Define class RedactAnnotation
+DoIt
+Markup
+	subclass: 'RedactAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	RedactAnnotation category: 'PDFtalk Interactive Features'.
+	RedactAnnotation comment: 'PDF Redaction Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.23, pp. 412.
+
+A redaction annotation identifies content that is intended to be removed from the document.
+The intent of redaction annotations is to enable the following process:
+	a)	Content identification. A user applies redact annotations that specify the pieces or regions of content that should be removed.
+		Up until the next step is performed, the user can see, move and redefine these annotations.
+	b)	Content removal. The user instructs the viewer application to apply the redact annotations, after which the content in the area specified by the redact annotations is removed.
+		In the removed content’s place, some marking appears to indicate the area has been redacted.
+		Also, the redact annotations are removed from the PDF document.
+
+Redaction annotations provide a mechanism for the first step in the redaction process (content identification).
+This allows content to be marked for redaction in a non-destructive way, thus enabling a review process for evaluating potential redactions prior to removing the specified content.
+
+Redaction annotations shall provide enough information to be used in the second phase of the redaction process (content removal).
+This phase is application-specific and requires the conforming reader to remove all content identified by the redaction annotation, as well as the annotation itself.'.
+	RedactAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class CaretAnnotation
+DoIt
+Markup
+	subclass: 'CaretAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CaretAnnotation category: 'PDFtalk Interactive Features'.
+	CaretAnnotation comment: 'PDF Caret Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.11, pp. 404.
+
+A caret annotation is a visual symbol that indicates the presence of text edits.'.
+	CaretAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class BorderEffect
+DoIt
+PDFDictionary
+	subclass: 'BorderEffect'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BorderEffect category: 'PDFtalk Interactive Features'.
+	BorderEffect comment: 'PDF border effect dictionary as defined in PDF 32000_2008.pdf, section 12.5.4, pp. 387.
+
+Beginning with PDF 1.5, some annotations (square, circle, and polygon) may have a BE entry, which is a border effect dictionary that specifies an effect that shall be applied to the border of the annotations.
+Beginning with PDF 1.6, the free text annotation may also have a BE entry. Table 167 describes the entries in a border effect dictionary.'.
+	BorderEffect namespacePath: #(#PDFtalk).
+%
+# Define class PopupAnnotation
+DoIt
+Annot
+	subclass: 'PopupAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PopupAnnotation category: 'PDFtalk Interactive Features'.
+	PopupAnnotation comment: 'PDF Pop-up Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.14, pp. 405.
+
+A pop-up annotation displays text in a pop-up window for entry and editing.
+It shall not appear alone but is associated with a markup annotation, its parent annotation, and shall be used for editing the parent’s text.
+It shall have no appearance stream or associated actions of its own and shall be identified by the Popup entry in the parent’s annotation dictionary.'.
+	PopupAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class CircleAnnotation
+DoIt
+SquareCircle
+	subclass: 'CircleAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CircleAnnotation category: 'PDFtalk Interactive Features'.
+	CircleAnnotation comment: 'PDF Square and Circle Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.8, pp. 401.
+
+Square and circle annotations shall display, respectively, a rectangle or an ellipse on the page.
+When opened, they shall display a pop-up window containing the text of the associated note.
+The rectangle or ellipse shall be inscribed within the annotation rectangle defined by the annotation dictionary’s Rect entry.
+
+Despite the names square and circle, the width and height of the annotation rectangle need not be equal.
+'.
+	CircleAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class SoundAnnotation
+DoIt
+Markup
+	subclass: 'SoundAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	SoundAnnotation category: 'PDFtalk Interactive Features'.
+	SoundAnnotation comment: 'PDF Sound Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.16, pp. 406.
+
+A sound annotation shall analogous to a text annotation except that instead of a text note, it contains sound recorded from the computer’s microphone or imported from a file.
+When the annotation is activated, the sound shall be played.
+The annotation shall behave like a text annotation in most ways, with a different icon (by default, a speaker) to indicate that it represents a sound.'.
+	SoundAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class ExplicitDestination
 DoIt
@@ -69310,10 +69411,10 @@ A null value for top specifies that the current value of that parameter shall be
 A null value for left specifies that the current value of that parameter shall be retained unchanged.'.
 	ExplicitDestination namespacePath: #(#PDFtalk).
 %
-# Define class PolyLineAnnotation
+# Define class Outlines
 DoIt
-PolygonPolyline
-	subclass: 'PolyLineAnnotation'
+TypedDictionary
+	subclass: 'Outlines'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69321,14 +69422,42 @@ PolygonPolyline
 	inDictionary: PDFtalk
 %
 DoIt
-	PolyLineAnnotation category: 'PDFtalk Interactive Features'.
-	PolyLineAnnotation comment: 'PDF Polygon and Polyline Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.9, pp. 402.
+	Outlines category: 'PDFtalk Interactive Features'.
+	Outlines comment: 'PDF Outline dictionary as defined in PDF 32000_2008.pdf, section 12.3.3,  pp. 367.
 
-Polygon annotations display closed polygons on the page.
-Such polygons may have any number of vertices connected by straight lines.
-Polyline annotations are similar to polygons, except that the first and last vertex are not implicitly connected.
+A PDF document may contain a document outline that the conforming reader may display on the screen, allowing the user to navigate interactively from one part of the document to another.
+The outline consists of a tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of contents to display the document’s structure to the user.
+The user may interactively open and close individual items by clicking them with the mouse.
+When an item is open, its immediate children in the hierarchy shall become visible on the screen; each child may in turn be open or closed, selectively revealing or hiding further parts of the hierarchy. 
+When an item is closed, all of its descendants in the hierarchy shall be hidden.
+Clicking the text of any visible item activates the item, causing the conforming reader to jump to a destination or trigger an action associated with the item.
+
+The root of a document’s outline hierarchy is an outline dictionary specified by the Outlines entry in the document catalogue.
+Each individual outline item within the hierarchy shall be defined by an outline item dictionary.
+The items at each level of the hierarchy form a linked list, chained together through their Prev and Next entries and accessed through the First and Last entries in the parent item (or in the outline dictionary in the case of top-level items).
+When displayed on the screen, the items at a given level shall appear in the order in which they occur in the linked list.
 '.
-	PolyLineAnnotation namespacePath: #(#PDFtalk).
+	Outlines namespacePath: #(#PDFtalk).
+%
+# Define class PrinterMarkAnnotation
+DoIt
+Annot
+	subclass: 'PrinterMarkAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PrinterMarkAnnotation category: 'PDFtalk Interactive Features'.
+	PrinterMarkAnnotation comment: 'PDF Printer''s Mark Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.20, pp. 410.
+and 
+PDF Printer''s Marks as defined in PDF 32000_2008.pdf, section 14.11.3, pp. 630.
+
+A printer’s mark annotation represents a graphic symbol, such as a registration target, colour bar, or cut mark, that may be added to a page to assist production personnel in identifying components of a multiple-plate job and maintaining consistent output during production.
+'.
+	PrinterMarkAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class Dest
 DoIt
@@ -69348,132 +69477,6 @@ A dictionary with a D entry whose value is an ExplicitDestination.
 
 This form allows additional attributes to be associated with the destination, as well as enabling a go-to action that shall be used as the target of a named destination'.
 	Dest namespacePath: #(#PDFtalk).
-%
-# Define class MovieActivation
-DoIt
-PDFDictionary
-	subclass: 'MovieActivation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MovieActivation category: 'PDFtalk Interactive Features'.
-	MovieActivation comment: 'PDF Movies as defined in PDF 32000_2008.pdf, section 13.4, pp. 508.
-
-The features described in this sub-clause are obsolescent and their use is no longer recommended.
-They are superseded by the general multimedia framework described in 13.2, “Multimedia.”
-
-PDF shall embed movies within a document by means of movie annotations.
-Despite the name, a movie may consist entirely of sound with no visible images to be displayed on the screen.
-The Movie and A (activation) entries in the movie annotation dictionary shall refer, respectively, to a movie dictionary that shall describe the static characteristics of the movie and a movie activation dictionary that shall specify how it shall be presented.
-'.
-	MovieActivation namespacePath: #(#PDFtalk).
-%
-# Define class Sound
-DoIt
-TypedStream
-	subclass: 'Sound'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Sound category: 'PDFtalk Interactive Features'.
-	Sound comment: 'PDF Sounds as defined in PDF 32000_2008.pdf, section 13.3, pp. 506.
-
-A sound object shall be a stream containing sample values that define a sound to be played through the computer’s speakers.
-The Sound entry in a sound annotation or sound action dictionary shall identify a sound object representing the sound to be played when the annotation is activated.
-
-Since a sound object is a stream, it may contain any of the standard entries common to all streams.
-In particular, if it contains an F (file specification) entry, the sound shall be defined in an external file.
-This sound file shall be self-describing, containing all information needed to render the sound; no additional information need be present in the PDF file.
-
-	NOTE	The AIFF, AIFF-C (Mac OS), RIFF (.wav), and snd (.au) file formats are all self-describing.
-
-If no F entry is present, the sound object itself shall contain the sample data and all other information needed to define the sound.'.
-	Sound namespacePath: #(#PDFtalk).
-%
-# Define class MovieAnnotation
-DoIt
-Annot
-	subclass: 'MovieAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MovieAnnotation category: 'PDFtalk Interactive Features'.
-	MovieAnnotation comment: 'PDF Movie Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.17, pp. 407.
-
-A movie annotation contains animated graphics and sound to be presented on the computer screen and through the speakers.
-When the annotation is activated, the movie shall be played.'.
-	MovieAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class ScreenAnnotation
-DoIt
-Annot
-	subclass: 'ScreenAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ScreenAnnotation category: 'PDFtalk Interactive Features'.
-	ScreenAnnotation comment: 'PDF Screen Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.18, pp. 407.
-
-A screen annotation specifies a region of a page upon which media clips may be played.
-It also serves as an object from which actions can be triggered.'.
-	ScreenAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class TrapNetAnnotation
-DoIt
-Annot
-	subclass: 'TrapNetAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TrapNetAnnotation category: 'PDFtalk Interactive Features'.
-	TrapNetAnnotation comment: 'PDF Trap Network Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.21, pp. 410.
-and 
-PDF Trapping Support as defined in PDF 32000_2008.pdf, section 14.11.6.2, pp. 636.
-
-A trap network annotation may be used to define the trapping characteristics for a page of a PDF document.
-	NOTE	Trapping is the process of adding marks to a page along colour boundaries to avoid unwanted visual artifacts resulting from misregistration of colorants when the page is printed.
-A page shall have no more than one trap network annotation, whose Subtype entry has the value TrapNet and which shall always be the last element in the page object’s Annots array.'.
-	TrapNetAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class URI
-DoIt
-Action
-	subclass: 'URI'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	URI category: 'PDFtalk Interactive Features'.
-	URI comment: 'PDF URI Action as defined in PDF 32000_2008.pdf, section 12.6.4.7, pp. 423.
-
-A uniform resource identifier (URI) is a string that identifies (resolves to) a resource on the Internet—typically a file that is the destination of a hypertext link, although it may also resolve to a query or other entity.
-(URIs are described in Internet RFC 2396, Uniform Resource Identifiers (URI): Generic Syntax)
-
-A URI action causes a URI to be resolved'.
-	URI namespacePath: #(#PDFtalk).
 %
 # Define class WatermarkAnnotation
 DoIt
@@ -69498,10 +69501,10 @@ When displaying a watermark annotation on-screen, conforming readers shall use t
 	NOTE	Since many printing devices have non printable margins, such margins should be taken into consideration when positioning watermark annotations near the edge of a page.'.
 	WatermarkAnnotation namespacePath: #(#PDFtalk).
 %
-# Define class ThreeDAnnotation
+# Define class Appearance
 DoIt
-Annot
-	subclass: 'ThreeDAnnotation'
+PDFDictionary
+	subclass: 'Appearance'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69509,70 +69512,21 @@ Annot
 	inDictionary: PDFtalk
 %
 DoIt
-	ThreeDAnnotation category: 'PDFtalk Interactive Features'.
-	ThreeDAnnotation comment: 'PDF 3D Annotations as defined in PDF 32000_2008.pdf, section 13.6.2, pp. 512.
+	Appearance category: 'PDFtalk Interactive Features'.
+	Appearance comment: 'PDF appearance dictionary as defined in PDF 32000_2008.pdf, section 12.5.5, pp. 389.
 
-3D annotations are the means by which 3D artwork shall be represented in a PDF document.
+An annotation may define as many as three separate appearances:
 
-In addition to these entries, a 3D annotation shall provide an appearance stream in its AP entry that has a normal appearance (the N entry).
-This appearance may be used by applications that do not support 3D annotations and by all applications for the initial display of the annotation.'.
-	ThreeDAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class LinkAnnotation
-DoIt
-Annot
-	subclass: 'LinkAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LinkAnnotation category: 'PDFtalk Interactive Features'.
-	LinkAnnotation comment: 'PDF Link Annotation as defined in PDF 32000_2008.pdf, section 12.5.6.5, pp. 394.
+• The normal appearance shall be used when the annotation is not interacting with the user. This appearance is also used for printing the annotation.
 
-A link annotation represents either a hypertext link to a destination elsewhere in the document or an action to be performed'.
-	LinkAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class PopupAnnotation
-DoIt
-Annot
-	subclass: 'PopupAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PopupAnnotation category: 'PDFtalk Interactive Features'.
-	PopupAnnotation comment: 'PDF Pop-up Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.14, pp. 405.
+• The rollover appearance shall be used when the user moves the cursor into the annotation’s active area without pressing the mouse button.
 
-A pop-up annotation displays text in a pop-up window for entry and editing.
-It shall not appear alone but is associated with a markup annotation, its parent annotation, and shall be used for editing the parent’s text.
-It shall have no appearance stream or associated actions of its own and shall be identified by the Popup entry in the parent’s annotation dictionary.'.
-	PopupAnnotation namespacePath: #(#PDFtalk).
-%
-# Define class PrinterMarkAnnotation
-DoIt
-Annot
-	subclass: 'PrinterMarkAnnotation'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PrinterMarkAnnotation category: 'PDFtalk Interactive Features'.
-	PrinterMarkAnnotation comment: 'PDF Printer''s Mark Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.20, pp. 410.
-and 
-PDF Printer''s Marks as defined in PDF 32000_2008.pdf, section 14.11.3, pp. 630.
+• The down appearance shall be used when the mouse button is pressed or held down within the annotation’s active area.
 
-A printer’s mark annotation represents a graphic symbol, such as a registration target, colour bar, or cut mark, that may be added to a page to assist production personnel in identifying components of a multiple-plate job and maintaining consistent output during production.
-'.
-	PrinterMarkAnnotation namespacePath: #(#PDFtalk).
+NOTE As used here, the term mouse denotes a generic pointing device that controls the location of a cursor on the screen and has at least one button that can be pressed, held down, and released.
+
+The normal, rollover, and down appearances shall be defined in an appearance dictionary, which in turn is the value of the AP entry in the annotation dictionary.'.
+	Appearance namespacePath: #(#PDFtalk).
 %
 # Define class WidgetAnnotation
 DoIt
@@ -69593,6 +69547,86 @@ As a convenience, when a field has only a single associated widget annotation, t
 
 	NOTE	This presents no ambiguity, since the contents of the two kinds of dictionaries do not conflict.'.
 	WidgetAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class LineAnnotation
+DoIt
+Markup
+	subclass: 'LineAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LineAnnotation category: 'PDFtalk Interactive Features'.
+	LineAnnotation comment: 'PDF Line Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.7, pp. 397.
+
+The purpose of a line annotation is to display a single straight line on the page.
+When opened, it shall display a pop-up window containing the text of the associated note.'.
+	LineAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class ThreeDAnnotation
+DoIt
+Annot
+	subclass: 'ThreeDAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ThreeDAnnotation category: 'PDFtalk Interactive Features'.
+	ThreeDAnnotation comment: 'PDF 3D Annotations as defined in PDF 32000_2008.pdf, section 13.6.2, pp. 512.
+
+3D annotations are the means by which 3D artwork shall be represented in a PDF document.
+
+In addition to these entries, a 3D annotation shall provide an appearance stream in its AP entry that has a normal appearance (the N entry).
+This appearance may be used by applications that do not support 3D annotations and by all applications for the initial display of the annotation.'.
+	ThreeDAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class MovieActivation
+DoIt
+PDFDictionary
+	subclass: 'MovieActivation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MovieActivation category: 'PDFtalk Interactive Features'.
+	MovieActivation comment: 'PDF Movies as defined in PDF 32000_2008.pdf, section 13.4, pp. 508.
+
+The features described in this sub-clause are obsolescent and their use is no longer recommended.
+They are superseded by the general multimedia framework described in 13.2, “Multimedia.”
+
+PDF shall embed movies within a document by means of movie annotations.
+Despite the name, a movie may consist entirely of sound with no visible images to be displayed on the screen.
+The Movie and A (activation) entries in the movie annotation dictionary shall refer, respectively, to a movie dictionary that shall describe the static characteristics of the movie and a movie activation dictionary that shall specify how it shall be presented.
+'.
+	MovieActivation namespacePath: #(#PDFtalk).
+%
+# Define class HighlightAnnotation
+DoIt
+TextMarkup
+	subclass: 'HighlightAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	HighlightAnnotation category: 'PDFtalk Interactive Features'.
+	HighlightAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+
+Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
+When opened, they shall display a pop-up window containing the text of the associated note.
+'.
+	HighlightAnnotation namespacePath: #(#PDFtalk).
 %
 # Define class Destination
 DoIt
@@ -69618,10 +69652,10 @@ In each case, the destination specifies the view of the document that shall be p
 A destination may be specified either explicitly by an array of parameters defining its properties or indirectly by name.'.
 	Destination namespacePath: #(#PDFtalk).
 %
-# Define class StampAnnotation
+# Define class InkAnnotation
 DoIt
 Markup
-	subclass: 'StampAnnotation'
+	subclass: 'InkAnnotation'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -69629,12 +69663,67 @@ Markup
 	inDictionary: PDFtalk
 %
 DoIt
-	StampAnnotation category: 'PDFtalk Interactive Features'.
-	StampAnnotation comment: 'PDF Rubber Stamp Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.12, pp. 404.
+	InkAnnotation category: 'PDFtalk Interactive Features'.
+	InkAnnotation comment: 'PDF Ink Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.13, pp. 405.
 
-A rubber stamp annotation displays text or graphics intended to look as if they were stamped on the page with a rubber stamp.
+An ink annotation represents a freehand “scribble” composed of one or more disjoint paths.
 When opened, it shall display a pop-up window containing the text of the associated note.'.
-	StampAnnotation namespacePath: #(#PDFtalk).
+	InkAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class FileSpecification
+DoIt
+TypedDictionary
+	subclass: 'FileSpecification'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FileSpecification category: 'PDFtalk Interactive Features'.
+	FileSpecification comment: 'PDF File Specification Annotations as defined in PDF 32000_2008.pdf, section 7.11.3, pp. 102.
+
+The dictionary form of file specification provides more flexibility than the string form, allowing different files to be specified for different file systems or platforms, or for file systems other than the standard ones (DOS/Windows, Mac OS, and UNIX).
+Regardless of the platform, conforming readers should use the F and UF (beginning with PDF 1.7) entries to specify files.
+The UF entry is optional, but should be included because it enables cross-platform and cross-language compatibility.'.
+	FileSpecification namespacePath: #(#PDFtalk).
+%
+# Define class UnderlineAnnotation
+DoIt
+TextMarkup
+	subclass: 'UnderlineAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	UnderlineAnnotation category: 'PDFtalk Interactive Features'.
+	UnderlineAnnotation comment: 'PDF Text Markup Annotations as defined in PDF 32000_2008.pdf, section 12.5.6.10, pp. 403.
+
+Text markup annotations shall appear as highlights, underlines, strikeouts, or jagged (“squiggly”) underlines in the text of a document.
+When opened, they shall display a pop-up window containing the text of the associated note.
+'.
+	UnderlineAnnotation namespacePath: #(#PDFtalk).
+%
+# Define class LinkAnnotation
+DoIt
+Annot
+	subclass: 'LinkAnnotation'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LinkAnnotation category: 'PDFtalk Interactive Features'.
+	LinkAnnotation comment: 'PDF Link Annotation as defined in PDF 32000_2008.pdf, section 12.5.6.5, pp. 394.
+
+A link annotation represents either a hypertext link to a destination elsewhere in the document or an action to be performed'.
+	LinkAnnotation namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -69648,7 +69737,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Action
-		supertype: #Object
+		supertype: #Dictionary
 		version: 1
 		section: '12.6'
 		documentation: 'An action dictionary defines the characteristics and behaviour of an action.'
@@ -69712,7 +69801,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Annot
-		supertype: #Object
+		supertype: #Dictionary
 		section: '12.5.1'
 		documentation: 'The optional Annots entry in a page object holds an array of annotation dictionaries, each representing an annotation associated with the given page.
 The dictionary may contain additional entries specific to a particular annotation type.
@@ -69911,7 +70000,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Appearance
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '12.5.5'
 		documentation: 'Interactive forms use widget annotations to represent the appearance of fields and to manage user interactions.
@@ -69950,7 +70039,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #AppearanceCharacteristics
-		supertype: #Object
+		supertype: #Dictionary
 		section: '12.5.6.19'
 		documentation: 'The MK entry may be used to provide an appearance characteristics dictionary containing additional information for constructing the annotation’s appearance stream.'
 %
@@ -70052,7 +70141,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #BorderEffect
-		supertype: #Object
+		supertype: #Dictionary
 		version: 5
 		section: '12.5.4'
 		documentation: 'Beginning with PDF 1.5, some annotations (square, circle, and polygon) may have a BE entry, which is a border effect dictionary that specifies an effect that shall be applied to the border of the annotations.
@@ -70081,7 +70170,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #BorderStyle
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '12.5.4'
 		documentation: 'n annotation may optionally be surrounded by a border when displayed or printed.
@@ -70336,7 +70425,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #FileSpecification
-		supertype: #Object
+		supertype: #Dictionary
 		section: '7.11.2.4'
 		documentation: 'The dictionary form of file specification provides more flexibility than the string form, allowing different files to be specified for different file systems or platforms, or for file systems other than the standard ones (DOS/Windows, Mac OS, and UNIX).
 Regardless of the platform, conforming readers should use the F and UF (beginning with PDF 1.7) entries to specify files.
@@ -70462,7 +70551,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #FixedPrint
-		supertype: #Object
+		supertype: #Dictionary
 		version: 6
 		section: '12.5.6.22'
 		documentation: 'A watermark annotation shall be used to represent graphics that shall be printed at a fixed size and position on a page, regardless of the dimensions of the printed page.
@@ -70962,7 +71051,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Movie
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '13.4'
 		documentation: 'The features described in this sub-clause are obsolescent and their use is no longer recommended.
@@ -71010,7 +71099,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #MovieActivation
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '13.4'
 		documentation: 'The features described in this sub-clause are obsolescent and their use is no longer recommended.
@@ -71155,7 +71244,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #OutlineItem
-		supertype: #Object
+		supertype: #Dictionary
 		section: '12.3.3'
 		documentation: 'A PDF document may contain a document outline that the conforming reader may display on the screen, allowing the user to navigate interactively from one part of the document to another.
 The outline consists of a tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of contents to display the document’s structure to the user.
@@ -71312,7 +71401,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Outlines
-		supertype: #Object
+		supertype: #Dictionary
 		section: '12.3.3'
 		documentation: 'A PDF document may contain a document outline that the conforming reader may display on the screen, allowing the user to navigate interactively from one part of the document to another.
 The outline consists of a tree-structured hierarchy of outline items (sometimes called bookmarks), which serve as a visual table of contents to display the document’s structure to the user.
@@ -71668,7 +71757,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #Sound
-		supertype: #Object
+		supertype: #Stream
 		version: 2
 		section: '13.3'
 		documentation: 'A sound object shall be a stream containing sample values that define a sound to be played through the computer’s speakers.
@@ -71958,7 +72047,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ThreeDActivation
-		supertype: #Object
+		supertype: #Dictionary
 		version: 6
 		section: '13.6.2'
 		documentation: 'An activation dictionary determines how the state of the annotation and its associated artwork may change.'
@@ -72201,7 +72290,7 @@ pdfTypeDefinition
 
 	^PDFTypeDefinition
 		name: #ViewerPreferences
-		supertype: #Object
+		supertype: #Dictionary
 		version: 2
 		section: '12.2'
 		documentation: 'The ViewerPreferences entry in a document’s catalogue designates a viewer preferences dictionary (PDF 1.2) controlling the way the document shall be presented on the screen or in print.
@@ -72505,7 +72594,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
-	dict at: #storeVersion put: '2.0.0.1'.
+	dict at: #storeVersion put: '2.0.1.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
