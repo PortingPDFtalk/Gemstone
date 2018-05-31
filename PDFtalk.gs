@@ -1,4 +1,4 @@
-# Created 25. Mai 2018 um 23:58:30 by Gemstone Fileout(1.0.0.36,chaider)
+# Created 31. Mai 2018 um 16:32:28 by Gemstone Fileout(1.0.1.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -1946,8 +1946,7 @@ THE SOFTWARE.'.
 	dict at: #parcelName put: 'PDFtalk'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'Compression-ZLib') #(#name 'MD5') #(#name 'Values' #componentType #package)).
 	dict at: #prerequisiteParcels put: #(#('Compression-ZLib' '') #('MD5' '') #('Values' '')).
-	dict at: #storeVersion put: '2.0.4.4'.
-	dict at: #version put: '(2.0.4.3,chaider)'.
+	dict at: #storeVersion put: '2.0.6.1'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -4705,7 +4704,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Basic Objects'.
-	dict at: #storeVersion put: '2.0.2.1'.
+	dict at: #storeVersion put: '2.0.6.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -5192,7 +5191,7 @@ writeFractionDecimalsOn: aStream
 %
 method: Number
 writePDFOn: aStream indent: anInteger
-	| integer fraction rounded precision |
+	| precision rounded integer fraction |
 	self abs < self pdfEpsilon ifTrue: [
 		aStream nextPut: $0.
 		^self].
@@ -5207,15 +5206,15 @@ writePDFOn: aStream indent: anInteger
 		aStream nextPut: $-.
 		aStream nextPutAll: string.
 		^self].
-	integer := self truncated.
-	integer writePDFOn: aStream indent: anInteger.
-	fraction := self - integer.
 	precision := 10 raisedTo: self pdfSignificantDecimals.
-	rounded := (fraction * precision) rounded.
-	rounded strictlyPositive ifFalse: [
+	rounded := (self * precision) rounded / precision.
+	integer := rounded truncated.
+	integer writePDFOn: aStream indent: anInteger.
+	fraction := rounded - integer.
+	fraction strictlyPositive ifFalse: [
 		^self].
 	aStream nextPut: $..
-	rounded / precision writeFractionDecimalsOn: aStream
+	fraction writeFractionDecimalsOn: aStream
 %
 category: '*PDFtalk Basic Objects-accessing'
 classmethod: Object
@@ -5755,6 +5754,14 @@ writePDFOn: aStream indent: anInteger
 %
 category: 'accessing'
 classmethod: PDFArray
+attributesIntervalString
+	| numString |
+	numString := self numberOfAttributes printString.
+	self numberOfAttributes = self maxNumberOfAttributes ifFalse: [
+		^numString , '-' , self maxNumberOfAttributes printString].
+	^numString
+%
+classmethod: PDFArray
 maxNumberOfAttributes
 	^self numberOfAttributes
 %
@@ -5790,23 +5797,11 @@ new: numberOfElements
 classmethod: PDFArray
 on: anArray
 	| inst |
-	self == PDF Array ifFalse: [
-		self validateSize: anArray].
 	inst := self new: anArray size.
 	anArray doWithIndex: [:element :index | inst at: index put: element].
+	inst hasValidNumberOfElements ifFalse: [
+		inst raiseTypeError].
 	^inst
-%
-classmethod: PDFArray
-validateSize: anArray
-	"throws a TypeError if the size of the argument does not match the required number (or interval)"
-
-	| numString |
-	(anArray size between: self numberOfAttributes and: self maxNumberOfAttributes) ifTrue: [
-		^self].
-	numString := self numberOfAttributes printString.
-	self numberOfAttributes = self maxNumberOfAttributes ifFalse: [
-		numString := numString , '-' , self maxNumberOfAttributes printString].
-	TypeError raiseSignal: 'the size of the argument (' , anArray size printString , ') does not match the required number of attributes (' , numString , ')'
 %
 classmethod: PDFArray
 with: aPDFObject
@@ -5843,6 +5838,11 @@ isClassForArray: anArray
 
 	^anArray size between: self numberOfAttributes
 		and: self maxNumberOfAttributes
+%
+classmethod: PDFArray
+isValidNumberOfElements: anInteger
+	^self == PDF Array or: [
+	anInteger between: self numberOfAttributes and: self maxNumberOfAttributes]
 %
 category: 'accessing'
 method: PDFArray
@@ -5926,6 +5926,11 @@ method: PDFArray
 do: aBlockClosure
 	self content do: aBlockClosure
 %
+category: 'instance creation'
+method: PDFArray
+raiseTypeError
+	TypeError raiseSignal: 'the size of the argument (' , self size printString , ') does not match the required number of attributes (' , self class attributesIntervalString , ')'
+%
 category: 'printing'
 method: PDFArray
 printvalueWith: printer
@@ -5951,6 +5956,10 @@ method: PDFArray
 hasRequiredAttributes
 	^self attributesRequired allSatisfy: [:pragma |
 		pragma arguments first between: 1 and: self size]
+%
+method: PDFArray
+hasValidNumberOfElements
+	^self class isValidNumberOfElements: self size
 %
 category: 'tracing'
 method: PDFArray
@@ -10650,7 +10659,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Parsing'.
-	dict at: #storeVersion put: '2.0.2.0'.
+	dict at: #storeVersion put: '2.0.5.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -55652,7 +55661,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Graphics'.
-	dict at: #storeVersion put: '2.0.3.0'.
+	dict at: #storeVersion put: '2.0.6.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkLibrary) symbolDict at: #codeComponents.
 	components := (components at:  #PDFtalk) at: #codeComponents.
 	components at: dict name put: dict.
@@ -55660,42 +55669,29 @@ THE SOFTWARE.'.
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class ContentParser
+# Define class LineJoin
 DoIt
-Parser
-	subclass: 'ContentParser'
-	instVarNames: #()
+Value
+	subclass: 'LineJoin'
+	instVarNames: #(value)
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	ContentParser category: 'PDFtalk Graphics'.
-	ContentParser comment: 'This parser reads PDF content streams.
-Special restrictions apply.
+	LineJoin category: 'PDFtalk Graphics'.
+	LineJoin comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.4, pp. 125.
 
-From PDF 32000_2008.pdf pp.81:
+The line join style shall specify the shape to be used at the corners of paths that are stroked. Table 55 shows the possible values. Join styles shall be significant only at points where consecutive segments of a path connect at an angle; segments that meet or intersect fortuitously shall receive no special treatment.
 
-A content stream, after decoding with any specified filters, shall be interpreted according to the PDF syntax rules.
-It consists of PDF objects denoting operands and operators.
-The operands needed by an operator shall precede it in the stream.
-
-An operand is a direct object belonging to any of the basic PDF data types except a stream.
-Dictionaries shall be permitted as operands only by certain specific operators.
-Indirect objects and object references shall not be permitted at all.
-
-An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
-An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
-Operators shall be meaningful only inside a content stream.
-
-NOTE 
-This postfix notation, in which an operator is preceded by its operands, is superficially the same as in the PostScript language.
-However, PDF has no concept of an operand stack as PostScript has.
-
-In PDF, all of the operands needed by an operator shall immediately precede that operator.
-Operators do not return results, and operands shall not be left over when an operator finishes execution.'.
-	ContentParser namespacePath: #(#PDFtalk).
+0	Miter join	The outer edges of the strokes for the two segments shall beextended until they meet at an angle, as in a picture frame. 
+				If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join shall be used instead.
+1	Round join	An arc of a circle with a diameter equal to the line width shall be drawn around the point where the two segments meet, 
+				connecting the outer edges of the strokes for the two segments. 
+				This pieslice-shaped figure shall be filled in, producing a rounded corner.
+2	Bevel join	The two segments shall be finished with butt caps and the resulting notch beyond the ends of the segments shall be filled with a triangle.'.
+	LineJoin namespacePath: #(#PDFtalk).
 %
 # Define class GraphicsObject
 DoIt
@@ -55712,20 +55708,71 @@ DoIt
 	GraphicsObject comment: 'An object occuring in the page contents stream'.
 	GraphicsObject namespacePath: #(#PDFtalk).
 %
-# Define class PathObject
+# Define class IsolatedObjectx
 DoIt
 GraphicsObject
-	subclass: 'PathObject'
-	instVarNames: #(clipping painting intersections)
+	subclass: 'IsolatedObjectx'
+	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	PathObject category: 'PDFtalk Graphics'.
-	PathObject comment: 'list of path construction operators with a path painting operator'.
-	PathObject namespacePath: #(#PDFtalk).
+	IsolatedObjectx category: 'PDFtalk Graphics'.
+	IsolatedObjectx comment: 'operations between #q and #Q'.
+	IsolatedObjectx namespacePath: #(#PDFtalk).
+%
+# Define class Operation
+DoIt
+Value
+	subclass: 'Operation'
+	instVarNames: #(operands)
+	classVars: #(ClassesAtNames)
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Operation category: 'PDFtalk Graphics'.
+	Operation comment: 'PDF Operator as defined in PDF 32000_2008.pdf pp. 82.
+
+An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
+An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
+Operators shall be meaningful only inside a content stream.'.
+	Operation namespacePath: #(#PDFtalk).
+%
+# Define class UnknownOperation
+DoIt
+Operation
+	subclass: 'UnknownOperation'
+	instVarNames: #(operatorName)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	UnknownOperation category: 'PDFtalk Graphics'.
+	UnknownOperation comment: 'Operation not known in PDF
+
+Occurs when there are rrors in the content stream'.
+	UnknownOperation namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsInterpreter
+DoIt
+Object
+	subclass: 'GraphicsInterpreter'
+	instVarNames: #(container objects graphicsState graphicsStateStack currentPath operations beginTextIndex currentObjectStack)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsInterpreter category: 'PDFtalk Graphics'.
+	GraphicsInterpreter comment: 'The graphics on one page'.
+	GraphicsInterpreter namespacePath: #(#PDFtalk).
 %
 # Define class GraphicsCollector
 DoIt
@@ -55756,314 +55803,6 @@ DoIt
 	IsolatedObject category: 'PDFtalk Graphics'.
 	IsolatedObject comment: 'operations between #q and #Q'.
 	IsolatedObject namespacePath: #(#PDFtalk).
-%
-# Define class TextSegment
-DoIt
-GraphicsObject
-	subclass: 'TextSegment'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TextSegment category: 'PDFtalk Graphics'.
-	TextSegment comment: 'a string styled in a uniform way
-
-The text cannot contail line breaks'.
-	TextSegment namespacePath: #(#PDFtalk).
-%
-# Define class IsolatedObjectx
-DoIt
-GraphicsObject
-	subclass: 'IsolatedObjectx'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	IsolatedObjectx category: 'PDFtalk Graphics'.
-	IsolatedObjectx comment: 'operations between #q and #Q'.
-	IsolatedObjectx namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsObjectWithResource
-DoIt
-GraphicsObject
-	subclass: 'GraphicsObjectWithResource'
-	instVarNames: #(resource)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsObjectWithResource category: 'PDFtalk Graphics'.
-	GraphicsObjectWithResource comment: 'an object with a resource from the Resources dictionary'.
-	GraphicsObjectWithResource namespacePath: #(#PDFtalk).
-%
-# Define class OperationObject
-DoIt
-GraphicsObjectWithResource
-	subclass: 'OperationObject'
-	instVarNames: #(redundant)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	OperationObject category: 'PDFtalk Graphics'.
-	OperationObject comment: 'simple wrapper for a single operator.
-
-May contain a resolved resource'.
-	OperationObject namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsInterpreter
-DoIt
-Object
-	subclass: 'GraphicsInterpreter'
-	instVarNames: #(container objects graphicsState graphicsStateStack currentPath operations beginTextIndex currentObjectStack)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsInterpreter category: 'PDFtalk Graphics'.
-	GraphicsInterpreter comment: 'The graphics on one page'.
-	GraphicsInterpreter namespacePath: #(#PDFtalk).
-%
-# Define class MarkedObject
-DoIt
-GraphicsCollector
-	subclass: 'MarkedObject'
-	instVarNames: #(tag properties)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MarkedObject category: 'PDFtalk Graphics'.
-	MarkedObject comment: 'operations between BDC or BMC and EMC'.
-	MarkedObject namespacePath: #(#PDFtalk).
-%
-# Define class ExtGState
-DoIt
-PDFDictionary
-	subclass: 'ExtGState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ExtGState category: 'PDFtalk Graphics'.
-	ExtGState comment: 'PDF Graphics State Parameter Dictionaries as defined in PDF 32000_2008.pdf, section 8.4.5, pp. 128.
-
-While some parameters in the graphics state may be set with individual operators, others may not. 
-The latter may only be set with the generic graphics state operator gs (PDF 1.2). 
-The operand supplied to this operator shall be the name of a graphics state parameter dictionary 
-whose contents specify the values of one or more graphics state parameters. 
-This name shall be looked up in the ExtGState subdictionary of the current resource dictionary.
-
-The graphics state parameter dictionary is also used by type 2 patterns, which do not have a content stream in which the graphics state operators could be invoked.
-
-Each entry in the parameter dictionary shall specify the value of an individual graphics state parameter. 
-All entries need not be present for every invocation of the gs operator; the supplied parameter dictionary may include any combination of parameter entries. 
-The results of gs shall be cumulative; parameter values established in previous invocations persist until explicitly overridden.
-
-NOTE
-Note that some parameters appear in both Tables; 
-these parameters can be set either with individual graphics state operators or with gs. 
-It is expected that any future extensions to the graphics state will be implemented by 
-adding new entries to the graphics state parameter dictionary rather than by introducing new graphics state operators.'.
-	ExtGState namespacePath: #(#PDFtalk).
-%
-# Define class TextObject
-DoIt
-GraphicsCollector
-	subclass: 'TextObject'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TextObject category: 'PDFtalk Graphics'.
-	TextObject comment: 'operations between BT and ET'.
-	TextObject namespacePath: #(#PDFtalk).
-%
-# Define class LineJoin
-DoIt
-Value
-	subclass: 'LineJoin'
-	instVarNames: #(value)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LineJoin category: 'PDFtalk Graphics'.
-	LineJoin comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.4, pp. 125.
-
-The line join style shall specify the shape to be used at the corners of paths that are stroked. Table 55 shows the possible values. Join styles shall be significant only at points where consecutive segments of a path connect at an angle; segments that meet or intersect fortuitously shall receive no special treatment.
-
-0	Miter join	The outer edges of the strokes for the two segments shall beextended until they meet at an angle, as in a picture frame. 
-				If the segments meet at too sharp an angle (as defined by the miter limit parameter), a bevel join shall be used instead.
-1	Round join	An arc of a circle with a diameter equal to the line width shall be drawn around the point where the two segments meet, 
-				connecting the outer edges of the strokes for the two segments. 
-				This pieslice-shaped figure shall be filled in, producing a rounded corner.
-2	Bevel join	The two segments shall be finished with butt caps and the resulting notch beyond the ends of the segments shall be filled with a triangle.'.
-	LineJoin namespacePath: #(#PDFtalk).
-%
-# Define class ExternalGraphicsObject
-DoIt
-GraphicsObjectWithResource
-	subclass: 'ExternalGraphicsObject'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ExternalGraphicsObject category: 'PDFtalk Graphics'.
-	ExternalGraphicsObject comment: 'XObject'.
-	ExternalGraphicsObject namespacePath: #(#PDFtalk).
-%
-# Define class LineCap
-DoIt
-Value
-	subclass: 'LineCap'
-	instVarNames: #(value)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LineCap category: 'PDFtalk Graphics'.
-	LineCap comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.3, pp. 125.
-
-The line cap style shall specify the shape that shall be used at the ends of open subpaths (and dashes, if any) when they are stroked.
-
-0	Butt cap. 				The stroke shall be squared off at the endpoint of the path. There shall be no projection beyond the end of the path.
-1	Round cap. 				A semicircular arc with a diameter equal to the line width shall be drawn around the endpoint and shall be filled in.
-2	Projecting square cap. 	The stroke shall continue beyond the endpoint of the path for a distance equal to half the line width and shall besquared off.'.
-	LineCap namespacePath: #(#PDFtalk).
-%
-# Define class Path
-DoIt
-Value
-	subclass: 'Path'
-	instVarNames: #(subpaths clippingingOperator paintingOperator)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Path category: 'PDFtalk Graphics'.
-	Path comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
-
-Paths define shapes, trajectories, and regions of all sorts. 
-They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
-The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
-At the beginning of each page, the clipping path shall be initialized to include the entire page.
-
-A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
-A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
-Thus, the order in which the segments of a path are defined shall be significant. 
-Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
-
-NOTE
-A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
-The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
-
-The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
-A subpath that has not been explicitly closed is said to be open.
-
-A path object is defined by a sequence of operators to construct the path, 
-followed by one or more operators to paint the path or to use it as a clipping boundary. 
-PDF path operators fall into three categories:
-	•	Path construction operators define the geometry of a path. 
-		A path is constructed by sequentially applying one or more of these operators.
-	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
-	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
-	Path namespacePath: #(#PDFtalk).
-%
-# Define class Pathsegment
-DoIt
-Value
-	subclass: 'Pathsegment'
-	instVarNames: #(operator)
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	Pathsegment category: 'PDFtalk Graphics'.
-	Pathsegment comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
-
-Paths define shapes, trajectories, and regions of all sorts. 
-They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
-The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
-At the beginning of each page, the clipping path shall be initialized to include the entire page.
-
-A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
-A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
-Thus, the order in which the segments of a path are defined shall be significant. 
-Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
-
-NOTE
-A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
-The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
-
-The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
-A subpath that has not been explicitly closed is said to be open.
-
-A path object is defined by a sequence of operators to construct the path, 
-followed by one or more operators to paint the path or to use it as a clipping boundary. 
-PDF path operators fall into three categories:
-	•	Path construction operators define the geometry of a path. 
-		A path is constructed by sequentially applying one or more of these operators.
-	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
-	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
-	Pathsegment namespacePath: #(#PDFtalk).
-%
-# Define class GraphicsState
-DoIt
-PDFDictionary
-	subclass: 'GraphicsState'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	GraphicsState category: 'PDFtalk Graphics'.
-	GraphicsState comment: 'PDF Graphics State as defined in PDF 32000_2008.pdf, section 8.4, pp. 121.
-
-A conforming reader shall maintain an internal data structure called the graphics state that holds current graphics control parameters. 
-These parameters define the global framework within which the graphics operators execute.
-
-EXAMPLE 1
-The f (fill) operator implicitly uses the current colour parameter, and the S (stroke) operator additionally uses the current line width parameter from the graphics state.
-
-A conforming reader shall initialize the graphic state at the beginning of each page with the values specified. 
-Table 52 lists those graphics state parameters that are device-independent and are appropriate to specify in page descriptions. 
-The parameters listed in Table 53 control details of the rendering (scan conversion) process and are device-dependent; 
-a page description that is intended to be device-independent should not be written to modify these parameters.'.
-	GraphicsState namespacePath: #(#PDFtalk).
 %
 # Define class Subpath
 DoIt
@@ -56105,24 +55844,119 @@ PDF path operators fall into three categories:
 	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
 	Subpath namespacePath: #(#PDFtalk).
 %
-# Define class Operation
+# Define class TextObject
 DoIt
-Value
-	subclass: 'Operation'
-	instVarNames: #(operands)
-	classVars: #(ClassesAtNames)
+GraphicsCollector
+	subclass: 'TextObject'
+	instVarNames: #()
+	classVars: #()
 	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: PDFtalk
 %
 DoIt
-	Operation category: 'PDFtalk Graphics'.
-	Operation comment: 'PDF Operator as defined in PDF 32000_2008.pdf pp. 82.
+	TextObject category: 'PDFtalk Graphics'.
+	TextObject comment: 'operations between BT and ET'.
+	TextObject namespacePath: #(#PDFtalk).
+%
+# Define class ContentParser
+DoIt
+Parser
+	subclass: 'ContentParser'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ContentParser category: 'PDFtalk Graphics'.
+	ContentParser comment: 'This parser reads PDF content streams.
+Special restrictions apply.
+
+From PDF 32000_2008.pdf pp.81:
+
+A content stream, after decoding with any specified filters, shall be interpreted according to the PDF syntax rules.
+It consists of PDF objects denoting operands and operators.
+The operands needed by an operator shall precede it in the stream.
+
+An operand is a direct object belonging to any of the basic PDF data types except a stream.
+Dictionaries shall be permitted as operands only by certain specific operators.
+Indirect objects and object references shall not be permitted at all.
 
 An operator is a PDF keyword specifying some action that shall be performed, such as painting a graphical shape on the page.
 An operator keyword shall be distinguished from a name object by the absence of an initial SOLIDUS character (2Fh) (/).
-Operators shall be meaningful only inside a content stream.'.
-	Operation namespacePath: #(#PDFtalk).
+Operators shall be meaningful only inside a content stream.
+
+NOTE 
+This postfix notation, in which an operator is preceded by its operands, is superficially the same as in the PostScript language.
+However, PDF has no concept of an operand stack as PostScript has.
+
+In PDF, all of the operands needed by an operator shall immediately precede that operator.
+Operators do not return results, and operands shall not be left over when an operator finishes execution.'.
+	ContentParser namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsState
+DoIt
+PDFDictionary
+	subclass: 'GraphicsState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsState category: 'PDFtalk Graphics'.
+	GraphicsState comment: 'PDF Graphics State as defined in PDF 32000_2008.pdf, section 8.4, pp. 121.
+
+A conforming reader shall maintain an internal data structure called the graphics state that holds current graphics control parameters. 
+These parameters define the global framework within which the graphics operators execute.
+
+EXAMPLE 1
+The f (fill) operator implicitly uses the current colour parameter, and the S (stroke) operator additionally uses the current line width parameter from the graphics state.
+
+A conforming reader shall initialize the graphic state at the beginning of each page with the values specified. 
+Table 52 lists those graphics state parameters that are device-independent and are appropriate to specify in page descriptions. 
+The parameters listed in Table 53 control details of the rendering (scan conversion) process and are device-dependent; 
+a page description that is intended to be device-independent should not be written to modify these parameters.'.
+	GraphicsState namespacePath: #(#PDFtalk).
+%
+# Define class LineCap
+DoIt
+Value
+	subclass: 'LineCap'
+	instVarNames: #(value)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LineCap category: 'PDFtalk Graphics'.
+	LineCap comment: 'PDF Line Cap Style as defined in PDF 32000_2008.pdf, section 8.4.3.3, pp. 125.
+
+The line cap style shall specify the shape that shall be used at the ends of open subpaths (and dashes, if any) when they are stroked.
+
+0	Butt cap. 				The stroke shall be squared off at the endpoint of the path. There shall be no projection beyond the end of the path.
+1	Round cap. 				A semicircular arc with a diameter equal to the line width shall be drawn around the endpoint and shall be filled in.
+2	Projecting square cap. 	The stroke shall continue beyond the endpoint of the path for a distance equal to half the line width and shall besquared off.'.
+	LineCap namespacePath: #(#PDFtalk).
+%
+# Define class GraphicsObjectWithResource
+DoIt
+GraphicsObject
+	subclass: 'GraphicsObjectWithResource'
+	instVarNames: #(resource)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	GraphicsObjectWithResource category: 'PDFtalk Graphics'.
+	GraphicsObjectWithResource comment: 'an object with a resource from the Resources dictionary'.
+	GraphicsObjectWithResource namespacePath: #(#PDFtalk).
 %
 # Define class Dash
 DoIt
@@ -56157,6 +55991,111 @@ it simply shall dispense dashes and gaps along the path in the pattern defined b
 When a path consisting of several subpaths is stroked, each subpath shall be treated independently—that is, 
 the dash pattern shall be restarted and the dash phase shall be reapplied to it at the beginning of each subpath.'.
 	Dash namespacePath: #(#PDFtalk).
+%
+# Define class ExternalGraphicsObject
+DoIt
+GraphicsObjectWithResource
+	subclass: 'ExternalGraphicsObject'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ExternalGraphicsObject category: 'PDFtalk Graphics'.
+	ExternalGraphicsObject comment: 'XObject'.
+	ExternalGraphicsObject namespacePath: #(#PDFtalk).
+%
+# Define class Pathsegment
+DoIt
+Value
+	subclass: 'Pathsegment'
+	instVarNames: #(operator)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Pathsegment category: 'PDFtalk Graphics'.
+	Pathsegment comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
+
+Paths define shapes, trajectories, and regions of all sorts. 
+They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
+The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
+At the beginning of each page, the clipping path shall be initialized to include the entire page.
+
+A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
+A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
+Thus, the order in which the segments of a path are defined shall be significant. 
+Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
+
+NOTE
+A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
+The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
+
+The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
+A subpath that has not been explicitly closed is said to be open.
+
+A path object is defined by a sequence of operators to construct the path, 
+followed by one or more operators to paint the path or to use it as a clipping boundary. 
+PDF path operators fall into three categories:
+	•	Path construction operators define the geometry of a path. 
+		A path is constructed by sequentially applying one or more of these operators.
+	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
+	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
+	Pathsegment namespacePath: #(#PDFtalk).
+%
+# Define class TextSegment
+DoIt
+GraphicsObject
+	subclass: 'TextSegment'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TextSegment category: 'PDFtalk Graphics'.
+	TextSegment comment: 'a string styled in a uniform way
+
+The text cannot contail line breaks'.
+	TextSegment namespacePath: #(#PDFtalk).
+%
+# Define class ExtGState
+DoIt
+PDFDictionary
+	subclass: 'ExtGState'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ExtGState category: 'PDFtalk Graphics'.
+	ExtGState comment: 'PDF Graphics State Parameter Dictionaries as defined in PDF 32000_2008.pdf, section 8.4.5, pp. 128.
+
+While some parameters in the graphics state may be set with individual operators, others may not. 
+The latter may only be set with the generic graphics state operator gs (PDF 1.2). 
+The operand supplied to this operator shall be the name of a graphics state parameter dictionary 
+whose contents specify the values of one or more graphics state parameters. 
+This name shall be looked up in the ExtGState subdictionary of the current resource dictionary.
+
+The graphics state parameter dictionary is also used by type 2 patterns, which do not have a content stream in which the graphics state operators could be invoked.
+
+Each entry in the parameter dictionary shall specify the value of an individual graphics state parameter. 
+All entries need not be present for every invocation of the gs operator; the supplied parameter dictionary may include any combination of parameter entries. 
+The results of gs shall be cumulative; parameter values established in previous invocations persist until explicitly overridden.
+
+NOTE
+Note that some parameters appear in both Tables; 
+these parameters can be set either with individual graphics state operators or with gs. 
+It is expected that any future extensions to the graphics state will be implemented by 
+adding new entries to the graphics state parameter dictionary rather than by introducing new graphics state operators.'.
+	ExtGState namespacePath: #(#PDFtalk).
 %
 # Define class Matrix
 DoIt
@@ -56195,6 +56134,93 @@ The transformation between two coordinate systems can be represented by a 3-by-3
 
 Because a transformation matrix has only six elements that can be changed, in most cases in PDF it shall be specified as the six-element array [a b c d e f]'.
 	Matrix namespacePath: #(#PDFtalk).
+%
+# Define class OperationObject
+DoIt
+GraphicsObjectWithResource
+	subclass: 'OperationObject'
+	instVarNames: #(redundant)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	OperationObject category: 'PDFtalk Graphics'.
+	OperationObject comment: 'simple wrapper for a single operator.
+
+May contain a resolved resource'.
+	OperationObject namespacePath: #(#PDFtalk).
+%
+# Define class PathObject
+DoIt
+GraphicsObject
+	subclass: 'PathObject'
+	instVarNames: #(clipping painting intersections)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PathObject category: 'PDFtalk Graphics'.
+	PathObject comment: 'list of path construction operators with a path painting operator'.
+	PathObject namespacePath: #(#PDFtalk).
+%
+# Define class Path
+DoIt
+Value
+	subclass: 'Path'
+	instVarNames: #(subpaths clippingingOperator paintingOperator)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	Path category: 'PDFtalk Graphics'.
+	Path comment: 'PDF Path Construction and Painting as defined in PDF 32000_2008.pdf, section 8.5, pp. 131.
+
+Paths define shapes, trajectories, and regions of all sorts. 
+They shall be used to draw lines, define the shapes of filled areas, and specify boundaries for clipping other graphics. 
+The graphics state shall include a current clipping path that shall define the clipping boundary for the current page. 
+At the beginning of each page, the clipping path shall be initialized to include the entire page.
+
+A path shall be composed of straight and curved line segments, which may connect to one another or may be disconnected. 
+A pair of segments shall be said to connect only if they are defined consecutively, with the second segment starting where the first one ends. 
+Thus, the order in which the segments of a path are defined shall be significant. 
+Nonconsecutive segments that meet or intersect fortuitously shall not be considered to connect.
+
+NOTE
+A path is made up of one or more disconnected subpaths, each comprising a sequence of connected segments. 
+The topology of the path is unrestricted: it may be concave or convex, may contain multiple subpaths representing disjoint areas, and may intersect itself in arbitrary ways.
+
+The h operator explicitly shall connect the end of a subpath back to its starting point; such a subpath is said to be closed. 
+A subpath that has not been explicitly closed is said to be open.
+
+A path object is defined by a sequence of operators to construct the path, 
+followed by one or more operators to paint the path or to use it as a clipping boundary. 
+PDF path operators fall into three categories:
+	•	Path construction operators define the geometry of a path. 
+		A path is constructed by sequentially applying one or more of these operators.
+	•	Path-painting operators end a path object, usually causing the object to be painted on the current page in any of a variety of ways.
+	•	Clipping path operators, invoked immediately before a path-painting operator, cause the path object also to be used for clipping of subsequent graphics objects.'.
+	Path namespacePath: #(#PDFtalk).
+%
+# Define class MarkedObject
+DoIt
+GraphicsCollector
+	subclass: 'MarkedObject'
+	instVarNames: #(tag properties)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MarkedObject category: 'PDFtalk Graphics'.
+	MarkedObject comment: 'operations between BDC or BMC and EMC'.
+	MarkedObject namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -56274,7 +56300,7 @@ readOperations
 				^operators].
 		(object isKindOf: Operation)
 			ifTrue: [
-			operators add: (object class operands: operands).
+			operators add: (object operands: operands).
 			operands := OrderedCollection new]
 			ifFalse: [
 			operands add: object]].
@@ -57813,8 +57839,9 @@ newClassesAtNames
 		env: 0.
 	dict := Dictionary new.
 	(classOrganizer allSubclassesOf: Operation) do: [:subclass |
-		(classOrganizer subclassesOf: subclass) isEmpty ifTrue: [
-			dict at: subclass operatorName put: subclass]].
+		((classOrganizer subclassesOf: subclass) isEmpty and: [
+		subclass ~= UnknownOperation]) ifTrue: [
+				dict at: subclass operatorName put: subclass]].
 	^dict
 %
 classmethod: Operation
@@ -57823,7 +57850,7 @@ on: aSymbol
 
 	(Operation named: aSymbol) ifNotNil: [:class |
 		^class empty].
-	self error: 'unknown operator'
+	^UnknownOperation operatorName: aSymbol
 %
 classmethod: Operation
 operandTypes
@@ -57887,6 +57914,13 @@ category: 'specification'
 classmethod: Operation
 localSpecification
 	<sequence: #operands>
+%
+category: 'testing'
+classmethod: Operation
+usedForLookup
+	"the class is used to construct the lookup table"
+
+	^self subclasses isEmpty
 %
 category: 'accessing'
 method: Operation
@@ -58219,6 +58253,72 @@ method: TextObject
 prefix
 
 	^'BT'
+%
+category: 'accessing'
+classmethod: UnknownOperation
+documentation
+	^'Error in the contents stream'
+%
+classmethod: UnknownOperation
+operatorName
+	"implemented by the instances"
+
+	^self shouldNotImplement
+%
+category: 'instance creation'
+classmethod: UnknownOperation
+operatorName: operatorNameSymbol operands: operandsArray
+	| inst |
+	inst := self new.
+	inst initializeOperatorName: operatorNameSymbol operands: operandsArray.
+	^inst
+%
+category: 'instance creation optional'
+classmethod: UnknownOperation
+operatorName: operatorNameSymbol
+	^self operatorName: operatorNameSymbol operands: nil
+%
+category: 'specification'
+classmethod: UnknownOperation
+localSpecification
+	<constant: #operatorName class: #(#Symbol) comment: 'token of the unknown operator'>
+	<sequence: #operands>
+%
+category: 'testing'
+classmethod: UnknownOperation
+usedForLookup
+	^false
+%
+category: 'accessing'
+method: UnknownOperation
+operatorName
+	"<Symbol>
+	token of the unknown operator"
+
+	^operatorName
+%
+category: 'copying'
+method: UnknownOperation
+operands: someOperands
+	^self class operatorName: self operatorName operands: someOperands
+%
+category: 'initialize-release'
+method: UnknownOperation
+initializeOperatorName: operatorNameSymbol operands: operandsArray
+	operatorName := operatorNameSymbol.
+	(operandsArray notNil and: [
+	operandsArray notEmpty]) ifTrue: [
+			operands := (Array withAll: operandsArray) beImmutable].
+	self beImmutable
+%
+category: 'printing'
+method: UnknownOperation
+printvalueWith: printer
+	| args |
+	args := OrderedCollection new.
+	args add: (printer constant: 'operatorName' value: self operatorName).
+	args add: (printer array: 'operands' value: self operands).
+	^printer printvalue: self arguments: args
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.

@@ -1,4 +1,4 @@
-# Created 25. Mai 2018 um 23:58:31 by Gemstone Fileout(1.0.0.36,chaider)
+# Created 31. Mai 2018 um 16:32:29 by Gemstone Fileout(1.0.1.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -671,10 +671,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk Testing'.
+	dict at: #padded put: true.
 	dict at: #parcelName put: 'PDFtalkTesting'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.4.1'.
+	dict at: #storeVersion put: '2.0.6.1'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -707,7 +708,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk test resources'.
-	dict at: #storeVersion put: '2.0.0.24'.
+	dict at: #storeVersion put: '2.0.6.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -2529,6 +2530,11 @@ category: '*PDFtalk test resources-test instances'
 classmethod: TypeMismatch
 example
 	^self for: (PDF classAt: #Catalog) empty expected: (Array with: (DirectType onSymbol: #ColourSpace))
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: UnknownOperation
+example
+	^UnknownOperation operatorName: #';' operands: #(4.85 0 0 4.85 141.13399 54)
 %
 category: '*PDFtalk test resources-test instances'
 classmethod: UsedReference
@@ -8538,7 +8544,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk tests'.
-	dict at: #storeVersion put: '2.0.4.1'.
+	dict at: #storeVersion put: '2.0.6.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -8559,6 +8565,20 @@ DoIt
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
+# Define class CrossReferenceTests
+DoIt
+Tests
+	subclass: 'CrossReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReferenceTests category: 'PDFtalk tests'.
+	CrossReferenceTests namespacePath: #(#PDFtalk).
+%
 # Define class AttributeTests
 DoIt
 Tests
@@ -8573,6 +8593,104 @@ DoIt
 	AttributeTests category: 'PDFtalk tests'.
 	AttributeTests namespacePath: #(#PDFtalk).
 %
+# Define class TrailerTests
+DoIt
+Tests
+	subclass: 'TrailerTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TrailerTests category: 'PDFtalk tests'.
+	TrailerTests namespacePath: #(#PDFtalk).
+%
+# Define class StreamTests
+DoIt
+Tests
+	subclass: 'StreamTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StreamTests category: 'PDFtalk tests'.
+	StreamTests namespacePath: #(#PDFtalk).
+%
+# Define class PagesTests
+DoIt
+Tests
+	subclass: 'PagesTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PagesTests category: 'PDFtalk tests'.
+	PagesTests namespacePath: #(#PDFtalk).
+%
+# Define class ContentsTests
+DoIt
+Tests
+	subclass: 'ContentsTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ContentsTests category: 'PDFtalk tests'.
+	ContentsTests namespacePath: #(#PDFtalk).
+%
+# Define class ObjectStreamTests
+DoIt
+Tests
+	subclass: 'ObjectStreamTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectStreamTests category: 'PDFtalk tests'.
+	ObjectStreamTests namespacePath: #(#PDFtalk).
+%
+# Define class ReferenceTests
+DoIt
+Tests
+	subclass: 'ReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ReferenceTests category: 'PDFtalk tests'.
+	ReferenceTests namespacePath: #(#PDFtalk).
+%
+# Define class CatalogTests
+DoIt
+Tests
+	subclass: 'CatalogTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CatalogTests category: 'PDFtalk tests'.
+	CatalogTests namespacePath: #(#PDFtalk).
+%
 # Define class ColorTests
 DoIt
 Tests
@@ -8586,6 +8704,104 @@ Tests
 DoIt
 	ColorTests category: 'PDFtalk tests'.
 	ColorTests namespacePath: #(#PDFtalk).
+%
+# Define class FontEncodingTests
+DoIt
+Tests
+	subclass: 'FontEncodingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FontEncodingTests category: 'PDFtalk tests'.
+	FontEncodingTests namespacePath: #(#PDFtalk).
+%
+# Define class StringTests
+DoIt
+Tests
+	subclass: 'StringTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StringTests category: 'PDFtalk tests'.
+	StringTests namespacePath: #(#PDFtalk).
+%
+# Define class MatrixTests
+DoIt
+Tests
+	subclass: 'MatrixTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MatrixTests category: 'PDFtalk tests'.
+	MatrixTests namespacePath: #(#PDFtalk).
+%
+# Define class LibraryTests
+DoIt
+Tests
+	subclass: 'LibraryTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LibraryTests category: 'PDFtalk tests'.
+	LibraryTests namespacePath: #(#PDFtalk).
+%
+# Define class PDFObjectTests
+DoIt
+Tests
+	subclass: 'PDFObjectTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PDFObjectTests category: 'PDFtalk tests'.
+	PDFObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class FileTests
+DoIt
+Tests
+	subclass: 'FileTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FileTests category: 'PDFtalk tests'.
+	FileTests namespacePath: #(#PDFtalk).
+%
+# Define class TypingTests
+DoIt
+Tests
+	subclass: 'TypingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TypingTests category: 'PDFtalk tests'.
+	TypingTests namespacePath: #(#PDFtalk).
 %
 # Define class ImageXTests
 DoIt
@@ -8602,48 +8818,6 @@ DoIt
 	ImageXTests comment: 'Tests for the PDF ImageX object'.
 	ImageXTests namespacePath: #(#PDFtalk).
 %
-# Define class TypingTests
-DoIt
-Tests
-	subclass: 'TypingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TypingTests category: 'PDFtalk tests'.
-	TypingTests namespacePath: #(#PDFtalk).
-%
-# Define class TrailerTests
-DoIt
-Tests
-	subclass: 'TrailerTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TrailerTests category: 'PDFtalk tests'.
-	TrailerTests namespacePath: #(#PDFtalk).
-%
-# Define class FontEncodingTests
-DoIt
-Tests
-	subclass: 'FontEncodingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FontEncodingTests category: 'PDFtalk tests'.
-	FontEncodingTests namespacePath: #(#PDFtalk).
-%
 # Define class NameTests
 DoIt
 Tests
@@ -8657,48 +8831,6 @@ Tests
 DoIt
 	NameTests category: 'PDFtalk tests'.
 	NameTests namespacePath: #(#PDFtalk).
-%
-# Define class MatrixTests
-DoIt
-Tests
-	subclass: 'MatrixTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MatrixTests category: 'PDFtalk tests'.
-	MatrixTests namespacePath: #(#PDFtalk).
-%
-# Define class ReferenceTests
-DoIt
-Tests
-	subclass: 'ReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ReferenceTests category: 'PDFtalk tests'.
-	ReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class PagesTests
-DoIt
-Tests
-	subclass: 'PagesTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PagesTests category: 'PDFtalk tests'.
-	PagesTests namespacePath: #(#PDFtalk).
 %
 # Define class TypecheckingTests
 DoIt
@@ -8714,118 +8846,6 @@ DoIt
 	TypecheckingTests category: 'PDFtalk tests'.
 	TypecheckingTests namespacePath: #(#PDFtalk).
 %
-# Define class PDFObjectTests
-DoIt
-Tests
-	subclass: 'PDFObjectTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFObjectTests category: 'PDFtalk tests'.
-	PDFObjectTests namespacePath: #(#PDFtalk).
-%
-# Define class StringTests
-DoIt
-Tests
-	subclass: 'StringTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StringTests category: 'PDFtalk tests'.
-	StringTests namespacePath: #(#PDFtalk).
-%
-# Define class ContentsTests
-DoIt
-Tests
-	subclass: 'ContentsTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ContentsTests category: 'PDFtalk tests'.
-	ContentsTests namespacePath: #(#PDFtalk).
-%
-# Define class CrossReferenceTests
-DoIt
-Tests
-	subclass: 'CrossReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReferenceTests category: 'PDFtalk tests'.
-	CrossReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class MergingTests
-DoIt
-Tests
-	subclass: 'MergingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MergingTests category: 'PDFtalk tests'.
-	MergingTests namespacePath: #(#PDFtalk).
-%
-# Define class LibraryTests
-DoIt
-Tests
-	subclass: 'LibraryTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LibraryTests category: 'PDFtalk tests'.
-	LibraryTests namespacePath: #(#PDFtalk).
-%
-# Define class CatalogTests
-DoIt
-Tests
-	subclass: 'CatalogTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CatalogTests category: 'PDFtalk tests'.
-	CatalogTests namespacePath: #(#PDFtalk).
-%
-# Define class StreamTests
-DoIt
-Tests
-	subclass: 'StreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StreamTests category: 'PDFtalk tests'.
-	StreamTests namespacePath: #(#PDFtalk).
-%
 # Define class SimpleObjectTests
 DoIt
 Tests
@@ -8839,34 +8859,6 @@ Tests
 DoIt
 	SimpleObjectTests category: 'PDFtalk tests'.
 	SimpleObjectTests namespacePath: #(#PDFtalk).
-%
-# Define class FileTests
-DoIt
-Tests
-	subclass: 'FileTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FileTests category: 'PDFtalk tests'.
-	FileTests namespacePath: #(#PDFtalk).
-%
-# Define class ObjectStreamTests
-DoIt
-Tests
-	subclass: 'ObjectStreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ObjectStreamTests category: 'PDFtalk tests'.
-	ObjectStreamTests namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -10292,70 +10284,6 @@ test
 	self assert: ((((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) translatedBy: 20 @ 30) printString = '[0 30 -20 0 20 30]'.
 %
 category: 'tests'
-method: MergingTests
-mergeTitlePage: aTitlePageReport with: aReport
-	| pagesReference pages addPagesReference |
-	pagesReference := aTitlePageReport root at: #Pages.
-	pages := pagesReference referent.
-	addPagesReference := aReport root at: #Pages.
-	addPagesReference referent at: #Parent put: pagesReference.
-	pages at: #Kids put: (pages Kids with: addPagesReference).
-	pages at: #Count put: pages count
-%
-method: MergingTests
-mergeTitlePageNew: aTitlePageReport with: aReport
-	| pagesReference |
-	pagesReference := aTitlePageReport root at: #Pages.
-	pagesReference referent
-		addPageTreeReference: (aReport root at: #Pages)
-		withParent: pagesReference
-%
-method: MergingTests
-testAddDocument
-	"self new testAddDocument"
-
-	| pdfDocumentToAddTo pdfFileToAppend |
-	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
-	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
-	self mergeTitlePageNew: pdfDocumentToAddTo with: pdfFileToAppend.
-	pdfDocumentToAddTo saveAs: '1-merged.pdf'
-%
-method: MergingTests
-testMergingWithInheritedResources
-	"self new testMergingWithInheritedResources"
-
-	| pdfDocumentToAddTo topPagesReference topPages pdfFileToAppend endPagesReference |
-	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
-	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
-	topPagesReference := pdfDocumentToAddTo root at: #Pages.
-	topPages := topPagesReference referent.
-	endPagesReference := pdfFileToAppend root at: #Pages.
-	endPagesReference referent at: #Parent put: topPagesReference.
-	topPages at: #Kids put: (topPages Kids with: endPagesReference).
-	topPages at: #Count put: topPages count.
-	pdfDocumentToAddTo saveAs: '1-merged.pdf'
-%
-method: MergingTests
-testMergingWithInheritedResourcesWorks
-	"self new testMergingWithInheritedResourcesWorks"
-
-	| pdfDocumentToAddTo startPagesReference startPages pdfFileToAppend endPagesReference endPages newTopPages newTopPagesReference |
-	pdfDocumentToAddTo := (File read: '1.pdf' asFilename) asDocument.
-	startPagesReference := pdfDocumentToAddTo root at: #Pages.
-	startPages := startPagesReference referent.
-	pdfFileToAppend := File read: '21706686 PVNCCDSB - Holy Trini_tables (2).pdf' asFilename.
-	endPagesReference := pdfFileToAppend root at: #Pages.
-	endPages := endPagesReference referent.
-	newTopPages := (PDF classAt: #Pages) empty.
-	newTopPagesReference := newTopPages newReference.
-	startPages at: #Parent put: newTopPagesReference.
-	endPages at: #Parent put: newTopPagesReference.
-	newTopPages at: #Kids put: (Array with: startPagesReference with: endPagesReference).
-	newTopPages at: #Count put: newTopPages count.
-	pdfDocumentToAddTo root at: #Pages put: newTopPagesReference.
-	pdfDocumentToAddTo saveAs: '1-merged.pdf'
-%
-category: 'tests'
 method: NameTests
 testSubclasses
 	self assert: (PDF classAt: #Name) empty pdfSource = '/'.
@@ -11051,6 +10979,11 @@ testNumberWrite
 	self assert: -0.002 asPDF pdfSource = '-0.002'.
 	self assert: 0.123456789 asPDF pdfSource = '0.12346'.
 	self assert: 0.00000123 asPDF pdfSource = '0'.
+	self assert: (55 - 0.000005) asPDF pdfSource = '55'.
+	self assert: (55 - 0.00000191) asPDF pdfSource = '55'.
+	self assert: (55 - 0.00001) asPDF pdfSource = '54.99999'.
+	self assert: (55 + 0.00001) asPDF pdfSource = '55.00001'.
+	self assert: (55 + 0.000001) asPDF pdfSource = '55'.
 %
 method: SimpleObjectTests
 testRead
