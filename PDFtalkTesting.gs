@@ -1,4 +1,4 @@
-# Created 31. Mai 2018 um 16:32:29 by Gemstone Fileout(1.0.1.0,chaider)
+# Created 4. Juni 2018 um 16:19:54 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -11,12 +11,11 @@ DoIt
 	UserGlobals at: #FileInStartingTimestamp put: DateAndTime now.
 	(UserGlobals includesKey: #FileInSymbolDictionary) ifTrue: [
 		nil error: 'Previous file-in did not complete'].
-	(GsSession currentSession resolveSymbol: #PDFtalkTesting) ifNotNil: [
-		nil error: 'PDFtalkTesting is present'].
-	package := GsPackageLibrary createPackageNamed: #PDFtalkTesting.
-	package initialize.
-	package addPrereq: PDFtalkLibrary.
-	GsPackageLibrary installPackage: package.
+	(GsSession currentSession resolveSymbol: #PDFtalkTesting) ifNil: [
+		package := GsPackageLibrary createPackageNamed: #PDFtalkTesting.
+		package initialize.
+		package addPrereq: PDFtalkLibrary.
+		GsPackageLibrary installPackage: package].
 %
 DoIt
 	UserGlobals at: #FileInSymbolDictionary put: PDFtalkTesting.

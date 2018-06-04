@@ -1,4 +1,4 @@
-# Created 31. Mai 2018 um 16:32:28 by Gemstone Fileout(1.0.1.0,chaider)
+# Created 4. Juni 2018 um 16:19:52 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -11,11 +11,10 @@ DoIt
 	UserGlobals at: #FileInStartingTimestamp put: DateAndTime now.
 	(UserGlobals includesKey: #FileInSymbolDictionary) ifTrue: [
 		nil error: 'Previous file-in did not complete'].
-	(GsSession currentSession resolveSymbol: #PDFtalkLibrary) ifNotNil: [
-		nil error: 'PDFtalkLibrary is present'].
-	package := GsPackageLibrary createPackageNamed: #PDFtalkLibrary.
-	package initialize.
-	GsPackageLibrary installPackage: package.
+	(GsSession currentSession resolveSymbol: #PDFtalkLibrary) ifNil: [
+		package := GsPackageLibrary createPackageNamed: #PDFtalkLibrary.
+		package initialize.
+		GsPackageLibrary installPackage: package].
 %
 DoIt
 	UserGlobals at: #FileInSymbolDictionary put: PDFtalkLibrary.
@@ -2586,6 +2585,13 @@ method: Behavior
 instanceBehavior
 	^self theNonMetaClass
 %
+category: '*PDFtalk Basics-instance creation'
+classmethod: ClassOrganizer
+pdfNewWithRoot: aClass symbolList: aSymbolList
+	(self respondsTo: #_newWithRoot:symbolList:env:) ifTrue: [
+		^self _newWithRoot: aClass symbolList: aSymbolList env: 0].
+	^self _newWithRoot: aClass symbolList: aSymbolList
+%
 category: '*PDFtalk Basics-testing'
 method: AbstractException
 isSignalledException
@@ -4601,12 +4607,13 @@ classmethod: PDF
 allObjectClasses
 	"assumes that all subclasses are defined in namespaces PDFtalk or Globals"
 
-	^(ClassOrganizer
-		_newWithRoot: Object
+	| classOrganizer |
+	classOrganizer := ClassOrganizer
+		pdfNewWithRoot: Object
 		symbolList: (SymbolList
 			with: PDFtalk
-			with: Globals)
-		env: 0) allSubclassesOf: Object
+			with: Globals).
+	^classOrganizer allSubclassesOf: Object
 %
 classmethod: PDF
 newTypeHierarchy
@@ -8092,9 +8099,8 @@ subclassNamed: aSymbol
 
 	| classOrganizer |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: Filter
-		symbolList: (SymbolList with: PDFtalk)
-		env: 0.
+		pdfNewWithRoot: Filter
+		symbolList: (SymbolList with: PDFtalk).
 	^(classOrganizer allSubclassesOf: Filter) detect: [:subclass | subclass name = aSymbol]
 %
 category: 'instance creation'
@@ -8763,9 +8769,8 @@ subclassFor: anInteger
 
 	| classOrganizer |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: PNGPredictor
-		symbolList: (SymbolList with: PDFtalk)
-		env: 0.
+		pdfNewWithRoot: PNGPredictor
+		symbolList: (SymbolList with: PDFtalk).
 	^(classOrganizer subclassesOf: PNGPredictor) detect: [:subclass | subclass type = anInteger]
 %
 category: 'accessing'
@@ -14072,11 +14077,10 @@ fontClasses
 
 	| classOrganizer |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: Font
+		pdfNewWithRoot: Font
 		symbolList: (SymbolList
 			with: (PDFtalk at: #Fonts)
-			with: ((PDFtalk at: #Fonts) at: #OpenType))
-		env: 0.
+			with: ((PDFtalk at: #Fonts) at: #OpenType)).
 	^(Array with: Font) , (classOrganizer allSubclassesOf: Font)
 %
 classmethod: Font
@@ -51219,9 +51223,8 @@ subclassFor: formatInteger
 
 	| classOrganizer |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: CmapSubtable
-		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType))
-		env: 0.
+		pdfNewWithRoot: CmapSubtable
+		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType)).
 	^(classOrganizer allSubclassesOf: CmapSubtable) detect: [:subclass |
 		(classOrganizer subclassesOf: subclass) isEmpty and: [
 		subclass formatNumber = formatInteger]]
@@ -53862,9 +53865,8 @@ subclassFor: tagString
 
 	| classOrganizer |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: Table
-		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType))
-		env: 0.
+		pdfNewWithRoot: Table
+		symbolList: (SymbolList with: ((PDFtalk at: #Fonts) at: #OpenType)).
 	^(classOrganizer subclassesOf: Table) detect: [:subclass | subclass tag = tagString] ifNone: [
 		self]
 %
@@ -57834,9 +57836,8 @@ newClassesAtNames
 
 	| classOrganizer dict |
 	classOrganizer := ClassOrganizer
-		_newWithRoot: Operation
-		symbolList: (SymbolList with: PDFtalk)
-		env: 0.
+		pdfNewWithRoot: Operation
+		symbolList: (SymbolList with: PDFtalk).
 	dict := Dictionary new.
 	(classOrganizer allSubclassesOf: Operation) do: [:subclass |
 		((classOrganizer subclassesOf: subclass) isEmpty and: [
