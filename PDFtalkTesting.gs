@@ -1,4 +1,4 @@
-# Created 4. Juni 2018 um 16:19:54 by Gemstone Fileout(1.0.2.0,chaider)
+# Created 22. Juni 2018 um 15:46:24 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -674,7 +674,7 @@ THE SOFTWARE.'.
 	dict at: #parcelName put: 'PDFtalkTesting'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.6.1'.
+	dict at: #storeVersion put: '2.0.6.2'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -707,7 +707,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk test resources'.
-	dict at: #storeVersion put: '2.0.6.0'.
+	dict at: #storeVersion put: '2.0.6.1'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -743,6 +743,15 @@ DoIt
 	policy externalSymbolList: (GsSession currentSession symbolList asArray copyWithout: FileInSymbolDictionary).
 	policy enable.
 %
+category: '*PDFtalk test resources-finding'
+method: CharacterCollection
+withLf
+	"<String>
+	line ends are replaced by line feeds.
+	For testing"
+
+	^self copyReplaceAll: (String with: Character cr) with: (String with: Character lf)
+%
 category: '*PDFtalk test resources-instance creation'
 classmethod: CmykColor
 example
@@ -775,15 +784,6 @@ isSameColor: anObject
 	self magenta = anObject magenta and: [
 	self yellow = anObject yellow and: [
 	self black = anObject black]]]]
-%
-category: '*PDFtalk test resources-converting'
-method: String
-withLf
-	"<String>
-	line ends are replaced by line feeds.
-	For testing"
-
-	^self copyReplaceAll: (String with: Character cr) with: (String with: Character lf)
 %
 DoIt
 	| dict policy |

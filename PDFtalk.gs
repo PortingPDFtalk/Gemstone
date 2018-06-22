@@ -1,4 +1,4 @@
-# Created 4. Juni 2018 um 16:19:52 by Gemstone Fileout(1.0.2.0,chaider)
+# Created 22. Juni 2018 um 15:46:22 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -6537,6 +6537,19 @@ pragmasForType
 classmethod: PDFObject
 pragmasForVersion
 	^#(#version: #version:ifValue:)
+%
+classmethod: PDFObject
+undefinedTypes
+	"<Collection of: Symbol>"
+	"self undefinedTypes"
+
+	| typesReferenced |
+	typesReferenced := Set new.
+	(PDFtalk.PDF types collect: #implementingClass) do: [:class |
+		self pragmasForType do: [:pragmaSelector |
+			(Pragma allNamed: pragmaSelector in: class) do: [:pragma |
+				typesReferenced add: pragma message arguments first]]].
+	^typesReferenced select: [:type | (PDF typeAt: type) isNil]
 %
 classmethod: PDFObject
 version
@@ -56556,15 +56569,13 @@ specifying whether the current soft mask and alpha constant shall beinterpreted 
 %
 method: ExtGState
 BG
-	<type: #FunctionDictionary>
-	<type: #FunctionStream>
+	<type: #Function>
 	<attribute: 11 documentation: 'The black-generation function, which maps the interval [0.0 1.0] to the interval [0.0 1.0].'>
 	^self objectAt: #BG
 %
 method: ExtGState
 BG2
-	<type: #FunctionDictionary>
-	<type: #FunctionStream>
+	<type: #Function>
 	<type: #Name>
 	<version: 3>
 	<attribute: 12 documentation: 'Same as BG except that the value may also be the name Default, 
@@ -56751,15 +56762,13 @@ Type
 %
 method: ExtGState
 UCR
-	<type: #FunctionDictionary>
-	<type: #FunctionStream>
+	<type: #Function>
 	<attribute: 13 documentation: 'The undercolor-removal function, which maps the interval [0.0 1.0] to the interval [-1.0 1.0].'>
 	^self objectAt: #UCR
 %
 method: ExtGState
 UCR2
-	<type: #FunctionDictionary>
-	<type: #FunctionStream>
+	<type: #Function>
 	<type: #Name>
 	<version: 3>
 	<attribute: 14 documentation: 'Same as UCR except that the value may also be the name Default, 
@@ -70996,7 +71005,7 @@ The annotation dictionary’s AP entry, if present, takes precedence over the BS
 %
 method: LinkAnnotation
 Dest
-	<type: #Array>
+	<type: #Destination>
 	<type: #Name>
 	<type: #String>
 	<attribute: 2 documentation: '(not permitted if an A entry is present)
@@ -71424,9 +71433,9 @@ If the outline item is closed, Count is negative and its absolute value is the n
 %
 method: OutlineItem
 Dest
+	<type: #Destination>
 	<type: #Name>
 	<type: #String>
-	<type: #Dest>
 	<attribute: 8 documentation: '(shall not be present if an A entry is present)
 The destination that shall be displayed when this item is activated.'>
 	^self objectAt: #Dest ifAbsent: [#() asPDF]
@@ -71895,7 +71904,7 @@ If this entry is absent, sound compression shall not be used; the data contains 
 %
 method: Sound
 CP
-	<type: #PDFObject>
+	<type: #Object>
 	<attribute: 7 documentation: 'Optional parameters specific to the sound compression format used.
 No standard values have been defined for the CO and CP entries.'>
 	^self objectAt: #CP ifAbsent: [nil]
