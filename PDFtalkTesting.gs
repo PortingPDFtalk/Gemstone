@@ -1,4 +1,4 @@
-# Created 22. Juni 2018 um 15:46:24 by Gemstone Fileout(1.0.2.0,chaider)
+# Created 4. August 2018 um 11:38:12 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -674,7 +674,8 @@ THE SOFTWARE.'.
 	dict at: #parcelName put: 'PDFtalkTesting'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.6.2'.
+	dict at: #storeVersion put: '2.0.7.0'.
+	dict at: #version put: '(2.0.7.0,chaider)'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -707,7 +708,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk test resources'.
-	dict at: #storeVersion put: '2.0.6.1'.
+	dict at: #storeVersion put: '2.0.7.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -1073,6 +1074,42 @@ example
 	^self array: #(1 1) offset: 0.5
 %
 category: '*PDFtalk test resources-test instances'
+classmethod: Document
+exampleHelloWorld
+	"self exampleHelloWorld>"
+
+	| document page |
+	document := self new.
+	page := PDF Page newInBounds: (0 @ 0 corner: 70 @ 20) colorspace: (PDF classAt: #DeviceCMYK) new render: [:renderer |
+		renderer fillColor: CmykColor black.
+		renderer textObjectDo: [
+			renderer setFont: #Helvetica size: 10.
+			renderer add: (NextLineRelative operands: #(10 5)).
+			renderer showString: 'Hello World']].
+	document root addPage: page.
+	^document
+%
+classmethod: Document
+exampleWithTypeMismatch
+	"This example is from a bug report from Bob Nemec from the 1. August 2018.
+	An TypeMismatched object with references is not traced when writing to a new document"
+	"self exampleWithTypeMismatch"
+
+	| document page font |
+	document := self new.
+	page := PDF Page newInBounds: (0 @ 0 corner: 612 @ 792) colorspace: (PDF classAt: #DeviceRGB) new render: [:renderer |
+		renderer fillColor: CmykColor black.
+		renderer textObjectDo: [
+			renderer setFont: #FreeSansBold size: 10.
+			renderer add: (NextLineRelative operands: #(10 5)).
+			renderer showString: 'Hello World']].
+	"create the bug: inline the font descriptor directly instead of having a reference as specified"
+	font := (page Resources at: #Font) objectAt: #F1. 
+	font at: #FontDescriptor put: (font objectAt: #FontDescriptor).
+	document root addPage: page.
+	^document
+%
+category: '*PDFtalk test resources-test instances'
 classmethod: DocumentInformation
 example
 	^(File readTesterOn: '<<
@@ -1146,6 +1183,15 @@ exampleByteArray2
 	^#[37 80 68 70 45 49 46 50 10 37 226 227 207 211 10 49 32 48 32 111 98 106 10 60 60 10 47 84 121 112 101 32 47 67 97 116 97 108 111 103 10 47 80 97 103 101 115 32 50 32 48 32 82 10 62 62 10 101 110 100 111 98 106 10 50 32 48 32 111 98 106 10 60 60 10 47 84 121 112 101 32 47 80 97 103 101 115 10 47 77 101 100 105 97 66 111 120 32 91 48 32 48 32 55 57 50 32 54 49 50 93 10 47 75 105 100 115 32 91 32 51 32 48 32 82 32 93 10 47 67 111 117 110 116 32 49 10 62 62 10 101 110 100 111 98 106 10 51 32 48 32 111 98 106 10 60 60 10 47 84 121 112 101 32 47 80 97 103 101 10 47 80 97 114 101 110 116 32 50 32 48 32 82 10 47 82 101 115 111 117 114 99 101 115 32 52 32 48 32 82 10 47 67 111 110 116 101 110 116 115 32 91 53 32 48 32 82 32 93 10 62 62 10 101 110 100 111 98 106 10 53 32 48 32 111 98 106 10 37 67 111 110 116 101 110 116 115 10 60 60 10 47 76 101 110 103 116 104 32 51 48 10 62 62 10 115 116 114 101 97 109 10 113 10 49 48 49 32 48 32 48 32 53 49 32 48 32 48 32 32 99 109 47 73 77 49 32 68 111 10 81 10 10 101 110 100 115 116 114 101 97 109 10 101 110 100 111 98 106 10 52 32 48 32 111 98 106 10 37 82 101 115 111 117 114 99 101 115 10 60 60 47 80 114 111 99 83 101 116 32 91 47 80 68 70 32 47 84 101 120 116 93 10 47 70 111 110 116 10 60 60 10 62 62 10 47 88 79 98 106 101 99 116 10 60 60 10 47 73 77 49 32 54 32 48 32 82 10 62 62 10 62 62 10 101 110 100 111 98 106 10 54 32 48 32 111 98 106 10 60 60 10 47 84 121 112 101 32 47 88 79 98 106 101 99 116 10 47 83 117 98 116 121 112 101 32 47 73 109 97 103 101 10 47 87 105 100 116 104 32 49 48 49 10 47 72 101 105 103 104 116 32 53 49 10 47 66 105 116 115 80 101 114 67 111 109 112 111 110 101 110 116 32 49 10 47 67 111 108 111 114 83 112 97 99 101 32 47 68 101 118 105 99 101 71 114 97 121 10 47 76 101 110 103 116 104 32 10 55 32 48 32 82 62 62 10 115 116 114 101 97 109 10 0 0 0 0 0 0 0 0 0 0 0 0 0 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 0 0 0 0 0 0 0 0 0 0 0 0 0 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 0 0 0 0 0 0 0 0 0 0 0 0 0 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 0 0 0 0 0 0 0 0 0 0 0 0 0 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 0 0 0 0 0 0 0 0 0 0 0 0 0 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 127 223 247 253 255 127 223 247 253 255 127 223 240 0 0 0 0 0 0 0 0 0 0 0 0 0 10 101 110 100 115 116 114 101 97 109 10 101 110 100 111 98 106 10 55 32 48 32 111 98 106 10 54 54 51 10 101 110 100 111 98 106 10 120 114 101 102 10 48 32 56 10 48 48 48 48 48 48 48 48 48 48 32 54 53 53 51 53 32 102 32 10 48 48 48 48 48 48 48 48 49 53 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 48 54 52 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 49 52 55 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 51 50 48 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 50 51 48 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 52 49 49 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 49 50 50 52 32 48 48 48 48 48 32 110 32 10 116 114 97 105 108 101 114 10 60 60 10 47 83 105 122 101 32 56 10 47 82 111 111 116 32 49 32 48 32 82 10 62 62 10 115 116 97 114 116 120 114 101 102 10 49 50 52 51 10 37 37 69 79 70 10]
 %
 classmethod: File
+exampleHelloWorld
+	"self exampleHelloWorld"
+
+	| wst |
+	wst := Writer on: String new.
+	Document exampleHelloWorld writeFile: 'HelloWorld.pdf' on: wst.
+	^self readFrom: wst contents asByteArray readStream
+%
+classmethod: File
 exampleMinimalByteArray
 	"from PDF 32000_2008.pdf p. 699"
 
@@ -1186,6 +1232,16 @@ exampleWithReferenceToReference
 	^#[37 80 68 70 45 49 46 52 10 49 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 67 97 116 97 108 111 103 10 9 9 47 79 117 116 108 105 110 101 115 32 50 32 48 32 82 10 9 9 47 80 97 103 101 115 32 51 32 48 32 82 10 9 62 62 10 101 110 100 111 98 106 10 10 50 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 47 79 117 116 108 105 110 101 115 10 9 9 47 67 111 117 110 116 32 48 10 9 62 62 10 101 110 100 111 98 106 10 10 51 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 80 97 103 101 115 10 9 9 47 75 105 100 115 32 91 32 52 32 48 32 82 32 93 10 9 9 47 67 111 117 110 116 32 49 10 9 62 62 10 101 110 100 111 98 106 10 10 52 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 80 97 103 101 10 9 9 47 80 97 114 101 110 116 32 51 32 48 32 82 10 9 9 47 77 101 100 105 97 66 111 120 32 91 32 48 32 48 32 54 49 50 32 55 57 50 32 93 10 9 9 47 67 111 110 116 101 110 116 115 32 53 32 48 32 82 10 9 9 47 82 101 115 111 117 114 99 101 115 32 60 60 32 47 80 114 111 99 83 101 116 32 54 32 48 32 82 32 62 62 10 9 62 62 10 101 110 100 111 98 106 10 10 53 32 48 32 111 98 106 10 9 60 60 32 47 76 101 110 103 116 104 32 50 53 32 62 62 10 115 116 114 101 97 109 10 40 80 97 103 101 45 109 97 114 107 105 110 103 32 111 112 101 114 97 116 111 114 115 41 10 101 110 100 115 116 114 101 97 109 10 101 110 100 111 98 106 10 10 54 32 48 32 111 98 106 10 9 91 32 47 80 68 70 32 93 10 101 110 100 111 98 106 10 10 37 32 116 104 97 116 115 32 105 108 108 101 103 97 108 10 55 32 48 32 111 98 106 10 9 49 32 48 32 82 10 101 110 100 111 98 106 10 10 120 114 101 102 10 48 32 56 10 48 48 48 48 48 48 48 48 48 48 32 54 53 53 51 53 32 102 32 10 48 48 48 48 48 48 48 48 48 57 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 48 56 49 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 49 51 49 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 49 57 55 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 51 50 57 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 52 48 53 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 52 52 55 32 48 48 48 48 48 32 110 32 10 10 116 114 97 105 108 101 114 10 9 60 60 9 47 83 105 122 101 32 56 10 9 9 47 82 111 111 116 32 49 32 48 32 82 10 9 62 62 10 115 116 97 114 116 120 114 101 102 10 52 55 48 10 37 37 69 79 70 10]
 %
 classmethod: File
+exampleWithTypeMismatch
+	"self exampleWithTypeMismatch"
+
+	| wst file |
+	wst := Writer on: String new.
+	Document exampleWithTypeMismatch writeFile: 'example.pdf' on: wst.
+	file := self readFrom: wst contents asByteArray readStream.
+	^file
+%
+classmethod: File
 readEncryptedTesterOn: aString
 	| inst |
 	inst := self new.
@@ -1198,7 +1254,7 @@ readTesterOn: aString
 
 	| inst |
 	inst := self new.
-	inst initializeOnlyParserFrom: aString asString readStream.
+	inst initializeOnlyParserFrom: aString asString asByteArray readStream.
 	^inst
 %
 category: '*PDFtalk test resources-initialize-release'
@@ -2217,6 +2273,7 @@ runAllTests
 		add: (PDFtalk at: #FileTests);
 		add: (PDFtalk at: #ImageXTests);
 		add: (PDFtalk at: #FontEncodingTests);
+		add: (PDFtalk at: #BugReportTests);
 		add: ((PDFtalk at: #Fonts) at: #FontMetricsTests);
 		add: ((PDFtalk at: #Fonts) at: #FontProgramTests);
 		add: ((PDFtalk at: #Fonts) at: #PFMTests);
@@ -8543,7 +8600,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk tests'.
-	dict at: #storeVersion put: '2.0.6.1'.
+	dict at: #storeVersion put: '2.0.7.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -8564,20 +8621,6 @@ DoIt
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class CrossReferenceTests
-DoIt
-Tests
-	subclass: 'CrossReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReferenceTests category: 'PDFtalk tests'.
-	CrossReferenceTests namespacePath: #(#PDFtalk).
-%
 # Define class AttributeTests
 DoIt
 Tests
@@ -8592,10 +8635,10 @@ DoIt
 	AttributeTests category: 'PDFtalk tests'.
 	AttributeTests namespacePath: #(#PDFtalk).
 %
-# Define class TrailerTests
+# Define class BugReportTests
 DoIt
 Tests
-	subclass: 'TrailerTests'
+	subclass: 'BugReportTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8603,92 +8646,8 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	TrailerTests category: 'PDFtalk tests'.
-	TrailerTests namespacePath: #(#PDFtalk).
-%
-# Define class StreamTests
-DoIt
-Tests
-	subclass: 'StreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StreamTests category: 'PDFtalk tests'.
-	StreamTests namespacePath: #(#PDFtalk).
-%
-# Define class PagesTests
-DoIt
-Tests
-	subclass: 'PagesTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PagesTests category: 'PDFtalk tests'.
-	PagesTests namespacePath: #(#PDFtalk).
-%
-# Define class ContentsTests
-DoIt
-Tests
-	subclass: 'ContentsTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ContentsTests category: 'PDFtalk tests'.
-	ContentsTests namespacePath: #(#PDFtalk).
-%
-# Define class ObjectStreamTests
-DoIt
-Tests
-	subclass: 'ObjectStreamTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ObjectStreamTests category: 'PDFtalk tests'.
-	ObjectStreamTests namespacePath: #(#PDFtalk).
-%
-# Define class ReferenceTests
-DoIt
-Tests
-	subclass: 'ReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ReferenceTests category: 'PDFtalk tests'.
-	ReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class CatalogTests
-DoIt
-Tests
-	subclass: 'CatalogTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CatalogTests category: 'PDFtalk tests'.
-	CatalogTests namespacePath: #(#PDFtalk).
+	BugReportTests category: 'PDFtalk tests'.
+	BugReportTests namespacePath: #(#PDFtalk).
 %
 # Define class ColorTests
 DoIt
@@ -8703,104 +8662,6 @@ Tests
 DoIt
 	ColorTests category: 'PDFtalk tests'.
 	ColorTests namespacePath: #(#PDFtalk).
-%
-# Define class FontEncodingTests
-DoIt
-Tests
-	subclass: 'FontEncodingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FontEncodingTests category: 'PDFtalk tests'.
-	FontEncodingTests namespacePath: #(#PDFtalk).
-%
-# Define class StringTests
-DoIt
-Tests
-	subclass: 'StringTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StringTests category: 'PDFtalk tests'.
-	StringTests namespacePath: #(#PDFtalk).
-%
-# Define class MatrixTests
-DoIt
-Tests
-	subclass: 'MatrixTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MatrixTests category: 'PDFtalk tests'.
-	MatrixTests namespacePath: #(#PDFtalk).
-%
-# Define class LibraryTests
-DoIt
-Tests
-	subclass: 'LibraryTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LibraryTests category: 'PDFtalk tests'.
-	LibraryTests namespacePath: #(#PDFtalk).
-%
-# Define class PDFObjectTests
-DoIt
-Tests
-	subclass: 'PDFObjectTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFObjectTests category: 'PDFtalk tests'.
-	PDFObjectTests namespacePath: #(#PDFtalk).
-%
-# Define class FileTests
-DoIt
-Tests
-	subclass: 'FileTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FileTests category: 'PDFtalk tests'.
-	FileTests namespacePath: #(#PDFtalk).
-%
-# Define class TypingTests
-DoIt
-Tests
-	subclass: 'TypingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TypingTests category: 'PDFtalk tests'.
-	TypingTests namespacePath: #(#PDFtalk).
 %
 # Define class ImageXTests
 DoIt
@@ -8817,6 +8678,48 @@ DoIt
 	ImageXTests comment: 'Tests for the PDF ImageX object'.
 	ImageXTests namespacePath: #(#PDFtalk).
 %
+# Define class TypingTests
+DoIt
+Tests
+	subclass: 'TypingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TypingTests category: 'PDFtalk tests'.
+	TypingTests namespacePath: #(#PDFtalk).
+%
+# Define class TrailerTests
+DoIt
+Tests
+	subclass: 'TrailerTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TrailerTests category: 'PDFtalk tests'.
+	TrailerTests namespacePath: #(#PDFtalk).
+%
+# Define class FontEncodingTests
+DoIt
+Tests
+	subclass: 'FontEncodingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FontEncodingTests category: 'PDFtalk tests'.
+	FontEncodingTests namespacePath: #(#PDFtalk).
+%
 # Define class NameTests
 DoIt
 Tests
@@ -8830,6 +8733,48 @@ Tests
 DoIt
 	NameTests category: 'PDFtalk tests'.
 	NameTests namespacePath: #(#PDFtalk).
+%
+# Define class MatrixTests
+DoIt
+Tests
+	subclass: 'MatrixTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MatrixTests category: 'PDFtalk tests'.
+	MatrixTests namespacePath: #(#PDFtalk).
+%
+# Define class ReferenceTests
+DoIt
+Tests
+	subclass: 'ReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ReferenceTests category: 'PDFtalk tests'.
+	ReferenceTests namespacePath: #(#PDFtalk).
+%
+# Define class PagesTests
+DoIt
+Tests
+	subclass: 'PagesTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PagesTests category: 'PDFtalk tests'.
+	PagesTests namespacePath: #(#PDFtalk).
 %
 # Define class TypecheckingTests
 DoIt
@@ -8845,6 +8790,104 @@ DoIt
 	TypecheckingTests category: 'PDFtalk tests'.
 	TypecheckingTests namespacePath: #(#PDFtalk).
 %
+# Define class PDFObjectTests
+DoIt
+Tests
+	subclass: 'PDFObjectTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PDFObjectTests category: 'PDFtalk tests'.
+	PDFObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class StringTests
+DoIt
+Tests
+	subclass: 'StringTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StringTests category: 'PDFtalk tests'.
+	StringTests namespacePath: #(#PDFtalk).
+%
+# Define class ContentsTests
+DoIt
+Tests
+	subclass: 'ContentsTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ContentsTests category: 'PDFtalk tests'.
+	ContentsTests namespacePath: #(#PDFtalk).
+%
+# Define class CrossReferenceTests
+DoIt
+Tests
+	subclass: 'CrossReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReferenceTests category: 'PDFtalk tests'.
+	CrossReferenceTests namespacePath: #(#PDFtalk).
+%
+# Define class LibraryTests
+DoIt
+Tests
+	subclass: 'LibraryTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LibraryTests category: 'PDFtalk tests'.
+	LibraryTests namespacePath: #(#PDFtalk).
+%
+# Define class CatalogTests
+DoIt
+Tests
+	subclass: 'CatalogTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CatalogTests category: 'PDFtalk tests'.
+	CatalogTests namespacePath: #(#PDFtalk).
+%
+# Define class StreamTests
+DoIt
+Tests
+	subclass: 'StreamTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StreamTests category: 'PDFtalk tests'.
+	StreamTests namespacePath: #(#PDFtalk).
+%
 # Define class SimpleObjectTests
 DoIt
 Tests
@@ -8858,6 +8901,34 @@ Tests
 DoIt
 	SimpleObjectTests category: 'PDFtalk tests'.
 	SimpleObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class FileTests
+DoIt
+Tests
+	subclass: 'FileTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FileTests category: 'PDFtalk tests'.
+	FileTests namespacePath: #(#PDFtalk).
+%
+# Define class ObjectStreamTests
+DoIt
+Tests
+	subclass: 'ObjectStreamTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ObjectStreamTests category: 'PDFtalk tests'.
+	ObjectStreamTests namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -9077,6 +9148,45 @@ testTrailer
 	self assert: (dict at: #Root) isDirect not.
 	self assert: dict Size = 22 asPDF.
 	self should: [dict Length] raise: MessageNotUnderstood
+%
+category: 'tests'
+method: BugReportTests
+testFileHasTypeMismatch
+	"make sure that
+	- the example has a TypeMismatch at /FontDescriptor in Font /F1
+	- the mismatched object has a reference in /FontFile3 with number 6
+	- the mismatched object has a Stream in the reference /FontFile3"
+	
+	| pdf fontDescriptor |
+	pdf := File exampleWithTypeMismatch.
+	fontDescriptor := ((pdf firstPage Resources at: #Font) objectAt: #F1) at: #FontDescriptor.
+	self assert: fontDescriptor class == TypeMismatch.
+	self assert: (fontDescriptor myObject at: #FontFile3) class == Reference.
+	self assert: (fontDescriptor myObject at: #FontFile3) number = 6.
+	self assert: (fontDescriptor myObject objectAt: #FontFile3) class == PDF Stream.
+	self assert: (fontDescriptor myObject objectAt: #FontFile3) keys asArray sorted = #(#Filter #Length #Subtype).
+%
+method: BugReportTests
+testMergedFilesWithTypeMismatch
+	| cover toMerge pagesReference pages addPagesReference wst merged fontDescriptor |
+	cover := File exampleHelloWorld.
+	toMerge := File exampleWithTypeMismatch.
+	pagesReference := cover root at: #Pages.
+	pages := pagesReference referent.
+	addPagesReference := toMerge root at: #Pages.
+	addPagesReference referent at: #Parent put: pagesReference.
+	pages at: #Kids put: (pages Kids with: addPagesReference).
+	pages at: #Count put: pages count.
+	wst := Writer on: String new.
+	merged := cover asDocument.
+	"write out to assign new reference numbers"
+	merged writeFile: 'merged.pdf' on: wst.
+	fontDescriptor := (((merged root pageAt: 2) Resources at: #Font) objectAt: #F1) at: #FontDescriptor.
+	self assert: fontDescriptor class == TypeMismatch.
+	self assert: (fontDescriptor myObject at: #FontFile3) class == Reference.
+	self assert: (fontDescriptor myObject at: #FontFile3) number = 10.
+	self assert: (fontDescriptor myObject objectAt: #FontFile3) class == PDF Stream.
+	self assert: (fontDescriptor myObject objectAt: #FontFile3) keys asArray sorted = #(#Filter #Length #Subtype).
 %
 category: 'tests'
 method: CatalogTests
