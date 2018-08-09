@@ -1,4 +1,4 @@
-# Created 4. August 2018 um 11:38:12 by Gemstone Fileout(1.0.2.0,chaider)
+# Created 9. August 2018 um 12:08:46 by Gemstone Fileout(1.0.2.0,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -674,8 +674,8 @@ THE SOFTWARE.'.
 	dict at: #parcelName put: 'PDFtalkTesting'.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.7.0'.
-	dict at: #version put: '(2.0.7.0,chaider)'.
+	dict at: #storeVersion put: '2.0.8.0'.
+	dict at: #version put: '(2.0.8.0,chaider)'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -8600,7 +8600,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
 	dict at: #packageName put: 'PDFtalk tests'.
-	dict at: #storeVersion put: '2.0.7.0'.
+	dict at: #storeVersion put: '2.0.8.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
