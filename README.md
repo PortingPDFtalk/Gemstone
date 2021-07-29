@@ -1,7 +1,7 @@
 # PDFtalk-for-Gemstone
-Library for reading and writing PDF files in Gemstone
+Library for reading and writing PDF files in Gemstone.
 
-See https://wiki.pdftalk.de/doku.php?id=pdftalk4gemstone for details
+See the wiki page [PDFtalk for Gemstone](https://wiki.pdftalk.de/doku.php?id=pdftalk4gemstone) for details.
 
 * **PDFtalk.gs** is the runtime library in Gemstone topaz source format
 
