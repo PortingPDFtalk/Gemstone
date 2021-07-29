@@ -1,4 +1,4 @@
-# Created 9. August 2018 um 12:08:46 by Gemstone Fileout(1.0.2.0,chaider)
+# Created 28. Juli 2021 um 10:24:57 by Gemstone Transform(1.3.0.1,chaider)
 FileFormat UTF8
 IfErr 1 list dictionaries
 IfErr 2 stk
@@ -34,33 +34,28 @@ Tests for Values.
 
 Includes conformance tests for all leaf classes of Value.'.
 	dict at: #developmentPrerequisites put: #(#(#any 'SUnitToo' '')).
-	dict at: #notice put: 'The MIT License
-
-Copyright © 2009-2017 Christian Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'.
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'Values Testing'.
+	dict at: #padded put: true.
 	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo' #componentType #package)).
 	dict at: #prerequisiteParcels put: #(#('SUnitToo' '')).
-	dict at: #storeVersion put: '2.0.0.9'.
+	dict at: #storeVersion put: '3.0.0.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
+%
+# Define class ValuemapTests
+DoIt
+TestCase
+	subclass: 'ValuemapTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalkTesting
+%
+DoIt
+	ValuemapTests category: 'Values Testing'.
+	ValuemapTests comment: 'Tests for the behavior of OrderedDictionary as Dictionary and as Value'.
 %
 # Define class Testvalue
 DoIt
@@ -89,176 +84,6 @@ TestCase
 DoIt
 	ValuePrinterTests category: 'Values Testing'.
 	ValuePrinterTests comment: 'Tests for the source strings of Values'.
-%
-# Define class OrderedDictionaryTests
-DoIt
-TestCase
-	subclass: 'OrderedDictionaryTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalkTesting
-%
-DoIt
-	OrderedDictionaryTests category: 'Values Testing'.
-	OrderedDictionaryTests comment: 'Tests for the behavior of OrderedDictionary as Dictionary and as Value'.
-%
-category: 'Testing'
-method: OrderedDictionaryTests
-testAdding
-	| od od1 |
-	od := OrderedDictionary new.
-	self assert: od isEmpty.
-	od add: #foo -> 'bar'.
-	self assert: od size = 1.
-	self assert: (od atIndex: 1) = (#foo -> 'bar').
-	self assert: (od at: #foo) = 'bar'.
-	od at: #baz put: 'xxx'.
-	self assert: od size = 2.
-	self assert: (od atIndex: 2) = (#baz -> 'xxx').
-	self assert: (od at: #baz) = 'xxx'.
-	od1 := OrderedDictionary new.
-	od1 add: #foo -> 'baz'.
-	od1 at: #baz put: 'yyy'.
-	od addAll: od1.
-	self assert: od size = 2.
-	self assert: (od at: #foo) = 'baz'.
-	self assert: (od at: #baz) = 'yyy'.
-%
-method: OrderedDictionaryTests
-testAddingWithGrowth
-	"add iteratively elements, so that the dictionary must grow"
-
-	| letters od od1 |
-	letters := #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
-	od := OrderedDictionary new.
-	self shouldnt: [letters do: [:symbol | od add: symbol -> symbol asString]] raise: Error.
-	self assert: od order asArray = #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
-	od1 := OrderedDictionary new.
-	self shouldnt: [letters do: [:symbol | od1 at: symbol put: symbol asString]] raise: Error.
-	self assert: od1 order asArray = #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
-%
-method: OrderedDictionaryTests
-testComparing
-	self assert: (OrderedDictionary with: #foo -> 'bar') = (OrderedDictionary with: #foo -> 'bar').
-	self deny: (OrderedDictionary with: #foo -> 'bar') == (OrderedDictionary with: #foo -> 'bar').
-	self deny: (OrderedDictionary with: #foo -> 'bar') = (Dictionary with: #foo -> 'bar').
-	self deny: (Dictionary with: #foo -> 'bar') = (OrderedDictionary with: #foo -> 'bar').
-	self assert: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: #foo -> 'bar' with: $a -> 123).
-	self deny: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: $a -> 123 with: #foo -> 'bar' ).
-	self deny: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: #foo -> 123 with: $a -> 'bar' ).
-	self deny: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: #foo -> 'bar' with: $a -> 1234).
-	self deny: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: #foo -> 'bars' with: $a -> 123).
-	self deny: (OrderedDictionary with: #foo -> 'bar' with: $a -> 123) = (OrderedDictionary with: #foo -> 'bar' with: $a -> 123 with: '' -> 0).
-%
-method: OrderedDictionaryTests
-testDescribe
-	self assert: OrderedDictionary example asSource = 
-'((OrderedDictionary new: 8)
-	add: #isinTitle -> ''ISIN'';
-	add: #isinValue -> ''DE0009999991'';
-	add: #börsenwertTitle -> ''Börsenwert'';
-	add: #börsenwertValue -> ''99,9 Mrd. €'';
-	add: #hochTiefTitle -> ''Hoch/Tief'';
-	add: #hochTiefValue -> ''10,00/20,00'';
-	add: #kgvTitle -> ''KGV'';
-	add: #kgvValue -> ''9,87'';
-	yourself)'
-%
-method: OrderedDictionaryTests
-testDescribeAndReadBackNew
-	| inst |
-	inst := OrderedDictionary new.
-	self assert: inst asDescription = inst asSource evaluate asDescription
-%
-method: OrderedDictionaryTests
-testEnumeration
-	| od keys |
-	od := OrderedDictionary new.
-	od add: #foo -> 'bar'.
-	od at: #baz put: 'xxx'.
-	od associationsDo: [:assoc |
-		self assert: (assoc isKindOf: Association).
-		self assert: assoc key isSymbol.
-		self assert: assoc value isString].
-	self assert: od keys asArray = #(#foo #baz).
-	self assert: od values asArray = #('bar' 'xxx').
-	keys := OrderedCollection new.
-	od keysDo: [:k | keys add: k].
-	self assert: keys asArray = #(#foo #baz).
-%
-method: OrderedDictionaryTests
-testIndexedAccess
-	| od |
-	od := OrderedDictionary new.
-	od add: #foo -> 'bar'.
-	self assert: od size = 1.
-	self assert: (od atIndex: 1) = (#foo -> 'bar').
-	self should: [od atIndex: 0] raise: OffsetError.
-	self should: [od atIndex: 2] raise: OffsetError.
-	self should: [od atIndex: #key] raise: ArgumentError.
-	self should: [od atIndex: '1'] raise: ArgumentError.
-%
-method: OrderedDictionaryTests
-testIndexOf
-	| od |
-	od := OrderedDictionary new.
-	self assert: od isEmpty.
-	self assert: (od indexOf: #foo) isZero.
-	od add: #foo -> 'bar'.
-	self assert: od size = 1.
-	self assert: (od indexOf: #foo) = 1.
-	self assert: (od indexOf: #baz) isZero.
-	od at: #baz put: 'xxx'.
-	self assert: od size = 2.
-	self assert: (od indexOf: #baz) = 2.
-%
-method: OrderedDictionaryTests
-testKeyedAccess
-	| od |
-	od := OrderedDictionary new.
-	od add: #foo -> 'bar'.
-	od at: #baz put: 'xxx'.
-	self assert: od size = 2.
-	self assert: (od at: #foo) = 'bar'.
-	self assert: (od at: #baz) = 'xxx'.
-	self should: [od at: #bar] raise: LookupError.
-	self assert: (od at: #bar ifAbsent: [nil]) isNil.
-%
-method: OrderedDictionaryTests
-testReadBackAllTestInstances
-	(OrderedDictionary class organization listAtCategoryNamed: (OrderedDictionary class whichCategoryIncludesSelector: #example)) do: [:sel |
-		| inst readInst |
-		inst := OrderedDictionary perform: sel.
-		self shouldnt: [readInst := inst asSource evaluate] raise: Error.
-		self assert: inst asSource = readInst asSource]
-%
-method: OrderedDictionaryTests
-testRemoving
-	| od |
-	od := OrderedDictionary new.
-	self assert: od isEmpty.
-	self should: [od removeKey: #foo] raise: LookupError.
-	self shouldnt: [od removeKey: #foo ifAbsent: nil] raise: LookupError.
-	self assert: (od removeKey: #foo ifAbsent: nil) isNil.
-	od add: #foo -> 'bar'.
-	self assert: od size = 1.
-	self assert: (od order) asArray = #(#foo).
-	self assert: (od removeKey: #foo) = 'bar'.
-	self assert: od size = 0.
-	self assert: (od order) asArray = #().
-	od add: #foo -> 'bar'.
-	od at: #baz put: 'xxx'.
-	self assert: od size = 2.
-	self assert: (od order) asArray = #(#foo #baz).
-	self should: [od removeKey: #zzz] raise: LookupError.
-	self shouldnt: [od removeKey: #zzz ifAbsent: nil] raise: LookupError.
-	self assert: od size = 2.
-	self assert: (od order) asArray = #(#foo #baz).
-	self assert: (od removeKey: #foo) = 'bar'.
-	self assert: od size = 1.
-	self assert: (od order) asArray = #(#baz).
 %
 category: 'instance creation'
 classmethod: Testvalue
@@ -353,7 +178,7 @@ example
 		constant: #constantSymbol
 		optional: #optionalSymbol
 		array: #(1 #a $x 'name')
-		dictionary: (OrderedDictionary
+		dictionary: (Valuemap
 			with: 1 -> #symbol
 			with: #key -> 'string')
 %
@@ -394,7 +219,7 @@ initializeConstant: constantSymbol optional: optionalSymbol array: arrayArray di
 			array := (Array withAll: arrayArray) beImmutable].
 	(dictionaryDictionary notNil and: [
 	dictionaryDictionary notEmpty]) ifTrue: [
-			dictionary := (OrderedDictionary withAll: dictionaryDictionary) beImmutable].
+			dictionary := (Valuemap withAll: dictionaryDictionary) beImmutable].
 	self beImmutable
 %
 category: 'marshaling'
@@ -414,6 +239,162 @@ printvalueWith: printer
 	args add: (printer array: 'array' value: self array).
 	args add: (printer dictionary: 'dictionary' value: self dictionary).
 	^printer printvalue: self arguments: args
+%
+category: 'Testing'
+method: ValuemapTests
+testAdding
+	| od od1 |
+	od := Valuemap new.
+	self assert: od isEmpty.
+	od add: #foo -> 'bar'.
+	self assert: od size = 1.
+	self assert: (od atIndex: 1) = (#foo -> 'bar').
+	self assert: (od at: #foo) = 'bar'.
+	od at: #baz put: 'xxx'.
+	self assert: od size = 2.
+	self assert: (od atIndex: 2) = (#baz -> 'xxx').
+	self assert: (od at: #baz) = 'xxx'.
+	od1 := Valuemap new.
+	od1 add: #foo -> 'baz'.
+	od1 at: #baz put: 'yyy'.
+	od addAll: od1.
+	self assert: od size = 2.
+	self assert: (od at: #foo) = 'baz'.
+	self assert: (od at: #baz) = 'yyy'.
+%
+method: ValuemapTests
+testAddingWithGrowth
+	"add iteratively elements, so that the dictionary must grow"
+
+	| letters od od1 |
+	letters := #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
+	od := Valuemap new.
+	self shouldnt: [letters do: [:symbol | od add: symbol -> symbol asString]] raise: Error.
+	self assert: od order asArray = #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
+	od1 := Valuemap new.
+	self shouldnt: [letters do: [:symbol | od1 at: symbol put: symbol asString]] raise: Error.
+	self assert: od1 order asArray = #(#a #b #c #d #e #f #g #h #i #j #k #l #m #n #o #p #q #r #s #t #u #v #w #x #y #z).
+%
+method: ValuemapTests
+testComparing
+	self assert: (Valuemap with: #foo -> 'bar') = (Valuemap with: #foo -> 'bar').
+	self deny: (Valuemap with: #foo -> 'bar') == (Valuemap with: #foo -> 'bar').
+	self deny: (Valuemap with: #foo -> 'bar') = (Dictionary with: #foo -> 'bar').
+	self deny: (Dictionary with: #foo -> 'bar') = (Valuemap with: #foo -> 'bar').
+	self assert: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: #foo -> 'bar' with: $a -> 123).
+	self deny: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: $a -> 123 with: #foo -> 'bar' ).
+	self deny: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: #foo -> 123 with: $a -> 'bar' ).
+	self deny: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: #foo -> 'bar' with: $a -> 1234).
+	self deny: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: #foo -> 'bars' with: $a -> 123).
+	self deny: (Valuemap with: #foo -> 'bar' with: $a -> 123) = (Valuemap with: #foo -> 'bar' with: $a -> 123 with: '' -> 0).
+%
+method: ValuemapTests
+testDescribe
+	self assert: Valuemap example asSource = 
+'((Valuemap new: 8)
+	add: #isinTitle -> ''ISIN'';
+	add: #isinValue -> ''DE0009999991'';
+	add: #börsenwertTitle -> ''Börsenwert'';
+	add: #börsenwertValue -> ''99,9 Mrd. €'';
+	add: #hochTiefTitle -> ''Hoch/Tief'';
+	add: #hochTiefValue -> ''10,00/20,00'';
+	add: #kgvTitle -> ''KGV'';
+	add: #kgvValue -> ''9,87'';
+	yourself)'
+%
+method: ValuemapTests
+testDescribeAndReadBackNew
+	| inst |
+	inst := Valuemap new.
+	self assert: inst asDescription = inst asSource evaluate asDescription
+%
+method: ValuemapTests
+testEnumeration
+	| od keys |
+	od := Valuemap new.
+	od add: #foo -> 'bar'.
+	od at: #baz put: 'xxx'.
+	od associationsDo: [:assoc |
+		self assert: (assoc isKindOf: Association).
+		self assert: assoc key isSymbol.
+		self assert: assoc value isString].
+	self assert: od keys asArray = #(#foo #baz).
+	self assert: od values asArray = #('bar' 'xxx').
+	keys := OrderedCollection new.
+	od keysDo: [:k | keys add: k].
+	self assert: keys asArray = #(#foo #baz).
+%
+method: ValuemapTests
+testIndexedAccess
+	| od |
+	od := Valuemap new.
+	od add: #foo -> 'bar'.
+	self assert: od size = 1.
+	self assert: (od atIndex: 1) = (#foo -> 'bar').
+	self should: [od atIndex: 0] raise: OffsetError.
+	self should: [od atIndex: 2] raise: OffsetError.
+	self should: [od atIndex: #key] raise: ArgumentError.
+	self should: [od atIndex: '1'] raise: ArgumentError.
+%
+method: ValuemapTests
+testIndexOf
+	| od |
+	od := Valuemap new.
+	self assert: od isEmpty.
+	self assert: (od indexOf: #foo) isZero.
+	od add: #foo -> 'bar'.
+	self assert: od size = 1.
+	self assert: (od indexOf: #foo) = 1.
+	self assert: (od indexOf: #baz) isZero.
+	od at: #baz put: 'xxx'.
+	self assert: od size = 2.
+	self assert: (od indexOf: #baz) = 2.
+%
+method: ValuemapTests
+testKeyedAccess
+	| od |
+	od := Valuemap new.
+	od add: #foo -> 'bar'.
+	od at: #baz put: 'xxx'.
+	self assert: od size = 2.
+	self assert: (od at: #foo) = 'bar'.
+	self assert: (od at: #baz) = 'xxx'.
+	self should: [od at: #bar] raise: LookupError.
+	self assert: (od at: #bar ifAbsent: [nil]) isNil.
+%
+method: ValuemapTests
+testReadBackAllTestInstances
+	(Valuemap class organization listAtCategoryNamed: (Valuemap class whichCategoryIncludesSelector: #example)) do: [:sel |
+		| inst readInst |
+		inst := Valuemap perform: sel.
+		self shouldnt: [readInst := inst asSource evaluate] raise: Error.
+		self assert: inst asSource = readInst asSource]
+%
+method: ValuemapTests
+testRemoving
+	| od |
+	od := Valuemap new.
+	self assert: od isEmpty.
+	self should: [od removeKey: #foo] raise: LookupError.
+	self shouldnt: [od removeKey: #foo ifAbsent: nil] raise: LookupError.
+	self assert: (od removeKey: #foo ifAbsent: nil) isNil.
+	od add: #foo -> 'bar'.
+	self assert: od size = 1.
+	self assert: (od order) asArray = #(#foo).
+	self assert: (od removeKey: #foo) = 'bar'.
+	self assert: od size = 0.
+	self assert: (od order) asArray = #().
+	od add: #foo -> 'bar'.
+	od at: #baz put: 'xxx'.
+	self assert: od size = 2.
+	self assert: (od order) asArray = #(#foo #baz).
+	self should: [od removeKey: #zzz] raise: LookupError.
+	self shouldnt: [od removeKey: #zzz ifAbsent: nil] raise: LookupError.
+	self assert: od size = 2.
+	self assert: (od order) asArray = #(#foo #baz).
+	self assert: (od removeKey: #foo) = 'bar'.
+	self assert: od size = 1.
+	self assert: (od order) asArray = #(#baz).
 %
 category: 'Testing'
 method: ValuePrinterTests
@@ -438,7 +419,7 @@ testArray
 		constant: #constantSymbol
 		optional: #optionalSymbol
 		array: #(1 #a $x ''name'')
-		dictionary: (OrderedDictionary
+		dictionary: (Valuemap
 			with: 1 -> #symbol
 			with: #key -> ''string''))
 	with: (Date d: 7 m: 7 y: 2007)
@@ -456,7 +437,7 @@ testArraySource
 	constant: #constantSymbol
 	optional: #optionalSymbol
 	array: #(1 #a $x ''name'')
-	dictionary: (OrderedDictionary
+	dictionary: (Valuemap
 		with: 1 -> #symbol
 		with: #key -> ''string''))'.
 %
@@ -473,11 +454,11 @@ testDate
 method: ValuePrinterTests
 testDictionary
 	| dict |
-	self assert: OrderedDictionary new asSource = 'OrderedDictionary new'.
-	dict := OrderedDictionary
+	self assert: Valuemap new asSource = 'Valuemap new'.
+	dict := Valuemap
 		with: 1 -> 75
 		with: #b -> $x.
-	self assert: dict asSource = '(OrderedDictionary
+	self assert: dict asSource = '(Valuemap
 	with: 1 -> 75
 	with: #b -> $x)'
 %
@@ -493,7 +474,7 @@ testDictionarySource
 	constant: #constantSymbol
 	optional: #optionalSymbol
 	array: #(1 #a $x ''name'')
-	dictionary: (OrderedDictionary
+	dictionary: (Valuemap
 		with: 1 -> #symbol
 		with: #key -> ''string''))'.
 	self assert: (Testvalue constant: #Haider) asSource = '(Testvalue constant: #Haider)'
@@ -501,22 +482,22 @@ testDictionarySource
 method: ValuePrinterTests
 testDictionaryWithValues
 	| dict |
-	dict := OrderedDictionary
+	dict := Valuemap
 		with: 1 -> Testvalue example
 		with: Testvalue example -> $x.
-	self assert: dict asSource = '(OrderedDictionary
+	self assert: dict asSource = '(Valuemap
 	with: 1 -> (Testvalue
 		constant: #constantSymbol
 		optional: #optionalSymbol
 		array: #(1 #a $x ''name'')
-		dictionary: (OrderedDictionary
+		dictionary: (Valuemap
 			with: 1 -> #symbol
 			with: #key -> ''string''))
 	with: (Testvalue
 		constant: #constantSymbol
 		optional: #optionalSymbol
 		array: #(1 #a $x ''name'')
-		dictionary: (OrderedDictionary
+		dictionary: (Valuemap
 			with: 1 -> #symbol
 			with: #key -> ''string'')) -> $x)'
 %
@@ -527,14 +508,14 @@ testLiteralArrays
 method: ValuePrinterTests
 testLongDictionary
 	| dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: 1 put: 75.
 	dict at: #b put: $x.
 	dict at: 42 put: 'Hello'.
 	dict at: 'abc' put: 32.
 	dict at: 2 put: #(#String).
 	dict at: true put: #hi.
-	self assert: dict asSource = '((OrderedDictionary new: 6)
+	self assert: dict asSource = '((Valuemap new: 6)
 	add: 1 -> 75;
 	add: #b -> $x;
 	add: 42 -> ''Hello'';
@@ -569,7 +550,7 @@ testOptionalConstantSource
 	constant: #constantSymbol
 	optional: #optionalSymbol
 	array: #(1 #a $x ''name'')
-	dictionary: (OrderedDictionary
+	dictionary: (Valuemap
 		with: 1 -> #symbol
 		with: #key -> ''string''))'.
 	self assert: (Testvalue
@@ -616,12 +597,12 @@ DoIt
 	policy enable.
 %
 category: '*Values Testing-test instances'
-classmethod: OrderedDictionary
+classmethod: Valuemap
 example
 	"self example"
 
 	| state |
-	state := OrderedDictionary new.
+	state := Valuemap new.
 	state at: #isinTitle put: 'ISIN'.
 	state at: #isinValue put: 'DE0009999991'.
 	state at: #börsenwertTitle put: 'Börsenwert'.
@@ -647,35 +628,15 @@ DoIt
 	dict := SymbolDictionary new.
 	dict name: #'PDFtalk Testing'.
 	dict at: #comment put: 'Tests and test recources for PDF'.
-	dict at: #developmentPrerequisites put: #(#(#any 'SUnitToo' '') #(#any 'PDFtalk' '')).
-	dict at: #notice put: 'The MIT License
-
-Copyright © 2011-2017 Christian Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'.
+	dict at: #developmentPrerequisites put: #(#(#any 'PostScript' '') #(#any 'PDFtalk' '') #(#any 'SUnitToo' '') #(#any 'AT Profiling UI' '')).
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'PDFtalk Testing'.
 	dict at: #padded put: true.
 	dict at: #parcelName put: 'PDFtalkTesting'.
-	dict at: #prerequisiteDescriptions put: #(#(#name 'SUnitToo') #(#name 'PDFtalk' #componentType #bundle)).
-	dict at: #prerequisiteParcels put: #(#('SUnitToo' '') #('PDFtalk' '')).
-	dict at: #storeVersion put: '2.0.8.0'.
-	dict at: #version put: '(2.0.8.0,chaider)'.
+	dict at: #prerequisiteDescriptions put: #(#(#name 'PostScript' #componentType #package) #(#name 'PDFtalk' #componentType #bundle) #(#name 'SUnitToo') #(#name 'AT Profiling UI' #componentType #package)).
+	dict at: #prerequisiteParcels put: #(#('PostScript' '') #('PDFtalk' '') #('SUnitToo' '') #('AT Profiling UI' '')).
+	dict at: #storeVersion put: '2.5.0.6'.
+	dict at: #version put: '(2.5.0.6,chaider)'.
 	dict at: #codeComponents put: SymbolDictionary new.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components at: dict name put: dict.
@@ -686,29 +647,9 @@ DoIt
 	dict name: #'PDFtalk test resources'.
 	dict at: #comment put: 'Example objects for test purposes'.
 	dict at: #isFunctional put: false.
-	dict at: #notice put: 'The MIT License
-
-Copyright © 2011-2017 Christian Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'.
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'PDFtalk test resources'.
-	dict at: #storeVersion put: '2.0.7.0'.
+	dict at: #storeVersion put: '2.5.0.4'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -916,6 +857,23 @@ example
 	^Clip empty
 %
 category: '*PDFtalk test resources-test instances'
+classmethod: CMap
+example
+	^self
+		on: ((Valuemap new)
+			at: #Type put: #CMap;
+			at: #CMapName put: #'90ms-RKSJ-H';
+			at: #CIDSystemInfo
+				put: (Valuemap
+					with: #Registry -> 'Adobe'
+					with: #Ordering -> 'Japan1'
+					with: #Supplement -> 2);
+			at: #WMode put: 0;
+			at: #Length put: 972;
+			yourself)
+		external: (String fromASCII85: ',p?)`/O<oc@V%,I/heDGATMd4EarZ46VV!.%4*;gDe!p,ASuTbAS#C`A5Zu[Dfp)1ATKmT:i^Ja;e:%n-ppQo8T&6a.1IRL8T&$SF_#&]ATMd4EarZA+Ad)s@oHr\+=KTK6qM91F=@YF,sl0UBl6g[F)Q2A@q@\D6VV!.+=K6(D0%:,92eG781=uo,ueT#Ch5XM-oituF"L9_;bAW4+@0OV@V$ZS@;oXm0d&5#%4*<$ATDj+Df.TY0eb460JO"_,suTiH#dV3BQQ9X6Z6phEbT0"F<E:u3A<$?0JG4(6"FnCAKXosF*(u1F!+%l@kJ3:,suTiH#dV3BQQ9X6#:?[;JBcWFE8R&ATMF''G%G2:%4*;hDIc+QD/Ej%FE7m#01/<!8T&6a+>6Q3Ddu^WF<G10DIdd!F)Q2A@q?clAS5^p%5BU\A8,Oq+C\npBl4AhAS5^p@r5Xn%51(?6rSAPFCf;\DJ!er1E^4B@rri(F`8I4AS5^p%51UjB5)F/Ed8cU6"FnCALSa4AS)B):NBuWEbTE(+=KijE+*W=.3N/4AdpClF`;;9ASl!rF<E=]A7]?^ASu$$A7]?^%51(C@;ntMD.OhC3A>;k/Q,5?8hERVA7]?^01/HBE)pOjF(oQ1+>GQ&0JG4(A7]?^01/HBE)_+%AKW]MA7]?^03(S3:M+3[ATT%T2)$.`AS)B)=B.p\+BpQC0ea_*2)@''F>p*ZhAdpCp9lFQR+>=pKAS)A\1a$7=B5)6nDe*F#E+*6fEa`iuAIUaU0KqTY0Koq.3&*6D5!1hp7RK?K4@(Yb4@DY&%6R''51b_*U7RKX44q2(@A7KOgATMg!@qB[hDJ*Mi%5Au7AS5^pDJsW-AS,skDJ*Mi4>8HQ4>B;h1,CWoASu$rDffN$Ao_<tB4VM]3?VdBB5)6nBk26mDJ*Mi4>JTS4?#Yl1,CWo4?#\m4?#\m2D[&s4?,&P0KqTY0fMNb2D[,u4?,&T0KqTY0gS/j2E<Z)4?,&^3''KGa0g\>n2`*5u4?,&_3''KGa0geAn2`*N(4@VXo0KqTg68q=s3&NEM%6R*H3&!NY7RBR34ubDZ0b$676SpJ\4@V[p69[@f0K''AODId6kA9)*rB4VN`DId6o@;lZC9jr!9@;TQu@s)g4ASuU#Bk)6-01/HBE$/\&Anc-oEb0<1F`Lu''+E27<%:sEf%:sEf%4*;hDIcXVF)Q2A@q?)q,t1U!~>')
+%
+category: '*PDFtalk test resources-test instances'
 classmethod: ColourOperation
 example
 	^SetStrokingCMYK with: 0.5 with: 0 with: 1 with: 0.2
@@ -986,18 +944,18 @@ example
 		crossReferenceSection: (CrossReferenceSection subsections: (Array
 			with: (CrossReferenceSubsection
 				firstNumber: 0
-				entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+				entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 			with: (CrossReferenceSubsection
 				firstNumber: 3
-				entries: (Array with: (UsedReference value: 25325 number: 3 generation: 0)))
+				entries: (Array with: (UsedReference id: (ObjectId number: 3) value: 25325)))
 			with: (CrossReferenceSubsection
 				firstNumber: 23
 				entries: (Array
-					with: (UsedReference value: 25518 number: 23 generation: 2)
-					with: (UsedReference value: 25635 number: 24 generation: 0)))
+					with: (UsedReference id: (ObjectId number: 23 generation: 2) value: 25518)
+					with: (UsedReference id: (ObjectId number: 24) value: 25635)))
 			with: (CrossReferenceSubsection
 				firstNumber: 30
-				entries: (Array with: (UsedReference value: 25777 number: 30 generation: 0)))))
+				entries: (Array with: (UsedReference id: (ObjectId number: 30) value: 25777)))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 22
 			with: #Root -> (PDF Dictionary with: #Type -> #Catalog) newReference
@@ -1012,18 +970,18 @@ example
 	^self subsections: (Array
 		with: (CrossReferenceSubsection
 			firstNumber: 0
-			entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+			entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 		with: (CrossReferenceSubsection
 			firstNumber: 3
-			entries: (Array with: (UsedReference value: 25325 number: 3 generation: 0)))
+			entries: (Array with: (UsedReference id: (ObjectId number: 3) value: 25325)))
 		with: (CrossReferenceSubsection
 			firstNumber: 23
 			entries: (Array
-				with: (UsedReference value: 25518 number: 23 generation: 2)
-				with: (UsedReference value: 25635 number: 24 generation: 0)))
+				with: (UsedReference id: (ObjectId number: 23 generation: 2) value: 25518)
+				with: (UsedReference id: (ObjectId number: 24) value: 25635)))
 		with: (CrossReferenceSubsection
 			firstNumber: 30
-			entries: (Array with: (UsedReference value: 25777 number: 30 generation: 0))))
+			entries: (Array with: (UsedReference id: (ObjectId number: 30) value: 25777))))
 %
 classmethod: CrossReferenceSection
 exampleString
@@ -1047,12 +1005,12 @@ example
 	^self
 		firstNumber: 0
 		entries: ((OrderedCollection new)
-			add: (FreeReference value: 3 number: 0 generation: 65535);
-			add: (UsedReference value: 17 number: 1 generation: 0);
-			add: (UsedReference value: 81 number: 2 generation: 0);
-			add: (FreeReference value: 0 number: 3 generation: 7);
-			add: (UsedReference value: 331 number: 4 generation: 0);
-			add: (UsedReference value: 409 number: 5 generation: 0);
+			add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 3);
+			add: (UsedReference id: (ObjectId number: 1) value: 17);
+			add: (UsedReference id: (ObjectId number: 2) value: 81);
+			add: (FreeReference id: (ObjectId number: 3 generation: 7) value: 0);
+			add: (UsedReference id: (ObjectId number: 4) value: 331);
+			add: (UsedReference id: (ObjectId number: 5) value: 409);
 			asArray)
 %
 classmethod: CrossReferenceSubsection
@@ -1105,7 +1063,7 @@ exampleWithTypeMismatch
 			renderer showString: 'Hello World']].
 	"create the bug: inline the font descriptor directly instead of having a reference as specified"
 	font := (page Resources at: #Font) objectAt: #F1. 
-	font at: #FontDescriptor put: (font objectAt: #FontDescriptor).
+	[font at: #FontDescriptor put: (font objectAt: #FontDescriptor)] on: TypeError do: [:ex | ex resume].
 	document root addPage: page.
 	^document
 %
@@ -1186,16 +1144,31 @@ classmethod: File
 exampleHelloWorld
 	"self exampleHelloWorld"
 
-	| wst |
-	wst := Writer on: String new.
-	Document exampleHelloWorld writeFile: 'HelloWorld.pdf' on: wst.
-	^self readFrom: wst contents asByteArray readStream
+	^self readFrom: (Document exampleHelloWorld bytesForFile: 'HelloWorld.pdf') readStream
 %
 classmethod: File
 exampleMinimalByteArray
 	"from PDF 32000_2008.pdf p. 699"
 
 	^#[37 80 68 70 45 49 46 52 10 49 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 67 97 116 97 108 111 103 10 9 9 47 79 117 116 108 105 110 101 115 32 50 32 48 32 82 10 9 9 47 80 97 103 101 115 32 51 32 48 32 82 10 9 62 62 10 101 110 100 111 98 106 10 10 50 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 47 79 117 116 108 105 110 101 115 10 9 9 47 67 111 117 110 116 32 48 10 9 62 62 10 101 110 100 111 98 106 10 10 51 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 80 97 103 101 115 10 9 9 47 75 105 100 115 32 91 32 52 32 48 32 82 32 93 10 9 9 47 67 111 117 110 116 32 49 10 9 62 62 10 101 110 100 111 98 106 10 10 52 32 48 32 111 98 106 10 9 60 60 9 47 84 121 112 101 32 47 80 97 103 101 10 9 9 47 80 97 114 101 110 116 32 51 32 48 32 82 10 9 9 47 77 101 100 105 97 66 111 120 32 91 32 48 32 48 32 54 49 50 32 55 57 50 32 93 10 9 9 47 67 111 110 116 101 110 116 115 32 53 32 48 32 82 10 9 9 47 82 101 115 111 117 114 99 101 115 32 60 60 32 47 80 114 111 99 83 101 116 32 54 32 48 32 82 32 62 62 10 9 62 62 10 101 110 100 111 98 106 10 10 53 32 48 32 111 98 106 10 9 60 60 32 47 76 101 110 103 116 104 32 50 53 32 62 62 10 115 116 114 101 97 109 10 40 80 97 103 101 45 109 97 114 107 105 110 103 32 111 112 101 114 97 116 111 114 115 41 10 101 110 100 115 116 114 101 97 109 10 101 110 100 111 98 106 10 10 54 32 48 32 111 98 106 10 9 91 32 47 80 68 70 32 93 10 101 110 100 111 98 106 10 10 120 114 101 102 10 48 32 55 10 48 48 48 48 48 48 48 48 48 48 32 54 53 53 51 53 32 102 32 10 48 48 48 48 48 48 48 48 48 57 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 48 56 49 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 49 51 49 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 49 57 55 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 51 50 57 32 48 48 48 48 48 32 110 32 10 48 48 48 48 48 48 48 52 48 53 32 48 48 48 48 48 32 110 32 10 10 116 114 97 105 108 101 114 10 9 60 60 9 47 83 105 122 101 32 55 10 9 9 47 82 111 111 116 32 49 32 48 32 82 10 9 62 62 10 115 116 97 114 116 120 114 101 102 10 52 51 49 10 37 37 69 79 70 10]
+%
+classmethod: File
+exampleMinimalByteArrayWithFreeReference
+	"The object number '2 0' points to a free reference.
+	Although, the object is in the file, it cannot be referenced and is, therfore, a missing object"
+
+	^ByteArray fromASCII85String: 
+	',u@!!/MSk7$8EYW+E(_($4/gW#qo8''E+L.F6Xb(FCi<qn#mi7\F`_G6DIml31*A7n;@3^:02Q(iATJ
+	tM+>=p9$4/m[$>"*cDdmGg$8N_X+E(_($4/gW#qo8''E+L[uF`_G6DImkr#mi7PDfor>+>=-/5!B<bDI
+	dZpC''k;(+>=pV@VQ5V4?Np''<-`Fo+>6Q"B4Z,k#mi7XBk29->9GaF0Ha79>m^lE010Z#DKI!U$4/m[
+	$>"*cDdmGg$8`kZ+E(_($4/gW#qo8''E+L.F:gn!J$4."l:gnBUDKI!W+>=p9$4."l9k@jL@7"mW+Bos
+	B+>=or0esk13AM^_$4."l6Z6jaASuU2+>k8q+ArOQ#qo1fF)Q2A@qB^(4?O`>:i^Ja;e:%n2BX[r;BS.
+	e$4/m[$>"*cDdmGg$8iq[+E(_($4/gW+>6E"DJ+'')+>Pes5!B<pFE1r$D$h[f@:s.''D..I#Bl7Q+Df
+	B9.@<?F.F"%H-DIdg1Eb/Zr$>"*cDdmGg$8s"\+E(_($40oZ02P&++C,=cDIdZpC''k;mEb/hi0H`:]0
+	JG170JG170JFV-2)R0I+D)`''0JG170JG170KC700JG17+Dr;/0JG170JG170JFV-2)R0I+D)`''0JG1
+	70JG181GL"+0JG17+Dr;/0JG170JG183B&''70JG17+Dr;/0JG170JG1:1-$I20JG17+Dr;/0JG170JG
+	1;0Jst,0JG17+Dr;/$?U;sBl%@$$4/gW#qo4kH=\3X$4."l;K$Jq+>Fum+ArOQ5!B<pFCB33G]IA-$8a
+	On$7-ue:IYZ~>'
 %
 classmethod: File
 exampleObjectStreamByteArray
@@ -1235,11 +1208,7 @@ classmethod: File
 exampleWithTypeMismatch
 	"self exampleWithTypeMismatch"
 
-	| wst file |
-	wst := Writer on: String new.
-	Document exampleWithTypeMismatch writeFile: 'example.pdf' on: wst.
-	file := self readFrom: wst contents asByteArray readStream.
-	^file
+	^self readFrom: (Document exampleWithTypeMismatch bytesForFile: 'example.pdf') readStream
 %
 classmethod: File
 readEncryptedTesterOn: aString
@@ -1310,7 +1279,7 @@ exampleEncodedStringWrongHeader
 category: '*PDFtalk test resources-test instances'
 classmethod: FreeReference
 example
-	^self value: 3 number: 7 generation: 15
+	^self id: (ObjectId number: 7 generation: 15) value: 3
 %
 category: '*PDFtalk test resources-test instances'
 classmethod: GraphicsStateOperation
@@ -1322,7 +1291,7 @@ example
 category: '*PDFtalk test resources-test instances'
 classmethod: Header
 example
-	^self version: (Version major: 1 minor: 7)
+	^self version: Version pdf1_7
 %
 category: '*PDFtalk test resources-instance creation'
 classmethod: ImageXObject
@@ -1336,7 +1305,7 @@ category: '*PDFtalk test resources-test instances'
 classmethod: ImageXObject
 depth10Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -1383,7 +1352,7 @@ Fdn`<$ng`8u"71p84]]P>aq13]1WAQnJ?u&''`D`9Laq''i/+OOm`HLGIfRlSNAL~>')
 classmethod: ImageXObject
 depth15Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 14;
@@ -1402,7 +1371,7 @@ pILM9on>ij7>\[L:$C*4l5''X759C1&DL%p,Rq-LrJP62ZEc@As_r~>')
 classmethod: ImageXObject
 depth1Mask
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -1418,7 +1387,7 @@ depth1Mask
 classmethod: ImageXObject
 depth1Mono
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 20;
@@ -1433,7 +1402,7 @@ depth1Mono
 classmethod: ImageXObject
 depth24Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1448,7 +1417,7 @@ depth24Fixed
 classmethod: ImageXObject
 depth24Masked
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1458,7 +1427,7 @@ depth24Masked
 			add: #Length -> 137;
 			add: #Filter -> #FlateDecode;
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 16;
@@ -1476,7 +1445,7 @@ depth24Masked
 classmethod: ImageXObject
 depth2Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 2;
@@ -1491,7 +1460,7 @@ depth2Fixed
 classmethod: ImageXObject
 depth2Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 24;
@@ -1506,7 +1475,7 @@ depth2Mapped
 classmethod: ImageXObject
 depth2Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1521,7 +1490,7 @@ depth2Mapped2
 classmethod: ImageXObject
 depth32FixedAlpha
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 64;
@@ -1529,9 +1498,9 @@ depth32FixedAlpha
 			add: #BitsPerComponent -> 8;
 			add: #ColorSpace -> #DeviceRGB;
 			add: #Length -> 1148;
-			add: #SMask -> (SoftMaskImage
-				on: ((OrderedDictionary new: 7)
-					add: #Subtype -> #SoftMaskImage;
+			add: #SMask -> (ImageXObject
+				on: ((Valuemap new: 7)
+					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 64;
 					add: #Height -> 32;
@@ -1591,7 +1560,7 @@ IPs*6D0BQ9[QOQj=^HaJ~>')
 classmethod: ImageXObject
 depth3Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 4;
@@ -1606,7 +1575,7 @@ depth3Fixed
 classmethod: ImageXObject
 depth3Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 24;
@@ -1624,7 +1593,7 @@ depth3Mapped
 classmethod: ImageXObject
 depth3Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1639,7 +1608,7 @@ depth3Mapped2
 classmethod: ImageXObject
 depth3Mapped3
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 26;
@@ -1657,7 +1626,7 @@ depth3Mapped3
 classmethod: ImageXObject
 depth4Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 4;
@@ -1672,7 +1641,7 @@ depth4Fixed
 classmethod: ImageXObject
 depth4Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1690,7 +1659,7 @@ depth4Mapped
 classmethod: ImageXObject
 depth4Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1708,7 +1677,7 @@ depth4Mapped2
 classmethod: ImageXObject
 depth5Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1726,7 +1695,7 @@ depth5Mapped
 classmethod: ImageXObject
 depth6Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 8;
@@ -1741,7 +1710,7 @@ depth6Fixed
 classmethod: ImageXObject
 depth6Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1759,7 +1728,7 @@ depth6Mapped
 classmethod: ImageXObject
 depth6Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 8;
@@ -1777,7 +1746,7 @@ depth6Mapped2
 classmethod: ImageXObject
 depth7Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1798,7 +1767,7 @@ depth7Mapped
 classmethod: ImageXObject
 depth7Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1821,7 +1790,7 @@ W+W!<N&nqM#"Oa8l>>e''l28!WB4*p%A"8hr"?IC\b''5EWH3DY-.NEcLi;&nF5q2PER:=-"?rV^V@OV
 classmethod: ImageXObject
 depth8Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1841,7 +1810,7 @@ s$g><)A,LHrGn6i]ec[E5Wh\/=?3"_?rs6$cNB=r55:`-N6J364n]E5QK^9"0lfoO8~>')
 classmethod: ImageXObject
 depth8Mapped
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1874,7 +1843,7 @@ Jnmg"6tnSA@/MKQ`s~>')
 classmethod: ImageXObject
 depth8Mapped2
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -1907,7 +1876,7 @@ nsUP%)gVWLBc).jd(m<e''~>')
 classmethod: ImageXObject
 depth8MappedGray
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 140;
@@ -2022,7 +1991,7 @@ iO,PViOjK/80hN\?M;%GFnel)rr?8Xo<S~>')
 classmethod: ImageXObject
 depth8Masked
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -2032,7 +2001,7 @@ depth8Masked
 			add: #Length -> 1191;
 			add: #Filter -> #FlateDecode;
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 32;
@@ -2068,7 +2037,7 @@ A,J;00kM9D8/GG0KoFtoJV//I_oDd;(P5[M5OhMLP8.!#<l9\CrpRg;=r2d0FoDhhap.e~>')
 classmethod: ImageXObject
 depth9Fixed
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -2128,6 +2097,11 @@ example
 	^MarkedContentPoint with: #mark
 %
 category: '*PDFtalk test resources-test instances'
+classmethod: MissingObject
+example
+	^self at: (ObjectId number: 2) expected: (Array with: (DirectType onSymbol: #Catalog))
+%
+category: '*PDFtalk test resources-test instances'
 classmethod: Name
 example
 	^self on: #Name
@@ -2148,10 +2122,15 @@ example
 	^self on: 31
 %
 category: '*PDFtalk test resources-test instances'
+classmethod: ObjectId
+example
+	^ObjectId number: 17 generation: 2
+%
+category: '*PDFtalk test resources-test instances'
 classmethod: ObjectStream
 example
 	^self
-		on: (OrderedDictionary
+		on: (Valuemap
 			with: #Type -> #ObjStm
 			with: #Length -> 191
 			with: #N -> 3
@@ -2184,23 +2163,6 @@ method: Page
 structureString
 	^'#'
 %
-category: '*PDFtalk test resources-test instances'
-classmethod: Pages
-exampleNestedPages
-	"self exampleNestedPages"
-
-	| pdf catalog pages |
-	pdf := Document new.
-	catalog := pdf root.
-	catalog addPageTree: (PDF Page newNumbered: 1).
-	pages := self empty.
-	pages addPageTree: (PDF Page newNumbered: 2).
-	pages addPageTree: (PDF Page newNumbered: 3).
-	catalog Pages addPageTree: pages.
-	pages addPageTree: (PDF Page newNumbered: 4).
-	catalog Pages addPageTree: (PDF Page newNumbered: 5).
-	^pdf
-%
 category: '*PDFtalk test resources-accessing'
 method: Pages
 structureString
@@ -2220,14 +2182,6 @@ structureString
 	^self subclassResponsibility
 %
 category: '*PDFtalk test resources-test instances'
-classmethod: Path
-example
-	^self
-		subpaths: #()
-		clippingingOperator: (SetDash operands: #(#(1) 2))
-		paintingOperator: (SetDash operands: #(#(1) 2))
-%
-category: '*PDFtalk test resources-test instances'
 classmethod: PathConstructionOperation
 example
 	^Move with: 10 with: 5
@@ -2237,20 +2191,26 @@ classmethod: PathPaintingOperation
 example
 	^Stroke empty
 %
-category: '*PDFtalk test resources-test instances'
-classmethod: Pathsegment
-example
-	^self operator: (SetDash operands: #(#(1) 2))
-%
 category: '*PDFtalk test resources-testing'
 classmethod: PDF
 runAllTests
+	"All tests ordered from basic to specific
+	Note: this method is horrible to maintain..."
 	"self runAllTests"
 
 	| testclasses |
 	testclasses := (OrderedCollection new)
-		add: (Smalltalk at: #OrderedDictionaryTests);
+		add: (Smalltalk at: #ValuemapTests);
 		add: (Smalltalk at: #ValuePrinterTests);
+		add: (PostScript at: #InterpreterTests);
+		add: (PostScript at: #NumberTokenTests);
+		add: (PostScript at: #ObjectTests);
+		add: (PostScript at: #OperatorTests);
+		add: (PostScript at: #PostScriptTests);
+		add: (PostScript at: #ScannerStringTests);
+		add: (PostScript at: #ScannerTests);
+		add: (PostScript at: #CIDTests);
+		add: (PostScript at: #CMapTests);
 		add: (PDFtalk at: #LibraryTests);
 		add: (Smalltalk at: #ByteStreamTests);
 		add: (PDFtalk at: #NameTests);
@@ -2271,6 +2231,7 @@ runAllTests
 		add: (PDFtalk at: #TrailerTests);
 		add: (PDFtalk at: #MatrixTests);
 		add: (PDFtalk at: #FileTests);
+		add: (PDFtalk at: #DocumentTests);
 		add: (PDFtalk at: #ImageXTests);
 		add: (PDFtalk at: #FontEncodingTests);
 		add: (PDFtalk at: #BugReportTests);
@@ -2393,17 +2354,6 @@ suitable only) Tj
 T* (for continuous-tone images.) Tj
 ET' , self stringLf , 'endstream') readObject
 %
-category: '*PDFtalk test resources-converting'
-method: PDFStream
-asDictionary
-	"<Dictionary>
-	plain Dictionary without the stream for testing"
-
-	| dict |
-	dict := PDF Dictionary new.
-	self keysAndValuesDo: [:key :value | dict at: key put: value].
-	^dict
-%
 category: '*PDFtalk test resources-test instances'
 classmethod: PDFString
 example
@@ -2412,11 +2362,10 @@ example
 category: '*PDFtalk test resources-test instances'
 classmethod: PDFTypeDefinition
 example
-
 	^PDFTypeDefinition
 		name: #JPXDecode
 		supertype: #Filter
-		version: 5
+		version: #(1 5)
 		section: '7.4.9'
 		documentation: 'The JPXDecode filter decodes data that has been encoded using the JPEG2000 compression method, an ISO standard for the compression and packaging of image data.'
 %
@@ -2446,10 +2395,10 @@ category: '*PDFtalk test resources-test instances'
 classmethod: Reference
 example
 "
-	^'12 0 R' pdfReadstream nextPDFObject
+	^'12 1 R' pdfReadstream nextPDFObject
 "
 
-	^self number: 12 generation: 0
+	^self id: (ObjectId number: 12 generation: 1)
 %
 category: '*PDFtalk test resources-test instances'
 classmethod: SampledFunction
@@ -2507,12 +2456,7 @@ example
 category: '*PDFtalk test resources-test instances'
 classmethod: StreamReference
 example
-	^self value: 12345 number: 3 generation: 0
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Subpath
-example
-	^self segments: #()
+	^self id: (ObjectId number: 3) value: 12345
 %
 category: '*PDFtalk test resources-test instances'
 classmethod: TextObjectOperation
@@ -2549,7 +2493,7 @@ example
 %
 classmethod: Trailer
 exampleMinimal
-	^self on: (OrderedDictionary
+	^self on: (Valuemap
 		with: #Size -> 22
 		with: #Root -> (Dictionary with: #Type -> #Catalog) asPDF newReference)
 %
@@ -2595,7 +2539,7 @@ example
 category: '*PDFtalk test resources-test instances'
 classmethod: UsedReference
 example
-	^self value: 12345 number: 3 generation: 73
+	^self id: (ObjectId number: 3 generation: 73) value: 12345
 %
 category: '*PDFtalk test resources-test instances'
 classmethod: UTF16Textstring
@@ -2615,7 +2559,7 @@ category: '*PDFtalk test resources-test instances'
 classmethod: XRefStream
 example
 	^self
-		on: ((OrderedDictionary new)
+		on: ((Valuemap new)
 			at: #Type put: #XRef;
 			at: #Index put: #(0 11);
 			at: #W put: #(1 2 2);
@@ -5253,716 +5197,6 @@ classmethod: ExtTextMetrics
 exampleBytesTazLT4SemiLight
 	^#[52 0 240 0 0 0 232 3 3 0 232 3 232 3 32 3 244 1 188 2 200 0 0 0 188 2 156 255 100 0 100 0 177 0 38 0 50 0 100 0 25 0 25 0 231 0 38 0]
 %
-category: '*PDFtalk test resources-adobe definitions'
-classmethod: FontBody
-aglfnTxt
-	"from http://www.adobe.com/devnet-archive/opentype/archives/aglfn.txt"
-
-	^'# ###################################################################################
-# Copyright (c) 2003,2005,2006,2007 Adobe Systems Incorporated
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this documentation file to use, copy, publish, distribute,
-# sublicense, and/or sell copies of the documentation, and to permit
-# others to do the same, provided that:
-# - No modification, editing or other alteration of this document is
-# allowed; and
-# - The above copyright notice and this permission notice shall be
-# included in all copies of the documentation.
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this documentation file, to create their own derivative works
-# from the content of this document to use, copy, publish, distribute,
-# sublicense, and/or sell the derivative works, and to permit others to do
-# the same, provided that the derived work is not represented as being a
-# copy or version of this document.
-# 
-# Adobe shall not be liable to any party for any loss of revenue or profit
-# or for indirect, incidental, special, consequential, or other similar
-# damages, whether based on tort (including without limitation negligence
-# or strict liability), contract or other legal or equitable grounds even
-# if Adobe has been advised or had reason to know of the possibility of
-# such damages.� The Adobe materials are provided on an "AS IS" basis.�
-# Adobe specifically disclaims all express, statutory, or implied
-# warranties relating to the Adobe materials, including but not limited to
-# those concerning merchantability or fitness for a particular purpose or
-# non-infringement of any third party rights regarding the Adobe
-# materials.
-# ###################################################################################
-# Name:          Adobe Glyph List For New Fonts
-# Table version: 1.7
-# Date:          6 Nov 2008
-#
-# Description:
-#
-#   The Adobe Glyph List For New Fonts (AGLFN) is meant to provide a list of 
-#   base glyph names which are compatible with the AGL specification at
-#   http://www.adobe.com/devnet/opentype/archives/glyph.html.
-#   and which can be used as described in section 6 of that document.
-#
-#   This list comprises the set of glyph names from the AGLv2.0 which map
-#   to via the AGL rules to the semantically correct Unicode value. For
-#   example, Asmall is omitted as the AGL maps this to the Unicode
-#   Private Use Area value F761, rather than to the Unicode value for the
-#   character "A". "ffi" is also omitted, as the AGL maps this to the
-#   Alphabetic Presentation Forms Area value FB03, rather than
-#   decomposing it to the three-value Unicode sequence 0066,0066,0069.
-#    See section 7.1 of the Unicode Standard 4.0 on this issue.
-#   "arrowvertex" is omitted because this now has a real Unicode
-#   character value, and the AGL is now incorrect in mapping this to the 
-#   Private Use Area value  F8E6.
-#
-#  If you do not find an appropriate name for your glyph in this list,
-#  then please refer to section 6 of the document:
-#   http://www.adobe.com/devnet/opentype/archives/glyph.html.
-#
-#	The Unicode values and names are given for convenience.
-#
-# Format: Semicolon-delimited fields:
-#
-#   (1) Standard UV or CUS UV. (4 uppercase hexadecimal digits)
-#
-#   (2) Glyph name. (upper- and lowercase letters, digits)
-#
-#   (3) Character names: Unicode character names for standard UVs, and
-#       descriptive names for CUS UVs. (uppercase letters, hyphen, space)
-#
-#   The entries are sorted by glyph name in increasing ASCII order; entries
-#   with the same glyph name are sorted in decreasing priority order.
-#
-#   Lines starting with "#" are comments; blank lines should be ignored.
-#
-#   1.7  [6 Nov 2008]
-#	http://www.adobe.com/devnet/opentype/archives/aglfn17.txt
-#	- reverted to the original 1.4 and earlier mappings for Delta, Omega, and mu. 
-#	- removed mappings for "afii" names. These should
-#	now be assigned "uni" names.
-#	- removed mappings for commaaccent names. These should
-#	now be assigned "uni" names. 
-#
-#   1.6  [30 January 2006]
-#	http://www.adobe.com/devnet/opentype/archives/aglfn16.txt
-#	- Completed work intended in 1.5
-#
-#   1.5  [23 November 2005]
-#      - removed duplicated block at end of file
-#      - changed mappings:
-#            2206;Delta;INCREMENT changed to 0394;Delta;GREEK CAPITAL LETTER DELTA
-#            2126;Omega;OHM SIGN changed to 03A9;Omega;GREEK CAPITAL LETTER OMEGA
-#            03BC;mu;MICRO SIGN changed to 03BC;mu;GREEK SMALL LETTER MU
-#      - corrected statement above about why ffi is omitted.
-
-#   1.4  [24 September 2003]  Changed version to 1.4, to avoid confusion 
-#		with the AGL 1.3
-#		http://www.adobe.com/devnet/opentype/archives/aglfn14.txt
-#			fixed spelling errors in the header
-#			fully removed arrowvertex, as it is mapped only to a PUA Unicode value in some fonts.
-#
-#   1.1  [17 April 2003]  Renamed [Tt]cedilla back to [Tt]commaaccent:
-#
-#   1.0  [31 Jan 2003]  Original version. Derived from the AGLv1.2 by:
-#	-  removing the PUA area codes
-#	- removing duplicate Unicode mappings, and 
-#	- renaming tcommaaccent to tcedilla and Tcommaaccent to Tcedilla 
-#
-0041;A;LATIN CAPITAL LETTER A
-00C6;AE;LATIN CAPITAL LETTER AE
-01FC;AEacute;LATIN CAPITAL LETTER AE WITH ACUTE
-00C1;Aacute;LATIN CAPITAL LETTER A WITH ACUTE
-0102;Abreve;LATIN CAPITAL LETTER A WITH BREVE
-00C2;Acircumflex;LATIN CAPITAL LETTER A WITH CIRCUMFLEX
-00C4;Adieresis;LATIN CAPITAL LETTER A WITH DIAERESIS
-00C0;Agrave;LATIN CAPITAL LETTER A WITH GRAVE
-0391;Alpha;GREEK CAPITAL LETTER ALPHA
-0386;Alphatonos;GREEK CAPITAL LETTER ALPHA WITH TONOS
-0100;Amacron;LATIN CAPITAL LETTER A WITH MACRON
-0104;Aogonek;LATIN CAPITAL LETTER A WITH OGONEK
-00C5;Aring;LATIN CAPITAL LETTER A WITH RING ABOVE
-01FA;Aringacute;LATIN CAPITAL LETTER A WITH RING ABOVE AND ACUTE
-00C3;Atilde;LATIN CAPITAL LETTER A WITH TILDE
-0042;B;LATIN CAPITAL LETTER B
-0392;Beta;GREEK CAPITAL LETTER BETA
-0043;C;LATIN CAPITAL LETTER C
-0106;Cacute;LATIN CAPITAL LETTER C WITH ACUTE
-010C;Ccaron;LATIN CAPITAL LETTER C WITH CARON
-00C7;Ccedilla;LATIN CAPITAL LETTER C WITH CEDILLA
-0108;Ccircumflex;LATIN CAPITAL LETTER C WITH CIRCUMFLEX
-010A;Cdotaccent;LATIN CAPITAL LETTER C WITH DOT ABOVE
-03A7;Chi;GREEK CAPITAL LETTER CHI
-0044;D;LATIN CAPITAL LETTER D
-010E;Dcaron;LATIN CAPITAL LETTER D WITH CARON
-0110;Dcroat;LATIN CAPITAL LETTER D WITH STROKE
-2206;Delta;INCREMENT
-0045;E;LATIN CAPITAL LETTER E
-00C9;Eacute;LATIN CAPITAL LETTER E WITH ACUTE
-0114;Ebreve;LATIN CAPITAL LETTER E WITH BREVE
-011A;Ecaron;LATIN CAPITAL LETTER E WITH CARON
-00CA;Ecircumflex;LATIN CAPITAL LETTER E WITH CIRCUMFLEX
-00CB;Edieresis;LATIN CAPITAL LETTER E WITH DIAERESIS
-0116;Edotaccent;LATIN CAPITAL LETTER E WITH DOT ABOVE
-00C8;Egrave;LATIN CAPITAL LETTER E WITH GRAVE
-0112;Emacron;LATIN CAPITAL LETTER E WITH MACRON
-014A;Eng;LATIN CAPITAL LETTER ENG
-0118;Eogonek;LATIN CAPITAL LETTER E WITH OGONEK
-0395;Epsilon;GREEK CAPITAL LETTER EPSILON
-0388;Epsilontonos;GREEK CAPITAL LETTER EPSILON WITH TONOS
-0397;Eta;GREEK CAPITAL LETTER ETA
-0389;Etatonos;GREEK CAPITAL LETTER ETA WITH TONOS
-00D0;Eth;LATIN CAPITAL LETTER ETH
-20AC;Euro;EURO SIGN
-0046;F;LATIN CAPITAL LETTER F
-0047;G;LATIN CAPITAL LETTER G
-0393;Gamma;GREEK CAPITAL LETTER GAMMA
-011E;Gbreve;LATIN CAPITAL LETTER G WITH BREVE
-01E6;Gcaron;LATIN CAPITAL LETTER G WITH CARON
-011C;Gcircumflex;LATIN CAPITAL LETTER G WITH CIRCUMFLEX
-0120;Gdotaccent;LATIN CAPITAL LETTER G WITH DOT ABOVE
-0048;H;LATIN CAPITAL LETTER H
-25CF;H18533;BLACK CIRCLE
-25AA;H18543;BLACK SMALL SQUARE
-25AB;H18551;WHITE SMALL SQUARE
-25A1;H22073;WHITE SQUARE
-0126;Hbar;LATIN CAPITAL LETTER H WITH STROKE
-0124;Hcircumflex;LATIN CAPITAL LETTER H WITH CIRCUMFLEX
-0049;I;LATIN CAPITAL LETTER I
-0132;IJ;LATIN CAPITAL LIGATURE IJ
-00CD;Iacute;LATIN CAPITAL LETTER I WITH ACUTE
-012C;Ibreve;LATIN CAPITAL LETTER I WITH BREVE
-00CE;Icircumflex;LATIN CAPITAL LETTER I WITH CIRCUMFLEX
-00CF;Idieresis;LATIN CAPITAL LETTER I WITH DIAERESIS
-0130;Idotaccent;LATIN CAPITAL LETTER I WITH DOT ABOVE
-2111;Ifraktur;BLACK-LETTER CAPITAL I
-00CC;Igrave;LATIN CAPITAL LETTER I WITH GRAVE
-012A;Imacron;LATIN CAPITAL LETTER I WITH MACRON
-012E;Iogonek;LATIN CAPITAL LETTER I WITH OGONEK
-0399;Iota;GREEK CAPITAL LETTER IOTA
-03AA;Iotadieresis;GREEK CAPITAL LETTER IOTA WITH DIALYTIKA
-038A;Iotatonos;GREEK CAPITAL LETTER IOTA WITH TONOS
-0128;Itilde;LATIN CAPITAL LETTER I WITH TILDE
-004A;J;LATIN CAPITAL LETTER J
-0134;Jcircumflex;LATIN CAPITAL LETTER J WITH CIRCUMFLEX
-004B;K;LATIN CAPITAL LETTER K
-039A;Kappa;GREEK CAPITAL LETTER KAPPA
-004C;L;LATIN CAPITAL LETTER L
-0139;Lacute;LATIN CAPITAL LETTER L WITH ACUTE
-039B;Lambda;GREEK CAPITAL LETTER LAMDA
-013D;Lcaron;LATIN CAPITAL LETTER L WITH CARON
-013F;Ldot;LATIN CAPITAL LETTER L WITH MIDDLE DOT
-0141;Lslash;LATIN CAPITAL LETTER L WITH STROKE
-004D;M;LATIN CAPITAL LETTER M
-039C;Mu;GREEK CAPITAL LETTER MU
-004E;N;LATIN CAPITAL LETTER N
-0143;Nacute;LATIN CAPITAL LETTER N WITH ACUTE
-0147;Ncaron;LATIN CAPITAL LETTER N WITH CARON
-00D1;Ntilde;LATIN CAPITAL LETTER N WITH TILDE
-039D;Nu;GREEK CAPITAL LETTER NU
-004F;O;LATIN CAPITAL LETTER O
-0152;OE;LATIN CAPITAL LIGATURE OE
-00D3;Oacute;LATIN CAPITAL LETTER O WITH ACUTE
-014E;Obreve;LATIN CAPITAL LETTER O WITH BREVE
-00D4;Ocircumflex;LATIN CAPITAL LETTER O WITH CIRCUMFLEX
-00D6;Odieresis;LATIN CAPITAL LETTER O WITH DIAERESIS
-00D2;Ograve;LATIN CAPITAL LETTER O WITH GRAVE
-01A0;Ohorn;LATIN CAPITAL LETTER O WITH HORN
-0150;Ohungarumlaut;LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
-014C;Omacron;LATIN CAPITAL LETTER O WITH MACRON
-2126;Omega;OHM SIGN
-038F;Omegatonos;GREEK CAPITAL LETTER OMEGA WITH TONOS
-039F;Omicron;GREEK CAPITAL LETTER OMICRON
-038C;Omicrontonos;GREEK CAPITAL LETTER OMICRON WITH TONOS
-00D8;Oslash;LATIN CAPITAL LETTER O WITH STROKE
-01FE;Oslashacute;LATIN CAPITAL LETTER O WITH STROKE AND ACUTE
-00D5;Otilde;LATIN CAPITAL LETTER O WITH TILDE
-0050;P;LATIN CAPITAL LETTER P
-03A6;Phi;GREEK CAPITAL LETTER PHI
-03A0;Pi;GREEK CAPITAL LETTER PI
-03A8;Psi;GREEK CAPITAL LETTER PSI
-0051;Q;LATIN CAPITAL LETTER Q
-0052;R;LATIN CAPITAL LETTER R
-0154;Racute;LATIN CAPITAL LETTER R WITH ACUTE
-0158;Rcaron;LATIN CAPITAL LETTER R WITH CARON
-211C;Rfraktur;BLACK-LETTER CAPITAL R
-03A1;Rho;GREEK CAPITAL LETTER RHO
-0053;S;LATIN CAPITAL LETTER S
-250C;SF010000;BOX DRAWINGS LIGHT DOWN AND RIGHT
-2514;SF020000;BOX DRAWINGS LIGHT UP AND RIGHT
-2510;SF030000;BOX DRAWINGS LIGHT DOWN AND LEFT
-2518;SF040000;BOX DRAWINGS LIGHT UP AND LEFT
-253C;SF050000;BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
-252C;SF060000;BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
-2534;SF070000;BOX DRAWINGS LIGHT UP AND HORIZONTAL
-251C;SF080000;BOX DRAWINGS LIGHT VERTICAL AND RIGHT
-2524;SF090000;BOX DRAWINGS LIGHT VERTICAL AND LEFT
-2500;SF100000;BOX DRAWINGS LIGHT HORIZONTAL
-2502;SF110000;BOX DRAWINGS LIGHT VERTICAL
-2561;SF190000;BOX DRAWINGS VERTICAL SINGLE AND LEFT DOUBLE
-2562;SF200000;BOX DRAWINGS VERTICAL DOUBLE AND LEFT SINGLE
-2556;SF210000;BOX DRAWINGS DOWN DOUBLE AND LEFT SINGLE
-2555;SF220000;BOX DRAWINGS DOWN SINGLE AND LEFT DOUBLE
-2563;SF230000;BOX DRAWINGS DOUBLE VERTICAL AND LEFT
-2551;SF240000;BOX DRAWINGS DOUBLE VERTICAL
-2557;SF250000;BOX DRAWINGS DOUBLE DOWN AND LEFT
-255D;SF260000;BOX DRAWINGS DOUBLE UP AND LEFT
-255C;SF270000;BOX DRAWINGS UP DOUBLE AND LEFT SINGLE
-255B;SF280000;BOX DRAWINGS UP SINGLE AND LEFT DOUBLE
-255E;SF360000;BOX DRAWINGS VERTICAL SINGLE AND RIGHT DOUBLE
-255F;SF370000;BOX DRAWINGS VERTICAL DOUBLE AND RIGHT SINGLE
-255A;SF380000;BOX DRAWINGS DOUBLE UP AND RIGHT
-2554;SF390000;BOX DRAWINGS DOUBLE DOWN AND RIGHT
-2569;SF400000;BOX DRAWINGS DOUBLE UP AND HORIZONTAL
-2566;SF410000;BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
-2560;SF420000;BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
-2550;SF430000;BOX DRAWINGS DOUBLE HORIZONTAL
-256C;SF440000;BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
-2567;SF450000;BOX DRAWINGS UP SINGLE AND HORIZONTAL DOUBLE
-2568;SF460000;BOX DRAWINGS UP DOUBLE AND HORIZONTAL SINGLE
-2564;SF470000;BOX DRAWINGS DOWN SINGLE AND HORIZONTAL DOUBLE
-2565;SF480000;BOX DRAWINGS DOWN DOUBLE AND HORIZONTAL SINGLE
-2559;SF490000;BOX DRAWINGS UP DOUBLE AND RIGHT SINGLE
-2558;SF500000;BOX DRAWINGS UP SINGLE AND RIGHT DOUBLE
-2552;SF510000;BOX DRAWINGS DOWN SINGLE AND RIGHT DOUBLE
-2553;SF520000;BOX DRAWINGS DOWN DOUBLE AND RIGHT SINGLE
-256B;SF530000;BOX DRAWINGS VERTICAL DOUBLE AND HORIZONTAL SINGLE
-256A;SF540000;BOX DRAWINGS VERTICAL SINGLE AND HORIZONTAL DOUBLE
-015A;Sacute;LATIN CAPITAL LETTER S WITH ACUTE
-0160;Scaron;LATIN CAPITAL LETTER S WITH CARON
-015E;Scedilla;LATIN CAPITAL LETTER S WITH CEDILLA
-015C;Scircumflex;LATIN CAPITAL LETTER S WITH CIRCUMFLEX
-03A3;Sigma;GREEK CAPITAL LETTER SIGMA
-0054;T;LATIN CAPITAL LETTER T
-03A4;Tau;GREEK CAPITAL LETTER TAU
-0166;Tbar;LATIN CAPITAL LETTER T WITH STROKE
-0164;Tcaron;LATIN CAPITAL LETTER T WITH CARON
-0398;Theta;GREEK CAPITAL LETTER THETA
-00DE;Thorn;LATIN CAPITAL LETTER THORN
-0055;U;LATIN CAPITAL LETTER U
-00DA;Uacute;LATIN CAPITAL LETTER U WITH ACUTE
-016C;Ubreve;LATIN CAPITAL LETTER U WITH BREVE
-00DB;Ucircumflex;LATIN CAPITAL LETTER U WITH CIRCUMFLEX
-00DC;Udieresis;LATIN CAPITAL LETTER U WITH DIAERESIS
-00D9;Ugrave;LATIN CAPITAL LETTER U WITH GRAVE
-01AF;Uhorn;LATIN CAPITAL LETTER U WITH HORN
-0170;Uhungarumlaut;LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
-016A;Umacron;LATIN CAPITAL LETTER U WITH MACRON
-0172;Uogonek;LATIN CAPITAL LETTER U WITH OGONEK
-03A5;Upsilon;GREEK CAPITAL LETTER UPSILON
-03D2;Upsilon1;GREEK UPSILON WITH HOOK SYMBOL
-03AB;Upsilondieresis;GREEK CAPITAL LETTER UPSILON WITH DIALYTIKA
-038E;Upsilontonos;GREEK CAPITAL LETTER UPSILON WITH TONOS
-016E;Uring;LATIN CAPITAL LETTER U WITH RING ABOVE
-0168;Utilde;LATIN CAPITAL LETTER U WITH TILDE
-0056;V;LATIN CAPITAL LETTER V
-0057;W;LATIN CAPITAL LETTER W
-1E82;Wacute;LATIN CAPITAL LETTER W WITH ACUTE
-0174;Wcircumflex;LATIN CAPITAL LETTER W WITH CIRCUMFLEX
-1E84;Wdieresis;LATIN CAPITAL LETTER W WITH DIAERESIS
-1E80;Wgrave;LATIN CAPITAL LETTER W WITH GRAVE
-0058;X;LATIN CAPITAL LETTER X
-039E;Xi;GREEK CAPITAL LETTER XI
-0059;Y;LATIN CAPITAL LETTER Y
-00DD;Yacute;LATIN CAPITAL LETTER Y WITH ACUTE
-0176;Ycircumflex;LATIN CAPITAL LETTER Y WITH CIRCUMFLEX
-0178;Ydieresis;LATIN CAPITAL LETTER Y WITH DIAERESIS
-1EF2;Ygrave;LATIN CAPITAL LETTER Y WITH GRAVE
-005A;Z;LATIN CAPITAL LETTER Z
-0179;Zacute;LATIN CAPITAL LETTER Z WITH ACUTE
-017D;Zcaron;LATIN CAPITAL LETTER Z WITH CARON
-017B;Zdotaccent;LATIN CAPITAL LETTER Z WITH DOT ABOVE
-0396;Zeta;GREEK CAPITAL LETTER ZETA
-0061;a;LATIN SMALL LETTER A
-00E1;aacute;LATIN SMALL LETTER A WITH ACUTE
-0103;abreve;LATIN SMALL LETTER A WITH BREVE
-00E2;acircumflex;LATIN SMALL LETTER A WITH CIRCUMFLEX
-00B4;acute;ACUTE ACCENT
-0301;acutecomb;COMBINING ACUTE ACCENT
-00E4;adieresis;LATIN SMALL LETTER A WITH DIAERESIS
-00E6;ae;LATIN SMALL LETTER AE
-01FD;aeacute;LATIN SMALL LETTER AE WITH ACUTE
-00E0;agrave;LATIN SMALL LETTER A WITH GRAVE
-2135;aleph;ALEF SYMBOL
-03B1;alpha;GREEK SMALL LETTER ALPHA
-03AC;alphatonos;GREEK SMALL LETTER ALPHA WITH TONOS
-0101;amacron;LATIN SMALL LETTER A WITH MACRON
-0026;ampersand;AMPERSAND
-2220;angle;ANGLE
-2329;angleleft;LEFT-POINTING ANGLE BRACKET
-232A;angleright;RIGHT-POINTING ANGLE BRACKET
-0387;anoteleia;GREEK ANO TELEIA
-0105;aogonek;LATIN SMALL LETTER A WITH OGONEK
-2248;approxequal;ALMOST EQUAL TO
-00E5;aring;LATIN SMALL LETTER A WITH RING ABOVE
-01FB;aringacute;LATIN SMALL LETTER A WITH RING ABOVE AND ACUTE
-2194;arrowboth;LEFT RIGHT ARROW
-21D4;arrowdblboth;LEFT RIGHT DOUBLE ARROW
-21D3;arrowdbldown;DOWNWARDS DOUBLE ARROW
-21D0;arrowdblleft;LEFTWARDS DOUBLE ARROW
-21D2;arrowdblright;RIGHTWARDS DOUBLE ARROW
-21D1;arrowdblup;UPWARDS DOUBLE ARROW
-2193;arrowdown;DOWNWARDS ARROW
-2190;arrowleft;LEFTWARDS ARROW
-2192;arrowright;RIGHTWARDS ARROW
-2191;arrowup;UPWARDS ARROW
-2195;arrowupdn;UP DOWN ARROW
-21A8;arrowupdnbse;UP DOWN ARROW WITH BASE
-005E;asciicircum;CIRCUMFLEX ACCENT
-007E;asciitilde;TILDE
-002A;asterisk;ASTERISK
-2217;asteriskmath;ASTERISK OPERATOR
-0040;at;COMMERCIAL AT
-00E3;atilde;LATIN SMALL LETTER A WITH TILDE
-0062;b;LATIN SMALL LETTER B
-005C;backslash;REVERSE SOLIDUS
-007C;bar;VERTICAL LINE
-03B2;beta;GREEK SMALL LETTER BETA
-2588;block;FULL BLOCK
-007B;braceleft;LEFT CURLY BRACKET
-007D;braceright;RIGHT CURLY BRACKET
-005B;bracketleft;LEFT SQUARE BRACKET
-005D;bracketright;RIGHT SQUARE BRACKET
-02D8;breve;BREVE
-00A6;brokenbar;BROKEN BAR
-2022;bullet;BULLET
-0063;c;LATIN SMALL LETTER C
-0107;cacute;LATIN SMALL LETTER C WITH ACUTE
-02C7;caron;CARON
-21B5;carriagereturn;DOWNWARDS ARROW WITH CORNER LEFTWARDS
-010D;ccaron;LATIN SMALL LETTER C WITH CARON
-00E7;ccedilla;LATIN SMALL LETTER C WITH CEDILLA
-0109;ccircumflex;LATIN SMALL LETTER C WITH CIRCUMFLEX
-010B;cdotaccent;LATIN SMALL LETTER C WITH DOT ABOVE
-00B8;cedilla;CEDILLA
-00A2;cent;CENT SIGN
-03C7;chi;GREEK SMALL LETTER CHI
-25CB;circle;WHITE CIRCLE
-2297;circlemultiply;CIRCLED TIMES
-2295;circleplus;CIRCLED PLUS
-02C6;circumflex;MODIFIER LETTER CIRCUMFLEX ACCENT
-2663;club;BLACK CLUB SUIT
-003A;colon;COLON
-20A1;colonmonetary;COLON SIGN
-002C;comma;COMMA
-2245;congruent;APPROXIMATELY EQUAL TO
-00A9;copyright;COPYRIGHT SIGN
-00A4;currency;CURRENCY SIGN
-0064;d;LATIN SMALL LETTER D
-2020;dagger;DAGGER
-2021;daggerdbl;DOUBLE DAGGER
-010F;dcaron;LATIN SMALL LETTER D WITH CARON
-0111;dcroat;LATIN SMALL LETTER D WITH STROKE
-00B0;degree;DEGREE SIGN
-03B4;delta;GREEK SMALL LETTER DELTA
-2666;diamond;BLACK DIAMOND SUIT
-00A8;dieresis;DIAERESIS
-0385;dieresistonos;GREEK DIALYTIKA TONOS
-00F7;divide;DIVISION SIGN
-2593;dkshade;DARK SHADE
-2584;dnblock;LOWER HALF BLOCK
-0024;dollar;DOLLAR SIGN
-20AB;dong;DONG SIGN
-02D9;dotaccent;DOT ABOVE
-0323;dotbelowcomb;COMBINING DOT BELOW
-0131;dotlessi;LATIN SMALL LETTER DOTLESS I
-22C5;dotmath;DOT OPERATOR
-0065;e;LATIN SMALL LETTER E
-00E9;eacute;LATIN SMALL LETTER E WITH ACUTE
-0115;ebreve;LATIN SMALL LETTER E WITH BREVE
-011B;ecaron;LATIN SMALL LETTER E WITH CARON
-00EA;ecircumflex;LATIN SMALL LETTER E WITH CIRCUMFLEX
-00EB;edieresis;LATIN SMALL LETTER E WITH DIAERESIS
-0117;edotaccent;LATIN SMALL LETTER E WITH DOT ABOVE
-00E8;egrave;LATIN SMALL LETTER E WITH GRAVE
-0038;eight;DIGIT EIGHT
-2208;element;ELEMENT OF
-2026;ellipsis;HORIZONTAL ELLIPSIS
-0113;emacron;LATIN SMALL LETTER E WITH MACRON
-2014;emdash;EM DASH
-2205;emptyset;EMPTY SET
-2013;endash;EN DASH
-014B;eng;LATIN SMALL LETTER ENG
-0119;eogonek;LATIN SMALL LETTER E WITH OGONEK
-03B5;epsilon;GREEK SMALL LETTER EPSILON
-03AD;epsilontonos;GREEK SMALL LETTER EPSILON WITH TONOS
-003D;equal;EQUALS SIGN
-2261;equivalence;IDENTICAL TO
-212E;estimated;ESTIMATED SYMBOL
-03B7;eta;GREEK SMALL LETTER ETA
-03AE;etatonos;GREEK SMALL LETTER ETA WITH TONOS
-00F0;eth;LATIN SMALL LETTER ETH
-0021;exclam;EXCLAMATION MARK
-203C;exclamdbl;DOUBLE EXCLAMATION MARK
-00A1;exclamdown;INVERTED EXCLAMATION MARK
-2203;existential;THERE EXISTS
-0066;f;LATIN SMALL LETTER F
-2640;female;FEMALE SIGN
-2012;figuredash;FIGURE DASH
-25A0;filledbox;BLACK SQUARE
-25AC;filledrect;BLACK RECTANGLE
-0035;five;DIGIT FIVE
-215D;fiveeighths;VULGAR FRACTION FIVE EIGHTHS
-0192;florin;LATIN SMALL LETTER F WITH HOOK
-0034;four;DIGIT FOUR
-2044;fraction;FRACTION SLASH
-20A3;franc;FRENCH FRANC SIGN
-0067;g;LATIN SMALL LETTER G
-03B3;gamma;GREEK SMALL LETTER GAMMA
-011F;gbreve;LATIN SMALL LETTER G WITH BREVE
-01E7;gcaron;LATIN SMALL LETTER G WITH CARON
-011D;gcircumflex;LATIN SMALL LETTER G WITH CIRCUMFLEX
-0121;gdotaccent;LATIN SMALL LETTER G WITH DOT ABOVE
-00DF;germandbls;LATIN SMALL LETTER SHARP S
-2207;gradient;NABLA
-0060;grave;GRAVE ACCENT
-0300;gravecomb;COMBINING GRAVE ACCENT
-003E;greater;GREATER-THAN SIGN
-2265;greaterequal;GREATER-THAN OR EQUAL TO
-00AB;guillemotleft;LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-00BB;guillemotright;RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-2039;guilsinglleft;SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-203A;guilsinglright;SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-0068;h;LATIN SMALL LETTER H
-0127;hbar;LATIN SMALL LETTER H WITH STROKE
-0125;hcircumflex;LATIN SMALL LETTER H WITH CIRCUMFLEX
-2665;heart;BLACK HEART SUIT
-0309;hookabovecomb;COMBINING HOOK ABOVE
-2302;house;HOUSE
-02DD;hungarumlaut;DOUBLE ACUTE ACCENT
-002D;hyphen;HYPHEN-MINUS
-0069;i;LATIN SMALL LETTER I
-00ED;iacute;LATIN SMALL LETTER I WITH ACUTE
-012D;ibreve;LATIN SMALL LETTER I WITH BREVE
-00EE;icircumflex;LATIN SMALL LETTER I WITH CIRCUMFLEX
-00EF;idieresis;LATIN SMALL LETTER I WITH DIAERESIS
-00EC;igrave;LATIN SMALL LETTER I WITH GRAVE
-0133;ij;LATIN SMALL LIGATURE IJ
-012B;imacron;LATIN SMALL LETTER I WITH MACRON
-221E;infinity;INFINITY
-222B;integral;INTEGRAL
-2321;integralbt;BOTTOM HALF INTEGRAL
-2320;integraltp;TOP HALF INTEGRAL
-2229;intersection;INTERSECTION
-25D8;invbullet;INVERSE BULLET
-25D9;invcircle;INVERSE WHITE CIRCLE
-263B;invsmileface;BLACK SMILING FACE
-012F;iogonek;LATIN SMALL LETTER I WITH OGONEK
-03B9;iota;GREEK SMALL LETTER IOTA
-03CA;iotadieresis;GREEK SMALL LETTER IOTA WITH DIALYTIKA
-0390;iotadieresistonos;GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
-03AF;iotatonos;GREEK SMALL LETTER IOTA WITH TONOS
-0129;itilde;LATIN SMALL LETTER I WITH TILDE
-006A;j;LATIN SMALL LETTER J
-0135;jcircumflex;LATIN SMALL LETTER J WITH CIRCUMFLEX
-006B;k;LATIN SMALL LETTER K
-03BA;kappa;GREEK SMALL LETTER KAPPA
-0138;kgreenlandic;LATIN SMALL LETTER KRA
-006C;l;LATIN SMALL LETTER L
-013A;lacute;LATIN SMALL LETTER L WITH ACUTE
-03BB;lambda;GREEK SMALL LETTER LAMDA
-013E;lcaron;LATIN SMALL LETTER L WITH CARON
-0140;ldot;LATIN SMALL LETTER L WITH MIDDLE DOT
-003C;less;LESS-THAN SIGN
-2264;lessequal;LESS-THAN OR EQUAL TO
-258C;lfblock;LEFT HALF BLOCK
-20A4;lira;LIRA SIGN
-2227;logicaland;LOGICAL AND
-00AC;logicalnot;NOT SIGN
-2228;logicalor;LOGICAL OR
-017F;longs;LATIN SMALL LETTER LONG S
-25CA;lozenge;LOZENGE
-0142;lslash;LATIN SMALL LETTER L WITH STROKE
-2591;ltshade;LIGHT SHADE
-006D;m;LATIN SMALL LETTER M
-00AF;macron;MACRON
-2642;male;MALE SIGN
-2212;minus;MINUS SIGN
-2032;minute;PRIME
-00B5;mu;MICRO SIGN
-00D7;multiply;MULTIPLICATION SIGN
-266A;musicalnote;EIGHTH NOTE
-266B;musicalnotedbl;BEAMED EIGHTH NOTES
-006E;n;LATIN SMALL LETTER N
-0144;nacute;LATIN SMALL LETTER N WITH ACUTE
-0149;napostrophe;LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
-0148;ncaron;LATIN SMALL LETTER N WITH CARON
-0039;nine;DIGIT NINE
-2209;notelement;NOT AN ELEMENT OF
-2260;notequal;NOT EQUAL TO
-2284;notsubset;NOT A SUBSET OF
-00F1;ntilde;LATIN SMALL LETTER N WITH TILDE
-03BD;nu;GREEK SMALL LETTER NU
-0023;numbersign;NUMBER SIGN
-006F;o;LATIN SMALL LETTER O
-00F3;oacute;LATIN SMALL LETTER O WITH ACUTE
-014F;obreve;LATIN SMALL LETTER O WITH BREVE
-00F4;ocircumflex;LATIN SMALL LETTER O WITH CIRCUMFLEX
-00F6;odieresis;LATIN SMALL LETTER O WITH DIAERESIS
-0153;oe;LATIN SMALL LIGATURE OE
-02DB;ogonek;OGONEK
-00F2;ograve;LATIN SMALL LETTER O WITH GRAVE
-01A1;ohorn;LATIN SMALL LETTER O WITH HORN
-0151;ohungarumlaut;LATIN SMALL LETTER O WITH DOUBLE ACUTE
-014D;omacron;LATIN SMALL LETTER O WITH MACRON
-03C9;omega;GREEK SMALL LETTER OMEGA
-03D6;omega1;GREEK PI SYMBOL
-03CE;omegatonos;GREEK SMALL LETTER OMEGA WITH TONOS
-03BF;omicron;GREEK SMALL LETTER OMICRON
-03CC;omicrontonos;GREEK SMALL LETTER OMICRON WITH TONOS
-0031;one;DIGIT ONE
-2024;onedotenleader;ONE DOT LEADER
-215B;oneeighth;VULGAR FRACTION ONE EIGHTH
-00BD;onehalf;VULGAR FRACTION ONE HALF
-00BC;onequarter;VULGAR FRACTION ONE QUARTER
-2153;onethird;VULGAR FRACTION ONE THIRD
-25E6;openbullet;WHITE BULLET
-00AA;ordfeminine;FEMININE ORDINAL INDICATOR
-00BA;ordmasculine;MASCULINE ORDINAL INDICATOR
-221F;orthogonal;RIGHT ANGLE
-00F8;oslash;LATIN SMALL LETTER O WITH STROKE
-01FF;oslashacute;LATIN SMALL LETTER O WITH STROKE AND ACUTE
-00F5;otilde;LATIN SMALL LETTER O WITH TILDE
-0070;p;LATIN SMALL LETTER P
-00B6;paragraph;PILCROW SIGN
-0028;parenleft;LEFT PARENTHESIS
-0029;parenright;RIGHT PARENTHESIS
-2202;partialdiff;PARTIAL DIFFERENTIAL
-0025;percent;PERCENT SIGN
-002E;period;FULL STOP
-00B7;periodcentered;MIDDLE DOT
-22A5;perpendicular;UP TACK
-2030;perthousand;PER MILLE SIGN
-20A7;peseta;PESETA SIGN
-03C6;phi;GREEK SMALL LETTER PHI
-03D5;phi1;GREEK PHI SYMBOL
-03C0;pi;GREEK SMALL LETTER PI
-002B;plus;PLUS SIGN
-00B1;plusminus;PLUS-MINUS SIGN
-211E;prescription;PRESCRIPTION TAKE
-220F;product;N-ARY PRODUCT
-2282;propersubset;SUBSET OF
-2283;propersuperset;SUPERSET OF
-221D;proportional;PROPORTIONAL TO
-03C8;psi;GREEK SMALL LETTER PSI
-0071;q;LATIN SMALL LETTER Q
-003F;question;QUESTION MARK
-00BF;questiondown;INVERTED QUESTION MARK
-0022;quotedbl;QUOTATION MARK
-201E;quotedblbase;DOUBLE LOW-9 QUOTATION MARK
-201C;quotedblleft;LEFT DOUBLE QUOTATION MARK
-201D;quotedblright;RIGHT DOUBLE QUOTATION MARK
-2018;quoteleft;LEFT SINGLE QUOTATION MARK
-201B;quotereversed;SINGLE HIGH-REVERSED-9 QUOTATION MARK
-2019;quoteright;RIGHT SINGLE QUOTATION MARK
-201A;quotesinglbase;SINGLE LOW-9 QUOTATION MARK
-0027;quotesingle;APOSTROPHE
-0072;r;LATIN SMALL LETTER R
-0155;racute;LATIN SMALL LETTER R WITH ACUTE
-221A;radical;SQUARE ROOT
-0159;rcaron;LATIN SMALL LETTER R WITH CARON
-2286;reflexsubset;SUBSET OF OR EQUAL TO
-2287;reflexsuperset;SUPERSET OF OR EQUAL TO
-00AE;registered;REGISTERED SIGN
-2310;revlogicalnot;REVERSED NOT SIGN
-03C1;rho;GREEK SMALL LETTER RHO
-02DA;ring;RING ABOVE
-2590;rtblock;RIGHT HALF BLOCK
-0073;s;LATIN SMALL LETTER S
-015B;sacute;LATIN SMALL LETTER S WITH ACUTE
-0161;scaron;LATIN SMALL LETTER S WITH CARON
-015F;scedilla;LATIN SMALL LETTER S WITH CEDILLA
-015D;scircumflex;LATIN SMALL LETTER S WITH CIRCUMFLEX
-2033;second;DOUBLE PRIME
-00A7;section;SECTION SIGN
-003B;semicolon;SEMICOLON
-0037;seven;DIGIT SEVEN
-215E;seveneighths;VULGAR FRACTION SEVEN EIGHTHS
-2592;shade;MEDIUM SHADE
-03C3;sigma;GREEK SMALL LETTER SIGMA
-03C2;sigma1;GREEK SMALL LETTER FINAL SIGMA
-223C;similar;TILDE OPERATOR
-0036;six;DIGIT SIX
-002F;slash;SOLIDUS
-263A;smileface;WHITE SMILING FACE
-0020;space;SPACE
-2660;spade;BLACK SPADE SUIT
-00A3;sterling;POUND SIGN
-220B;suchthat;CONTAINS AS MEMBER
-2211;summation;N-ARY SUMMATION
-263C;sun;WHITE SUN WITH RAYS
-0074;t;LATIN SMALL LETTER T
-03C4;tau;GREEK SMALL LETTER TAU
-0167;tbar;LATIN SMALL LETTER T WITH STROKE
-0165;tcaron;LATIN SMALL LETTER T WITH CARON
-2234;therefore;THEREFORE
-03B8;theta;GREEK SMALL LETTER THETA
-03D1;theta1;GREEK THETA SYMBOL
-00FE;thorn;LATIN SMALL LETTER THORN
-0033;three;DIGIT THREE
-215C;threeeighths;VULGAR FRACTION THREE EIGHTHS
-00BE;threequarters;VULGAR FRACTION THREE QUARTERS
-02DC;tilde;SMALL TILDE
-0303;tildecomb;COMBINING TILDE
-0384;tonos;GREEK TONOS
-2122;trademark;TRADE MARK SIGN
-25BC;triagdn;BLACK DOWN-POINTING TRIANGLE
-25C4;triaglf;BLACK LEFT-POINTING POINTER
-25BA;triagrt;BLACK RIGHT-POINTING POINTER
-25B2;triagup;BLACK UP-POINTING TRIANGLE
-0032;two;DIGIT TWO
-2025;twodotenleader;TWO DOT LEADER
-2154;twothirds;VULGAR FRACTION TWO THIRDS
-0075;u;LATIN SMALL LETTER U
-00FA;uacute;LATIN SMALL LETTER U WITH ACUTE
-016D;ubreve;LATIN SMALL LETTER U WITH BREVE
-00FB;ucircumflex;LATIN SMALL LETTER U WITH CIRCUMFLEX
-00FC;udieresis;LATIN SMALL LETTER U WITH DIAERESIS
-00F9;ugrave;LATIN SMALL LETTER U WITH GRAVE
-01B0;uhorn;LATIN SMALL LETTER U WITH HORN
-0171;uhungarumlaut;LATIN SMALL LETTER U WITH DOUBLE ACUTE
-016B;umacron;LATIN SMALL LETTER U WITH MACRON
-005F;underscore;LOW LINE
-2017;underscoredbl;DOUBLE LOW LINE
-222A;union;UNION
-2200;universal;FOR ALL
-0173;uogonek;LATIN SMALL LETTER U WITH OGONEK
-2580;upblock;UPPER HALF BLOCK
-03C5;upsilon;GREEK SMALL LETTER UPSILON
-03CB;upsilondieresis;GREEK SMALL LETTER UPSILON WITH DIALYTIKA
-03B0;upsilondieresistonos;GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
-03CD;upsilontonos;GREEK SMALL LETTER UPSILON WITH TONOS
-016F;uring;LATIN SMALL LETTER U WITH RING ABOVE
-0169;utilde;LATIN SMALL LETTER U WITH TILDE
-0076;v;LATIN SMALL LETTER V
-0077;w;LATIN SMALL LETTER W
-1E83;wacute;LATIN SMALL LETTER W WITH ACUTE
-0175;wcircumflex;LATIN SMALL LETTER W WITH CIRCUMFLEX
-1E85;wdieresis;LATIN SMALL LETTER W WITH DIAERESIS
-2118;weierstrass;SCRIPT CAPITAL P
-1E81;wgrave;LATIN SMALL LETTER W WITH GRAVE
-0078;x;LATIN SMALL LETTER X
-03BE;xi;GREEK SMALL LETTER XI
-0079;y;LATIN SMALL LETTER Y
-00FD;yacute;LATIN SMALL LETTER Y WITH ACUTE
-0177;ycircumflex;LATIN SMALL LETTER Y WITH CIRCUMFLEX
-00FF;ydieresis;LATIN SMALL LETTER Y WITH DIAERESIS
-00A5;yen;YEN SIGN
-1EF3;ygrave;LATIN SMALL LETTER Y WITH GRAVE
-007A;z;LATIN SMALL LETTER Z
-017A;zacute;LATIN SMALL LETTER Z WITH ACUTE
-017E;zcaron;LATIN SMALL LETTER Z WITH CARON
-017C;zdotaccent;LATIN SMALL LETTER Z WITH DOT ABOVE
-0030;zero;DIGIT ZERO
-03B6;zeta;GREEK SMALL LETTER ZETA
-'
-%
-category: '*PDFtalk test resources-font metric loading'
-classmethod: FontBody
-adobeGlyphDecodingForNewFonts
-	"<IdentityDictionary key: Symbol value: Integer>
-	the file format is slightly different from the AGL (Adobe Glyph List)"
-
-	^(self tokenLinesFrom: self aglfnTxt readStream) inject: IdentityDictionary new into: [:dict :tokens |
-		dict at: (tokens at: 2) asSymbol put: ('16r' , tokens first) asNumber.
-		dict]
-%
 category: '*PDFtalk test resources-test instances'
 classmethod: FontProgram
 example
@@ -6827,6 +6061,127 @@ Ks(H]Gs(coTs)32Ts)WJSs*/hes*Atbs+G[Ks5/+cs$V2,s$h>+s&47;s&=<ps&OI9s&aU<s&j[%s''g
 &S45s&nF2s&A*ts&S79s&nI1s&A3os&nQqs&A9us&nWls&A<us&nZts&A>!!*ALq!*SXn!0ca[!))__!
 *&@u!*8Lq!*ARs!*S_!!0cgX!(QDf!))bj!*&D5!*8P!!*AV''!*Sb4!0cjd!*&L?s&AR#s&S^;s&nos
 s&AWms&nuts&A[5s&Sg>s&o$*s&A^-s&Sj?s&o''!s&Ag@s&Ap@s&B$Urr~>'
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #CFF) at: 1.
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Charset0
+example
+	^Charset0 glyphs: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Charset1
+example
+	^Charset1 ranges: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Charstring
+example
+	"from 'Adobe Type 1 Font Format' pp.58"
+
+	^Charstring bytes: #[189 249 180 13 139 239 3 139 239 1 248 236 239 1 139 22 249 80 6 239 7 252 236 6 248 136 7 248 236 6 239 7 253 80 6 9 14]
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: CharstringOperator
+example
+	^CharstringOperator value: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: DictOperator
+example
+	^DictOperator value: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Encoding0
+example
+	^Encoding0 codes: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Encoding1
+example
+	^Encoding1 ranges: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: EncodingSupplement
+example
+	^EncodingSupplement glyphsAtCode: (Valuemap
+		with: 1 -> #symbol
+		with: #key -> 'string')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: FontSet
+example
+	^self for: nil fromBytes: self exampleBytes readStream
+%
+classmethod: FontSet
+exampleBytes
+	"from Appendix D"
+
+	^#[16r01 16r00 16r04 16r01 16r00 16r01 16r01 16r01 16r13 16r41 16r42 16r43 16r44 16r45 16r46 16r2b 16r54 16r69 16r6d 16r65 16r73 16r2d 16r52 16r6f 16r6d 16r61 16r6e 16r00 16r01 16r01 16r01 16r1f 16rf8 16r1b 16r00 16rf8 16r1c 16r02 16rf8 16r1d 16r03 16rf8 16r19 16r04 16r1c 16r6f 16r00 16r0d 16rfb 16r3c 16rfb 16r6e 16rfa 16r7c 16rfa 16r16 16r05 16re9 16r11 16rb8 16rf1 16r12 16r00 16r03 16r01 16r01 16r08 16r13 16r18 16r30 16r30 16r31 16r2e 16r30 16r30 16r37 16r54 16r69 16r6d 16r65 16r73 16r20 16r52 16r6f 16r6d 16r61 16r6e 16r54 16r69 16r6d 16r65 16r73 16r00 16r00 16r00 16r02 16r01 16r01 16r02 16r03 16r0e 16r0e 16r7d 16r99 16rf9 16r2a 16r99 16rfb 16r76 16r95 16rf7 16r73 16r8b 16r06 16rf7 16r9a 16r93 16rfc 16r7c 16r8c 16r07 16r7d 16r99 16rf8 16r56 16r95 16rf7 16r5e 16r99 16r08 16rfb 16r6e 16r8c 16rf8 16r73 16r93 16rf7 16r10 16r8b 16r09 16ra7 16r0a 16rdf 16r0b 16rf7 16r8e 16r14]
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Header
+example
+	^Header major: 1 minor: 1 hdrSize: 1 offSize: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Index
+example
+	^Index count: 1 offSize: 1 offset: #(1 #a $x 'name') data: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Operation
+example
+	^Operation operator: (DictOperator value: 4) operands: #(385)
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: PrivateDict
+example
+	^PrivateDict operations: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Range
+example
+	^Range first: 1 nLeft: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: StandardCharset
+example
+	^StandardCharset isoAdobe
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: StandardEncoding
+example
+	^StandardEncoding standard
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Subroutine
+example
+	^Subroutine bytes: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: TopDict
+example
+	^TopDict operations: #(1 #a $x 'name')
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: TwoByteCharstringOperator
+example
+	^TwoByteCharstringOperator value: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: TwoByteDictOperator
+example
+	^TwoByteDictOperator value: 1
+%
+category: '*PDFtalk test resources-test instances'
+classmethod: Type1Font
+example
+	^FontSet example fonts first
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -7817,136 +7172,14 @@ DoIt
 System myUserProfile removeDictionaryAt: 1.
 %
 DoIt
-System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #CFF) at: 1.
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Charset0
-example
-	^Charset0 glyphs: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Charset1
-example
-	^Charset1 ranges: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Charstring
-example
-	"from 'Adobe Type 1 Font Format' pp.58"
-
-	^Charstring bytes: #[189 249 180 13 139 239 3 139 239 1 248 236 239 1 139 22 249 80 6 239 7 252 236 6 248 136 7 248 236 6 239 7 253 80 6 9 14]
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: CharstringOperator
-example
-	^CharstringOperator value: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: DictOperator
-example
-	^DictOperator value: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Encoding0
-example
-	^Encoding0 codes: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Encoding1
-example
-	^Encoding1 ranges: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: EncodingSupplement
-example
-	^EncodingSupplement glyphsAtCode: (OrderedDictionary
-		with: 1 -> #symbol
-		with: #key -> 'string')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: FontSet
-example
-	^self for: nil fromBytes: self exampleBytes readStream
-%
-classmethod: FontSet
-exampleBytes
-	"from Appendix D"
-
-	^#[16r01 16r00 16r04 16r01 16r00 16r01 16r01 16r01 16r13 16r41 16r42 16r43 16r44 16r45 16r46 16r2b 16r54 16r69 16r6d 16r65 16r73 16r2d 16r52 16r6f 16r6d 16r61 16r6e 16r00 16r01 16r01 16r01 16r1f 16rf8 16r1b 16r00 16rf8 16r1c 16r02 16rf8 16r1d 16r03 16rf8 16r19 16r04 16r1c 16r6f 16r00 16r0d 16rfb 16r3c 16rfb 16r6e 16rfa 16r7c 16rfa 16r16 16r05 16re9 16r11 16rb8 16rf1 16r12 16r00 16r03 16r01 16r01 16r08 16r13 16r18 16r30 16r30 16r31 16r2e 16r30 16r30 16r37 16r54 16r69 16r6d 16r65 16r73 16r20 16r52 16r6f 16r6d 16r61 16r6e 16r54 16r69 16r6d 16r65 16r73 16r00 16r00 16r00 16r02 16r01 16r01 16r02 16r03 16r0e 16r0e 16r7d 16r99 16rf9 16r2a 16r99 16rfb 16r76 16r95 16rf7 16r73 16r8b 16r06 16rf7 16r9a 16r93 16rfc 16r7c 16r8c 16r07 16r7d 16r99 16rf8 16r56 16r95 16rf7 16r5e 16r99 16r08 16rfb 16r6e 16r8c 16rf8 16r73 16r93 16rf7 16r10 16r8b 16r09 16ra7 16r0a 16rdf 16r0b 16rf7 16r8e 16r14]
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Header
-example
-	^Header major: 1 minor: 1 hdrSize: 1 offSize: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Index
-example
-	^Index count: 1 offSize: 1 offset: #(1 #a $x 'name') data: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Operation
-example
-	^Operation operator: (DictOperator value: 4) operands: #(385)
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: PrivateDict
-example
-	^PrivateDict operations: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Range
-example
-	^Range first: 1 nLeft: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: StandardCharset
-example
-	^StandardCharset isoAdobe
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: StandardEncoding
-example
-	^StandardEncoding standard
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Subroutine
-example
-	^Subroutine bytes: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: TopDict
-example
-	^TopDict operations: #(1 #a $x 'name')
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: TwoByteCharstringOperator
-example
-	^TwoByteCharstringOperator value: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: TwoByteDictOperator
-example
-	^TwoByteDictOperator value: 1
-%
-category: '*PDFtalk test resources-test instances'
-classmethod: Type1Font
-example
-	^FontSet example fonts first
-%
-DoIt
-System myUserProfile removeDictionaryAt: 1.
-%
-DoIt
 	| dict components |
 	dict := SymbolDictionary new.
-	dict name: #'PDFtalk Fonts tests'.
-	dict at: #comment put: 'Tests for the basics of external font types
-'.
+	dict name: #'PostScript Testing'.
+	dict at: #comment put: 'Tests for the PostScript scanner and interpreter'.
 	dict at: #isFunctional put: false.
 	dict at: #notice put: 'The MIT License
 
-Copyright © 2011-2017 Christian Haider
+Copyright © 2020 Christian Haider
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -7965,14 +7198,4344 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.'.
+	dict at: #storeVersion put: '2.5.0.1'.
+	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
+	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
+	components at: dict name put: dict.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+# Define class InterpreterTests
+DoIt
+TestCase
+	subclass: 'InterpreterTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	InterpreterTests category: 'PostScript Testing'.
+	InterpreterTests namespacePath: #(#PostScript).
+%
+# Define class ScannerTests
+DoIt
+TestCase
+	subclass: 'ScannerTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	ScannerTests category: 'PostScript Testing'.
+	ScannerTests namespacePath: #(#PostScript).
+%
+# Define class ObjectTests
+DoIt
+TestCase
+	subclass: 'ObjectTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	ObjectTests category: 'PostScript Testing'.
+	ObjectTests namespacePath: #(#PostScript).
+%
+# Define class ScannerStringTests
+DoIt
+TestCase
+	subclass: 'ScannerStringTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	ScannerStringTests category: 'PostScript Testing'.
+	ScannerStringTests namespacePath: #(#PostScript).
+%
+# Define class NumberTokenTests
+DoIt
+TestCase
+	subclass: 'NumberTokenTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	NumberTokenTests category: 'PostScript Testing'.
+	NumberTokenTests namespacePath: #(#PostScript).
+%
+# Define class OperatorTests
+DoIt
+TestCase
+	subclass: 'OperatorTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	OperatorTests category: 'PostScript Testing'.
+	OperatorTests namespacePath: #(#PostScript).
+%
+# Define class PostScriptTests
+DoIt
+TestCase
+	subclass: 'PostScriptTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	PostScriptTests category: 'PostScript Testing'.
+	PostScriptTests namespacePath: #(#PostScript).
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+category: 'Testing'
+method: InterpreterTests
+test3Plus4
+	| interpreter object |
+	interpreter := Interpreter on: '3 4 add'.
+	self assert: interpreter stack isEmpty.
+	object := interpreter next.
+	self assert: object = 3.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = 3.
+	self assert: interpreter stack printString = '|| 3 <'.
+	object := interpreter next.
+	self assert: object = 4.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = 4.
+	self assert: interpreter stack printString = '|| 3 4 <'.
+	object := interpreter next.
+	self assert: object value = #add.
+	self assert: object printPostScript = 'add'.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = 7.
+	self assert: interpreter stack printString = '|| 7 <'
+%
+method: InterpreterTests
+testArrayConstruction
+	| interpreter object |
+	interpreter := Interpreter on: '[3 4]'.
+	self assert: interpreter stack isEmpty.
+	object := interpreter next.
+	self assert: object printPostScript = '['.
+	self assert: (object isKindOf: Symbol).
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = Mark new.
+	self assert: interpreter stack printString = '|| *mark* <'.
+	object := interpreter next.
+	self assert: object = 3.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = 3.
+	self assert: interpreter stack printString = '|| *mark* 3 <'.
+	object := interpreter next.
+	self assert: object = 4.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: interpreter stack top value = 4.
+	self assert: interpreter stack printString = '|| *mark* 3 4 <'.
+	object := interpreter next.
+	self assert: (object isKindOf: Symbol).
+	self assert: object printPostScript = ']'.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: (interpreter stack top isKindOf: Array).
+	self assert: interpreter stack printString = '|| [3 4] <'
+%
+method: InterpreterTests
+testComment
+	| interpreter |
+	interpreter := Interpreter on: '3 4 add 	%aComment'.
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter step printString = '|| 3 <'.
+	self assert: interpreter step printString = '|| 3 4 <'.
+	self assert: interpreter step printString = '|| 7 <'.
+	self should: [interpreter next] raise: EndOfTokenStreamNotification
+%
+method: InterpreterTests
+testCommentPlus
+	| interpreter |
+	interpreter := Interpreter on: '3 4 add 	%aComment
+	/end'.
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter step printString = '|| 3 <'.
+	self assert: interpreter step printString = '|| 3 4 <'.
+	self assert: interpreter step printString = '|| 7 <'.
+	self assert: interpreter step printString = '|| 7 /end <'.
+	self assert: interpreter scanner atEnd
+%
+method: InterpreterTests
+testDictionaryConstruction
+	| interpreter object |
+	interpreter := Interpreter on: '	<</a 0.1 /abc (tx) /bbb {pop pop}>>pop'.
+	self assert: interpreter printString = '||  <'.
+	self assert: interpreter step printString = '|| *mark* <'.
+	self assert: interpreter step printString = '|| *mark* /a <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /abc <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /abc (tx) <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /abc (tx) /bbb <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /abc (tx) /bbb {pop pop} <'.
+	object := interpreter next.
+	self assert: (object isKindOf: Symbol).
+	self assert: object printPostScript = '>>'.
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: (interpreter stack top isKindOf: PSDictionary).
+	self assert: interpreter printString = '|| <</a 0.1 /abc (tx) /bbb {pop pop}>> <'.
+	self assert: interpreter step printString = '||  <'
+%
+method: InterpreterTests
+testEmpty
+	| interpreter |
+	interpreter := Interpreter on: ''.
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter next isNil.
+	self assert: interpreter scanner atEnd.
+	self should: [interpreter next] raise: EndOfTokenStreamNotification
+%
+method: InterpreterTests
+testNestedArrayConstruction
+	| interpreter object |
+	interpreter := Interpreter on: '[3 [(abc) /bcd] 4]'.
+	self assert: interpreter stack isEmpty.
+	object := interpreter next.
+	self assert: object printPostScript = '['.
+	object processIn: interpreter.
+	self assert: interpreter printString = '|| *mark* <'.
+	self assert: interpreter step printString = '|| *mark* 3 <'.
+	self assert: interpreter step printString = '|| *mark* 3 *mark* <'.
+	self assert: interpreter step printString = '|| *mark* 3 *mark* (abc) <'.
+	self assert: interpreter step printString = '|| *mark* 3 *mark* (abc) /bcd <'.
+	self assert: interpreter step printString = '|| *mark* 3 [(abc) /bcd] <'.
+	self assert: interpreter step printString = '|| *mark* 3 [(abc) /bcd] 4 <'.
+	self assert: interpreter step printString = '|| [3 [(abc) /bcd] 4] <'
+%
+method: InterpreterTests
+testNestedDictionaryConstruction
+	| interpreter |
+	interpreter := Interpreter on: '	<</a 0.1 /dict <</abc (tx)>> /bbb {pop pop}>> pop'.
+	self assert: interpreter printString = '||  <'.
+	self assert: interpreter step printString = '|| *mark* <'.
+	self assert: interpreter step printString = '|| *mark* /a <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /dict <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /dict *mark* <'.
+	self assert: (interpreter step: 2) printString = '|| *mark* /a 0.1 /dict *mark* /abc (tx) <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /dict <</abc (tx)>> <'.
+	self assert: (interpreter stack top isKindOf: PSDictionary).
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /dict <</abc (tx)>> /bbb <'.
+	self assert: interpreter step printString = '|| *mark* /a 0.1 /dict <</abc (tx)>> /bbb {pop pop} <'.
+	self assert: (interpreter stack top isKindOf: Procedure).
+	self assert: interpreter step printString = '|| <</a 0.1 /dict <</abc (tx)>> /bbb {pop pop}>> <'.
+	self assert: (interpreter stack top isKindOf: PSDictionary).
+	self assert: interpreter step printString = '||  <'.
+%
+method: InterpreterTests
+testNestedProcedureConstruction
+	| interpreter |
+	interpreter := Interpreter on: '/abc {
+	dup pop /xyz {2 3 add} def
+}def'.
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter step printString = '|| /abc <'.
+	self assert: interpreter step printString = '|| /abc {dup pop /xyz {2 3 add} def} <'.
+	self assert: interpreter step printString = '||  <'.
+%
+method: InterpreterTests
+testOperatorNotFound
+	| interpreter object |
+	interpreter := Interpreter on: '3 4 zork'.
+	self assert: interpreter stack isEmpty.
+	self assert: interpreter step printString = '|| 3 <'.
+	self assert: interpreter step printString = '|| 3 4 <'.
+	object := interpreter next.
+	self assert: (object isKindOf: Symbol).
+	self assert: object value = #zork.
+	self should: [object processIn: interpreter] raise: LookupError.
+	[object processIn: interpreter] on: LookupError do: [:ex |
+		self assert: ex object == interpreter.
+		self assert: ex reason = #valueAt: asString.
+		self assert: ex key = #zork].
+	self assert: interpreter stack printString = '|| 3 4 <'
+%
+method: InterpreterTests
+testProcedureConstruction
+	| interpreter object |
+	interpreter := Interpreter on: '/abc {
+	dup pop
+}def'.
+	self assert: interpreter stack isEmpty.
+	object := interpreter next.
+	self assert: object printPostScript = '/abc'.
+	object processIn: interpreter.
+	object := interpreter next.
+	self assert: object printPostScript = '{dup pop}'.
+	self assert: (object isKindOf: Procedure).
+	object processIn: interpreter.
+	self deny: interpreter stack isEmpty.
+	self assert: (interpreter stack top isKindOf: Procedure).
+	self assert: interpreter printString = '|| /abc {dup pop} <'.
+	object := interpreter next.
+	self assert: (object isKindOf: Symbol).
+	self assert: object printPostScript = 'def'
+%
+method: InterpreterTests
+testRun
+	| ps |
+	ps := Interpreter run: '3 4 add'.
+	self assert: ps stack top value = 7.
+	self assert: ps stack size = 1.
+	ps run: 'dup mul'.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1.
+	ps := Interpreter run: '3 4 add dup mul'.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1.
+	ps := Interpreter run: '3 4 mul'.
+	self assert: ps stack top value = 12.
+	self assert: ps stack size = 1.
+	ps := (Interpreter on: '3 4 mul') step: 2.
+	self assert: ps stack top value = 4.
+	self assert: ps stack size = 2.
+	ps run: 'add dup'.
+	self assert: ps stack top value = 7.
+	self assert: ps stack size = 2.
+	ps run.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1
+%
+method: InterpreterTests
+testRunCascaded
+	| ps |
+	ps := (Interpreter on: '')
+		run: '3 4 add';
+		run: 'dup mul';
+		yourself.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1.
+	ps := (Interpreter new)
+		run: '3';
+		run: '4';
+		run: 'add';
+		run: 'dup';
+		run: 'mul';
+		yourself.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1.
+	ps := (Interpreter new)
+		run: '3';
+		run: '4';
+		run: 'add';
+		run: 'dup';
+		run: 'mul';
+		yourself.
+	self assert: ps stack top value = 49.
+	self assert: ps stack size = 1
+%
+category: 'Testing'
+method: NumberTokenTests
+testE1
+	| scanner |
+	scanner := Scanner new.
+	self deny: (scanner isReal: 'e1').
+	self deny: (scanner isReal: '.e1').
+	self assert: (scanner isReal: '.1e1').
+	self assert: (scanner isReal: '1.e1').
+%
+method: NumberTokenTests
+testIsBigRadix
+	| scanner num1 num2 token1 token2 |
+	scanner := Scanner on: '36#HalloIchBinEineZahl 36#HALLOICHBINEINEZAHL'.
+	num1 := scanner isRadix: '36#HalloIchBinEineZahl'.
+	num2 := scanner isRadix: '36#HALLOICHBINEINEZAHL'.
+	self assert: num1 = num2.
+	token1 := scanner nextPostScriptObject.
+	self assert: token1 = 178382264521767329680834841049.
+	token2 := scanner nextPostScriptObject.
+	self assert: token2 = 178382264521767329680834841049.
+	self assert: token1 = token2
+%
+method: NumberTokenTests
+testIsInteger
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isInteger: '123').
+	self assert: (scanner isInteger: '-98').
+	self assert: (scanner isInteger: '43445').
+	self assert: (scanner isInteger: '0').
+	self assert: (scanner isInteger: '+17').
+	"mine"
+	self assert: (scanner isInteger: '123456789012345678901234567890').
+%
+method: NumberTokenTests
+testIsIntegerNotReal
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isInteger: '123').
+	self assert: (scanner isInteger: '-98').
+	self assert: (scanner isInteger: '43445').
+	self assert: (scanner isInteger: '0').
+	self assert: (scanner isInteger: '+17').
+	"mine"
+	self assert: (scanner isInteger: '123456789012345678901234567890').
+	self deny: (scanner isReal: '123').
+	self deny: (scanner isReal: '-98').
+	self deny: (scanner isReal: '43445').
+	self deny: (scanner isReal: '0').
+	self deny: (scanner isReal: '+17').
+	"mine"
+	self deny: (scanner isReal: '123456789012345678901234567890').
+%
+method: NumberTokenTests
+testIsIntegerNotRealNotRadix
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isInteger: '123').
+	self assert: (scanner isInteger: '-98').
+	self assert: (scanner isInteger: '43445').
+	self assert: (scanner isInteger: '0').
+	self assert: (scanner isInteger: '+17').
+	"mine"
+	self assert: (scanner isInteger: '123456789012345678901234567890').
+	self deny: (scanner isReal: '123').
+	self deny: (scanner isReal: '-98').
+	self deny: (scanner isReal: '43445').
+	self deny: (scanner isReal: '0').
+	self deny: (scanner isReal: '+17').
+	"mine"
+	self deny: (scanner isReal: '123456789012345678901234567890').
+	self deny: (scanner isRadix: '123').
+	self deny: (scanner isRadix: '-98').
+	self deny: (scanner isRadix: '43445').
+	self deny: (scanner isRadix: '0').
+	self deny: (scanner isRadix: '+17').
+	"mine"
+	self deny: (scanner isRadix: '123456789012345678901234567890').
+%
+method: NumberTokenTests
+testIsRadix
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isRadix: '8#1777').
+	self assert: (scanner isRadix: '16#FFFE').
+	self assert: (scanner isRadix: '2#1000').
+	"mine"
+	self deny: (scanner isRadix: '49#62tvs').
+	self assert: (scanner isRadix: '36#HalloIchBinEineZahl').
+	self deny: (scanner isRadix: '15#EF').
+%
+method: NumberTokenTests
+testIsRadixNotInteger
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isRadix: '8#1777').
+	self assert: (scanner isRadix: '16#FFFE').
+	self assert: (scanner isRadix: '2#1000').
+	"mine"
+	self assert: (scanner isRadix: '36#HalloIchBinEineZahl').
+	self deny: (scanner isRadix: '49#62tvs').
+	self deny: (scanner isRadix: '15#EF').
+
+	self deny: (scanner isInteger: '8#1777').
+	self deny: (scanner isInteger: '16#FFFE').
+	self deny: (scanner isInteger: '2#1000').
+	"mine"
+	self deny: (scanner isInteger: '36#HalloIchBinEineZahl').
+%
+method: NumberTokenTests
+testIsRadixNotIntegerNotReal
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isRadix: '8#1777').
+	self assert: (scanner isRadix: '16#FFFE').
+	self assert: (scanner isRadix: '2#1000').
+	"mine"
+	self assert: (scanner isRadix: '36#HalloIchBinEineZahl').
+	self deny: (scanner isRadix: '49#62tvs').
+	self deny: (scanner isRadix: '15#EF').
+
+	self deny: (scanner isInteger: '8#1777').
+	self deny: (scanner isInteger: '16#FFFE').
+	self deny: (scanner isInteger: '2#1000').
+	"mine"
+	self deny: (scanner isInteger: '36#HalloIchBinEineZahl').
+
+	self deny: (scanner isReal: '8#1777').
+	self deny: (scanner isReal: '16#FFFE').
+	self deny: (scanner isReal: '2#1000').
+	"mine"
+	self deny: (scanner isReal: '36#HalloIchBinEineZahl').
+%
+method: NumberTokenTests
+testIsReal
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isReal: '-.002').
+	self assert: (scanner isReal: '34.5').
+	self assert: (scanner isReal: '-3.62').
+	self assert: (scanner isReal: '123.6e10').
+	self assert: (scanner isReal: '1.0E-5').
+	self assert: (scanner isReal: '1E6').
+	self assert: (scanner isReal: '-1.').
+	self assert: (scanner isReal: '0.0').
+	"mine"
+	self deny: (scanner isReal: '0.0e2.3').
+%
+method: NumberTokenTests
+testIsRealNotInteger
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isReal: '-.002').
+	self assert: (scanner isReal: '34.5').
+	self assert: (scanner isReal: '-3.62').
+	self assert: (scanner isReal: '123.6e10').
+	self assert: (scanner isReal: '1.0E-5').
+	self assert: (scanner isReal: '1E6').
+	self assert: (scanner isReal: '-1.').
+	self assert: (scanner isReal: '0.0').
+	self deny: (scanner isInteger: '-.002').
+	self deny: (scanner isInteger: '34.5').
+	self deny: (scanner isInteger: '-3.62').
+	self deny: (scanner isInteger: '123.6e10').
+	self deny: (scanner isInteger: '1.0E-5').
+	self deny: (scanner isInteger: '1E6').
+	self deny: (scanner isInteger: '-1.').
+	self deny: (scanner isInteger: '0.0').
+%
+method: NumberTokenTests
+testIsRealNotIntegerNotRadix
+	| scanner |
+	scanner := Scanner new.
+	self assert: (scanner isReal: '-.002').
+	self assert: (scanner isReal: '34.5').
+	self assert: (scanner isReal: '-3.62').
+	self assert: (scanner isReal: '123.6e10').
+	self assert: (scanner isReal: '1.0E-5').
+	self assert: (scanner isReal: '1E6').
+	self assert: (scanner isReal: '-1.').
+	self assert: (scanner isReal: '0.0').
+	self deny: (scanner isInteger: '-.002').
+	self deny: (scanner isInteger: '34.5').
+	self deny: (scanner isInteger: '-3.62').
+	self deny: (scanner isInteger: '123.6e10').
+	self deny: (scanner isInteger: '1.0E-5').
+	self deny: (scanner isInteger: '1E6').
+	self deny: (scanner isInteger: '-1.').
+	self deny: (scanner isInteger: '0.0').
+	self deny: (scanner isRadix: '-.002').
+	self deny: (scanner isRadix: '34.5').
+	self deny: (scanner isRadix: '-3.62').
+	self deny: (scanner isRadix: '123.6e10').
+	self deny: (scanner isRadix: '1.0E-5').
+	self deny: (scanner isRadix: '1E6').
+	self deny: (scanner isRadix: '-1.').
+	self deny: (scanner isRadix: '0.0').
+%
+category: 'tests'
+method: ObjectTests
+testProcedures
+	self assert: (Procedure source: 'pop pop') printString = '{pop pop}'.
+	self assert: 'pop pop' asProcedure printString = '{pop pop}'
+%
+category: 'Testing Arithmetic and Math'
+method: OperatorTests
+testAbs
+	self assert: (Interpreter run: '4.5 abs') printString = '|| 4.5 <'.
+	self assert: (Interpreter run: '-3 abs') printString = '|| 3 <'.
+	self assert: (Interpreter run: '0 abs') printString = '|| 0 <'.
+	self should: [Interpreter run: 'abs'] raise: Stackunderflow
+%
+method: OperatorTests
+testAdd
+	self assert: (Interpreter run: '3 4 add') printString = '|| 7 <'.
+	self assert: (Interpreter run: '9.9 1.1 add') printString = '|| 11 <'.
+	self should: [Interpreter run: '4 add'] raise: Stackunderflow
+%
+method: OperatorTests
+testAtan
+	self assert: (Interpreter run: '0 1 atan') printString = '|| 0 <'.
+	self assert: (Interpreter run: '1 0 atan') printString = '|| 90 <'.
+	self assert: (Interpreter run: '-100 0 atan') printString = '|| 270 <'.
+	self assert: (Interpreter run: '4 4 atan') printString = '|| 45 <'.
+	self should: [Interpreter run: 'atan'] raise: Stackunderflow
+%
+method: OperatorTests
+testCeiling
+	self assert: (Interpreter run: '3.2 ceiling') printString = '|| 4 <'.
+	self assert: (Interpreter run: '-4.8 ceiling') printString = '|| -4 <'.
+	self assert: (Interpreter run: '99 ceiling') printString = '|| 99 <'.
+	self should: [Interpreter run: 'ceiling'] raise: Stackunderflow
+%
+method: OperatorTests
+testCos
+	self assert: (Interpreter run: '0 cos') printString = '|| 1 <'.
+	self assert: (Interpreter run: '90 cos') printString = '|| 0 <'.
+	self should: [Interpreter run: 'cos'] raise: Stackunderflow
+%
+method: OperatorTests
+testDiv
+	self assert: (Interpreter run: '3 2 div') printString = '|| 1.5 <'.
+	self assert: (Interpreter run: '4 2 div') printString = '|| 2 <'.
+	self should: [Interpreter run: '2 div'] raise: Stackunderflow
+%
+method: OperatorTests
+testExp
+	self assert: (Interpreter run: '9 0.5 exp') printString = '|| 3 <'.
+	self assert: (Interpreter run: '-9 -1 exp') printString = '|| -0.11111111 <'.
+	self should: [Interpreter run: '2 exp'] raise: Stackunderflow
+%
+method: OperatorTests
+testFloor
+	self assert: (Interpreter run: '3.2 floor') printString = '|| 3 <'.
+	self assert: (Interpreter run: '-4.8 floor') printString = '|| -5 <'.
+	self assert: (Interpreter run: '99 floor') printString = '|| 99 <'.
+	self should: [Interpreter run: 'floor'] raise: Stackunderflow
+%
+method: OperatorTests
+testIdiv
+	self assert: (Interpreter run: '3 2 idiv') printString = '|| 1 <'.
+	self assert: (Interpreter run: '4 2 idiv') printString = '|| 2 <'.
+	self assert: (Interpreter run: '-5 2 idiv') printString = '|| -2 <'.
+	self should: [Interpreter run: '2 idiv'] raise: Stackunderflow
+%
+method: OperatorTests
+testLn
+	self assert: (Interpreter run: '10 ln') printString = '|| 2.30258509 <'.
+	self assert: (Interpreter run: '100 ln') printString = '|| 4.60517019 <'.
+	self should: [Interpreter run: 'ln'] raise: Stackunderflow
+%
+method: OperatorTests
+testLog
+	self assert: (Interpreter run: '10 log') printString = '|| 1 <'.
+	self assert: (Interpreter run: '100 log') printString = '|| 2 <'.
+	self should: [Interpreter run: 'log'] raise: Stackunderflow
+%
+method: OperatorTests
+testMod
+	self assert: (Interpreter run: '5 3 mod') printString = '|| 2 <'.
+	self assert: (Interpreter run: '5 2 mod') printString = '|| 1 <'.
+	self assert: (Interpreter run: '-5 3 mod') printString = '|| -2 <'.
+	self should: [Interpreter run: '2 mod'] raise: Stackunderflow
+%
+method: OperatorTests
+testMul
+	self assert: (Interpreter run: '5 3 mul') printString = '|| 15 <'.
+	self assert: (Interpreter run: '5 2 mul') printString = '|| 10 <'.
+	self assert: (Interpreter run: '-5 3 mul') printString = '|| -15 <'.
+	self should: [Interpreter run: '2 mul'] raise: Stackunderflow
+%
+method: OperatorTests
+testNeg
+	self assert: (Interpreter run: '4.5 neg') printString = '|| -4.5 <'.
+	self assert: (Interpreter run: '-3 neg') printString = '|| 3 <'.
+	self should: [Interpreter run: 'neg'] raise: Stackunderflow
+%
+method: OperatorTests
+testRand
+	| stack |
+	self assert: ((Interpreter run: 'rand') stack top isKindOf: Integer).
+	self assert: (Interpreter run: 'rand') stack top positive.
+	stack := (Interpreter run: 'rand rand') stack.
+	self deny: stack top = (stack at: 1)
+%
+method: OperatorTests
+testRound
+	self assert: (Interpreter run: '3.2 round') printString = '|| 3 <'.
+	self assert: (Interpreter run: '6.5 round') printString = '|| 7 <'.
+	self assert: (Interpreter run: '-4.8 round') printString = '|| -5 <'.
+	self assert: (Interpreter run: '-6.5 round') printString = '|| -7 <'.	"different: PLRM says -6"
+	self assert: (Interpreter run: '99 round') printString = '|| 99 <'.
+	self should: [Interpreter run: 'round'] raise: Stackunderflow
+%
+method: OperatorTests
+testRrand
+	| stack |
+	self assert: ((Interpreter run: 'rrand') stack top isKindOf: Integer).
+	self assert: (Interpreter run: 'rrand') stack top positive.
+	stack := (Interpreter run: 'rrand rrand') stack.
+	self assert: stack top = (stack at: 1)
+%
+method: OperatorTests
+testSin
+	self assert: (Interpreter run: '0 sin') printString = '|| 0 <'.
+	self assert: (Interpreter run: '90 sin') printString = '|| 1 <'.
+	self should: [Interpreter run: 'sin'] raise: Stackunderflow
+%
+method: OperatorTests
+testSqrt
+	self assert: (Interpreter run: '81 sqrt') printString = '|| 9 <'.
+	self assert: (Interpreter run: '10 sqrt') printString = '|| 3.16227766 <'.
+	self should: [Interpreter run: 'sqrt'] raise: Stackunderflow
+%
+method: OperatorTests
+testSrand
+	self assert: (Interpreter run: '1 srand') printString = '||  <'.
+	self assert: (Interpreter run: '1 srand rand') printString = '|| 1082937746 <'.
+	self assert: (Interpreter run: '1 srand rand') printString = '|| 1082937746 <'.
+	self assert: (Interpreter run: '2 srand rand') printString = '|| 1799098886 <'
+%
+method: OperatorTests
+testSub
+	self assert: (Interpreter run: '32 4 sub') printString = '|| 28 <'.
+	self assert: (Interpreter run: '3 4 sub') printString = '|| -1 <'.
+	self assert: (Interpreter run: '9.9 1.1 sub') printString = '|| 8.8 <'.
+	self should: [Interpreter run: '4 sub'] raise: Stackunderflow
+%
+method: OperatorTests
+testTruncate
+	self assert: (Interpreter run: '3.2 truncate') printString = '|| 3 <'.
+	self assert: (Interpreter run: '-4.8 truncate') printString = '|| -4 <'.
+	self assert: (Interpreter run: '99 truncate') printString = '|| 99 <'.
+	self should: [Interpreter run: 'truncate'] raise: Stackunderflow
+%
+category: 'Testing Array'
+method: OperatorTests
+testAload
+	self assert: (Interpreter run: '[23 (ab) -6] aload') printString = '|| 23 (ab) -6 [23 (ab) -6] <'.
+	self should: [Interpreter run: 'aload'] raise: Stackunderflow
+%
+method: OperatorTests
+testArray
+	self assert: (Interpreter run: '3 array') printString = '|| [null null null] <'.
+	self should: [Interpreter run: 'array'] raise: Stackunderflow
+%
+method: OperatorTests
+testArrayConstruction
+	self assert: (Interpreter run: '[') printString = '|| *mark* <'.
+	self assert: (Interpreter run: '[5 4 3]') printString = '|| [5 4 3] <'.
+	self assert: (Interpreter run: 'mark 5 4 3 counttomark array astore exch pop') printString = '|| [5 4 3] <'.
+	self assert: (Interpreter run: '[1 2 add]') printString = '|| [3] <'.
+	self should: [Interpreter run: ']'] raise: Unmatchedmark
+%
+method: OperatorTests
+testAstore
+	self assert: (Interpreter run: '(a) (bcd) (ef) 3 array astore') printString = '|| [(a) (bcd) (ef)] <'.
+	self should: [Interpreter run: 'astore'] raise: Stackunderflow
+%
+category: 'Testing Collections'
+method: OperatorTests
+testCopyArray
+	self assert: (Interpreter run: '
+		/a1 [1 2 3] def
+		a1 dup length array copy') printString = '|| [1 2 3] <'
+%
+method: OperatorTests
+testCopyDictionary
+	self assert: (Interpreter run: '
+		/a1 <</a 1 /b 2 /c 3>> def
+		a1 dup length dict copy') printString = '|| <</a 1 /b 2 /c 3>> <'
+%
+method: OperatorTests
+testForall
+	self assert: (Interpreter run: '0 [ 13 29 3 -8 21 ] { add } forall') printString = '|| 58 <'.
+	self assert: (Interpreter run: '
+	/d 2 dict def
+	d /abc 123 put
+	d /xyz (test) put
+	d { } forall') printString = '|| /abc 123 /xyz (test) <'.
+	self should: [Interpreter run: '{ add } forall'] raise: Stackunderflow
+%
+method: OperatorTests
+testForallExit
+	self assert: (Interpreter run: '0 [ 13 29 3 8 21 ] {1 index 42 gt {(end) exit} if add } forall') printString = '|| 45 8 (end) <'
+%
+method: OperatorTests
+testGet
+	self assert: (Interpreter run: '[31 41 59] 0 get') printString = '|| 31 <'.
+	self assert: (Interpreter run: '[0 (string1) [ ] {add 2 div}] 2 get') printString = '|| [] <'.
+	self assert: (Interpreter run: '
+	/mykey (myvalue) def
+	currentdict /mykey get') printString = '|| (myvalue) <'.
+	self assert: (Interpreter run: '(abc) 1 get') printString = '|| 98 <'.
+	self assert: (Interpreter run: '(a) 0 get') printString = '|| 97 <'.
+	self should: [Interpreter run: '0 get'] raise: Stackunderflow
+%
+method: OperatorTests
+testGetinterval
+	self assert: (Interpreter run: '[9 8 7 6 5] 1 3 getinterval') printString = '|| [8 7 6] <'.
+	self assert: (Interpreter run: '(abcde) 1 3 getinterval') printString = '|| (bcd) <'.
+	self assert: (Interpreter run: '(abcde) 0 0 getinterval') printString = '|| () <'.
+	self should: [Interpreter run: '0 0 getinterval'] raise: Stackunderflow
+%
+method: OperatorTests
+testLength
+	self assert: (Interpreter run: '[1 2 4] length') printString = '|| 3 <'.
+	self assert: (Interpreter run: '[ ] length') printString = '|| 0 <'.
+	self assert: (Interpreter run: '/ar 20 array def ar length') printString = '|| 20 <'.
+	self assert: (Interpreter run: '
+	/mydict 5 dict def
+	mydict length') printString = '|| 0 <'.
+	self assert: (Interpreter run: '
+	/mydict 5 dict def
+	mydict /firstkey (firstvalue) put
+	mydict length') printString = '|| 1 <'.
+	self assert: (Interpreter run: '(abc\n) length') printString = '|| 4 <'.
+	self assert: (Interpreter run: '() length') printString = '|| 0 <'.
+	self assert: (Interpreter run: '/foo length') printString = '|| 3 <'.
+	self should: [Interpreter run: 'length'] raise: Stackunderflow
+%
+method: OperatorTests
+testPut
+	self assert: (Interpreter run: '
+	/ar [5 17 3 8] def
+	ar 2 (abcd) put
+	ar') printString = '|| [5 17 (abcd) 8] <'.
+	self assert: (Interpreter run: '
+	/d 5 dict def
+	d /abc 123 put
+	d { } forall') printString = '|| /abc 123 <'.
+	self assert: (Interpreter run: '
+	/st (abc) def
+	st 0 65 put
+	st') printString = '|| (Abc) <'.
+	self should: [Interpreter run: '(a) 0 put'] raise: Stackunderflow
+%
+method: OperatorTests
+testPutinterval
+	self assert: (Interpreter run: '/ar [5 8 2 7 3] def
+ar 1 [(a) (b) (c)] putinterval
+ar') printString = '|| [5 (a) (b) (c) 3] <'.
+	self assert: (Interpreter run: '/st (abc) def
+st 1 (de) putinterval
+st') printString = '|| (ade) <'.
+	self should: [Interpreter run: '0 0 putinterval'] raise: Stackunderflow
+%
+category: 'Testing Control'
+method: OperatorTests
+testCountexecstack
+	self assert: (Interpreter run: 'countexecstack') printString = '|| 0 <'.
+	self assert: (Interpreter run: '/a {3 2 add countexecstack} def a') printString = '|| 5 1 <'
+%
+method: OperatorTests
+testExec
+	self assert: (Interpreter run: '(3 2 add) cvx exec') printString = '|| 5 <'.
+	self assert: (Interpreter run: '3 2 /add exec') printString = '|| 3 2 /add <'.
+	self assert: (Interpreter run: '3 2 /add cvx exec') printString = '|| 5 <'.
+	self should: [Interpreter run: 'exec'] raise: Stackunderflow
+%
+method: OperatorTests
+testFor
+	self assert: (Interpreter run: '0 1 1 4 {add} for') printString = '|| 10 <'.
+	self assert: (Interpreter run: '1 2 6 { } for') printString = '|| 1 3 5 <'.
+	self assert: (Interpreter run: '3 -.5 1 { } for') printString = '|| 3 2.5 2 1.5 1 <'.
+	self should: [Interpreter run: '1 4 {add} for'] raise: Stackunderflow
+%
+method: OperatorTests
+testForExit
+	self assert: (Interpreter run: '1 1 100 {dup 6 ge {exit} if} for') printString = '|| 1 2 3 4 5 6 <'.
+	self should: [Interpreter run: 'exit'] raise: ExitNotification
+%
+method: OperatorTests
+testIf
+	self assert: (Interpreter run: '3 4 lt {(3 is less than 4)} if') printString = '|| (3 is less than 4) <'.
+	self assert: (Interpreter run: '
+		4 3 lt
+			{(TruePart)}
+			{(FalsePart)}
+		ifelse') printString = '|| (FalsePart) <'.
+	self should: [Interpreter run: '{add} if'] raise: Stackunderflow.
+	self should: [Interpreter run: '{4} {add} ifelse'] raise: Stackunderflow
+%
+method: OperatorTests
+testLoopExit
+	self assert: (Interpreter run: '{count 4 ge {(end) exit} if (abc)} loop') printString = '|| (abc) (abc) (abc) (abc) (end) <'
+%
+method: OperatorTests
+testRepeat
+	self assert: (Interpreter run: '4 {(abc)} repeat') printString = '|| (abc) (abc) (abc) (abc) <'.
+	self assert: (Interpreter run: '1 2 3 4 3 {pop} repeat') printString = '|| 1 <'.
+	self assert: (Interpreter run: '4 { } repeat') printString = '||  <'.
+	self assert: (Interpreter run: 'mark 0 {(will not happen)} repeat') printString = '|| *mark* <'.
+	self should: [Interpreter run: '{add} repeat'] raise: Stackunderflow
+%
+method: OperatorTests
+testRepeatExit
+	self assert: (Interpreter run: '100 {count 4 ge {(end) exit} if (abc)} repeat') printString = '|| (abc) (abc) (abc) (abc) (end) <'
+%
+method: OperatorTests
+testStopped
+	self assert: (Interpreter run: '
+		{100 {
+			count 4 ge {
+				(end) stop
+			} if (abc)
+		} repeat} stopped
+			{(error occured)}
+		if') printString = '|| (abc) (abc) (abc) (abc) (end) (error occured) <'
+%
+category: 'Testing Dictionary'
+method: OperatorTests
+testCountdictstack
+	self assert: (Interpreter run: 'countdictstack') printString = '|| 3 <'.
+	self assert: (Interpreter run: '1 dict begin countdictstack') printString = '|| 4 <'
+%
+method: OperatorTests
+testCurrentdict
+	self assert: (Interpreter run: 'currentdict') printString = '|| <<>> <'.
+	self assert: (Interpreter run: '1 dict begin /a 42 def currentdict') printString = '|| <</a 42>> <'
+%
+method: OperatorTests
+testDef
+	| interpreter |
+	interpreter := Interpreter run: '/A 65 def'.
+	self assert: interpreter stack isEmpty.
+	self assert: (interpreter dictionaryStack top at: #A) = 65.
+	self assert: (Interpreter run: '/ncnt 1 def currentdict') printString = '|| <</ncnt 1>> <'.
+	self assert: (Interpreter run: '
+	/ncnt 1 def
+	/ncnt ncnt 1 add def
+	currentdict') printString = '|| <</ncnt 2>> <'.
+	self should: [Interpreter run: '65 def'] raise: Stackunderflow
+%
+method: OperatorTests
+testDict
+	self assert: (Interpreter run: '3 dict') printString = '|| <<>> <'.
+	self should: [Interpreter run: 'dict'] raise: Stackunderflow
+%
+method: OperatorTests
+testDictionaries
+	self assert: (Interpreter run: 'globaldict') printString = '|| <<>> <'.
+	self assert: (Interpreter run: '/a 1 def userdict') printString = '|| <</a 1>> <'.
+	self assert: (Interpreter run: 'systemdict length') pop > 120
+%
+method: OperatorTests
+testKnown
+	self assert: (Interpreter run: '
+		/mydict 5 dict def
+		mydict /total 0 put
+		mydict /total known') printString = '|| true <'.
+	self assert: (Interpreter run: '
+		/mydict 5 dict def
+		mydict /total 0 put
+		mydict /badname known') printString = '|| false <'.
+	self should: [Interpreter run: '/total known'] raise: Stackunderflow
+%
+method: OperatorTests
+testLoad
+	self assert: (Interpreter run: '
+		/avg {add 2 div} def
+		/avg load') printString = '|| {add 2 div} <'.
+	self should: [Interpreter run: 'load'] raise: Stackunderflow
+%
+method: OperatorTests
+testMaxlength
+	self assert: (Interpreter run: '<</a 1 /b 2>> maxlength') printString = '|| 27 <'.
+	self assert: (Interpreter run: '<</a 1 /b 2 /c 3>> maxlength') printString = '|| 27 <'.
+	self should: [Interpreter run: 'maxlength'] raise: Stackunderflow
+%
+method: OperatorTests
+testStore
+	self assert: (Interpreter run: '/abc 123 store currentdict') printString = '|| <</abc 123>> <'.
+	self assert: (Interpreter run: '
+		/abc 123 def
+		/abc 456 store
+		currentdict') printString = '|| <</abc 456>> <'.
+	self should: [Interpreter run: '123 store'] raise: Stackunderflow
+%
+method: OperatorTests
+testUndef
+	self assert: (Interpreter run: '
+		/abc 123 def
+		currentdict') printString = '|| <</abc 123>> <'.
+	self assert: (Interpreter run: '
+		/abc 123 def
+		currentdict /abc undef
+		currentdict') printString = '|| <<>> <'.
+	self should: [Interpreter run: '/a undef'] raise: Stackunderflow
+%
+method: OperatorTests
+testWhere
+	self assert: (Interpreter run: '
+		/abc 123 def
+		3 dict begin /a 1 def 
+		/abc where') printString = '|| <</abc 123>> true <'.
+	self assert: (Interpreter run: '
+		/abc 123 def
+		3 dict begin /a 1 def 
+		/a where') printString = '|| <</a 1>> true <'.
+	self assert: (Interpreter run: '
+		/abc 123 def
+		3 dict begin /a 1 def 
+		/ab where') printString = '|| false <'.
+	self should: [Interpreter run: 'where'] raise: Stackunderflow
+%
+category: 'Testing Miscellaneous'
+method: OperatorTests
+testGlobal
+	self assert: (Interpreter run: 'currentglobal') printString = '|| false <'.
+	self assert: (Interpreter run: 'true setglobal currentglobal') printString = '|| true <'
+%
+method: OperatorTests
+testLanguagelevel
+	self assert: (Interpreter run: 'languagelevel') printString = '|| 3 <'
+%
+method: OperatorTests
+testProduct
+	self assert: (Interpreter run: 'product') printString = '|| (PDFtalk PostScript) <'
+%
+method: OperatorTests
+testRevision
+	self assert: ((Interpreter run: #revision asString) pop isKindOf: Integer)
+%
+method: OperatorTests
+testSerialnumber
+	self assert: (Interpreter run: 'serialnumber') printString = '|| 1 <'
+%
+method: OperatorTests
+testVersion
+	"runs only when the proper store is connected"
+
+	self assert: ('2.5.0.*' match: (Interpreter run: 'version') pop)
+%
+category: 'Testing Operand Stack Manipulation'
+method: OperatorTests
+testClear
+	self assert: (Interpreter run: '(a) (b) (c) clear') printString = '||  <'.
+	self assert: (Interpreter run: '(a) clear') printString = '||  <'.
+	self assert: (Interpreter run: 'clear') printString = '||  <'
+%
+method: OperatorTests
+testCleartomark
+	self assert: (Interpreter run: '3 4 mark 20 15 cleartomark') printString = '|| 3 4 <'.
+	self assert: (Interpreter run: '3 4 mark cleartomark') printString = '|| 3 4 <'.
+	self should: [Interpreter run: '3 4 cleartomark'] raise: Unmatchedmark
+%
+method: OperatorTests
+testCopy
+	self assert: (Interpreter run: '(a) (b) (c) 2 copy') printString = '|| (a) (b) (c) (b) (c) <'.
+	self assert: (Interpreter run: '(a) (b) (c) 0 copy') printString = '|| (a) (b) (c) <'.
+	self should: [Interpreter run: '(a) (b) (c) 4 copy'] raise: Stackunderflow
+%
+method: OperatorTests
+testCount
+	self assert: (Interpreter run: '(a) (b) (c) (d) count') printString = '|| (a) (b) (c) (d) 4 <'.
+	self assert: (Interpreter run: '(a) (b) (c) count') printString = '|| (a) (b) (c) 3 <'.
+	self assert: (Interpreter run: 'count') printString = '|| 0 <'
+%
+method: OperatorTests
+testCounttomark
+	self assert: (Interpreter run: '1 mark 2 3 counttomark') printString = '|| 1 *mark* 2 3 2 <'.
+	self assert: (Interpreter run: '1 mark counttomark') printString = '|| 1 *mark* 0 <'.
+	self should: [Interpreter run: '3 4 counttomark'] raise: Unmatchedmark
+%
+method: OperatorTests
+testDup
+	self assert: (Interpreter run: '3 4 dup') printString = '|| 3 4 4 <'.
+	self should: [Interpreter run: 'dup'] raise: Stackunderflow
+%
+method: OperatorTests
+testExch
+	self assert: (Interpreter run: '1 2 exch') printString = '|| 2 1 <'.
+	self assert: (Interpreter run: '1 2 exch exch') printString = '|| 1 2 <'.
+	self should: [Interpreter run: '3 exch'] raise: Stackunderflow
+%
+method: OperatorTests
+testIndex
+	self assert: (Interpreter run: '(a) (b) (c) (d) 0 index') printString = '|| (a) (b) (c) (d) (d) <'.
+	self assert: (Interpreter run: '(a) (b) (c) (d) 3 index') printString = '|| (a) (b) (c) (d) (a) <'.
+	self should: [Interpreter run: '0 index'] raise: Stackunderflow.
+	self should: [Interpreter run: '(a) (b) (c) (d) 4 index'] raise: Stackunderflow
+%
+method: OperatorTests
+testMark
+	self assert: (Interpreter run: '(a) (b) (c) (d) mark') printString = '|| (a) (b) (c) (d) *mark* <'.
+	self assert: (Interpreter run: 'mark') printString = '|| *mark* <'
+%
+method: OperatorTests
+testPop
+	self assert: (Interpreter run: '3 4 pop') printString = '|| 3 <'.
+	self assert: (Interpreter run: '3 4 pop pop') printString = '||  <'.
+	self should: [Interpreter run: '3 4 pop pop pop'] raise: Stackunderflow
+%
+method: OperatorTests
+testRoll
+	self assert: (Interpreter run: '(a) (b) (c) 3 -1 roll') printString = '|| (b) (c) (a) <'.
+	self assert: (Interpreter run: '(a) (b) (c) 3 1 roll') printString = '|| (c) (a) (b) <'.
+	self assert: (Interpreter run: '(a) (b) (c) 3 0 roll') printString = '|| (a) (b) (c) <'.
+	self should: [Interpreter run: '(a) (b) (c) 4 1 roll'] raise: Stackunderflow
+%
+category: 'Testing Relational, Boolean, and Bitwise'
+method: OperatorTests
+testAnd
+	self assert: (Interpreter run: 'true true and') printString = '|| true <'.
+	self assert: (Interpreter run: 'true false and') printString = '|| false <'.
+	self assert: (Interpreter run: 'false true and') printString = '|| false <'.
+	self assert: (Interpreter run: 'false false and') printString = '|| false <'.
+	self assert: (Interpreter run: '99 1 and') printString = '|| 1 <'.
+	self assert: (Interpreter run: '52 7 and') printString = '|| 4 <'.
+	self should: [Interpreter run: '4 and'] raise: Stackunderflow
+%
+method: OperatorTests
+testBitshift
+	self assert: (Interpreter run: '7 3 bitshift') printString = '|| 56 <'.
+	self assert: (Interpreter run: '142 -3 bitshift') printString = '|| 17 <'.
+	self should: [Interpreter run: '4 bitshift'] raise: Stackunderflow
+%
+method: OperatorTests
+testEq
+	self assert: (Interpreter run: '4.0 4 eq') printString = '|| true <'.
+	self assert: (Interpreter run: '(abc) (abc) eq') printString = '|| true <'.
+	self assert: (Interpreter run: '(abc) /abc eq') printString = '|| true <'.
+	self assert: (Interpreter run: '[1 2 3] dup eq') printString = '|| true <'.
+	self assert: (Interpreter run: '[1 2 3] [1 2 3] eq') printString = '|| false <'.
+	self should: [Interpreter run: '4 eq'] raise: Stackunderflow
+%
+method: OperatorTests
+testGe
+	self assert: (Interpreter run: '4.2 4 ge') printString = '|| true <'.
+	self assert: (Interpreter run: '(abc) (d) ge') printString = '|| false <'.
+	self assert: (Interpreter run: '(aba) (ab) ge') printString = '|| true <'.
+	self assert: (Interpreter run: '(aba) (aba) ge') printString = '|| true <'.
+	self should: [Interpreter run: '4 ge'] raise: Stackunderflow
+%
+method: OperatorTests
+testGt
+	self assert: (Interpreter run: '4.2 4 gt') printString = '|| true <'.
+	self assert: (Interpreter run: '(abc) (d) gt') printString = '|| false <'.
+	self assert: (Interpreter run: '(aba) (ab) gt') printString = '|| true <'.
+	self assert: (Interpreter run: '(aba) (aba) gt') printString = '|| false <'.
+	self should: [Interpreter run: '4 gt'] raise: Stackunderflow
+%
+method: OperatorTests
+testLe
+	self assert: (Interpreter run: '4.2 4 le') printString = '|| false <'.
+	self assert: (Interpreter run: '(abc) (d) le') printString = '|| true <'.
+	self assert: (Interpreter run: '(aba) (ab) le') printString = '|| false <'.
+	self assert: (Interpreter run: '(aba) (aba) le') printString = '|| true <'.
+	self should: [Interpreter run: '4 le'] raise: Stackunderflow
+%
+method: OperatorTests
+testLt
+	self assert: (Interpreter run: '4.2 4 lt') printString = '|| false <'.
+	self assert: (Interpreter run: '(abc) (d) lt') printString = '|| true <'.
+	self assert: (Interpreter run: '(aba) (ab) lt') printString = '|| false <'.
+	self assert: (Interpreter run: '(aba) (aba) lt') printString = '|| false <'.
+	self should: [Interpreter run: '4 lt'] raise: Stackunderflow
+%
+method: OperatorTests
+testNe
+	self assert: (Interpreter run: '4.0 4 ne') printString = '|| false <'.
+	self assert: (Interpreter run: '(abc) (abc) ne') printString = '|| false <'.
+	self assert: (Interpreter run: '(abc) /abc ne') printString = '|| false <'.
+	self assert: (Interpreter run: '[1 2 3] dup ne') printString = '|| false <'.
+	self assert: (Interpreter run: '[1 2 3] [1 2 3] ne') printString = '|| true <'.
+	self should: [Interpreter run: '4 ne'] raise: Stackunderflow
+%
+method: OperatorTests
+testNot
+	self assert: (Interpreter run: 'true not') printString = '|| false <'.
+	self assert: (Interpreter run: 'false not') printString = '|| true <'.
+	self assert: (Interpreter run: '52 not') printString = '|| -53 <'.
+	self should: [Interpreter run: 'not'] raise: Stackunderflow
+%
+method: OperatorTests
+testOr
+	self assert: (Interpreter run: 'true true or') printString = '|| true <'.
+	self assert: (Interpreter run: 'true false or') printString = '|| true <'.
+	self assert: (Interpreter run: 'false true or') printString = '|| true <'.
+	self assert: (Interpreter run: 'false false or') printString = '|| false <'.
+	self assert: (Interpreter run: '17 5 or') printString = '|| 21 <'.
+	self assert: (Interpreter run: '52 7 or') printString = '|| 55 <'.
+	self should: [Interpreter run: '4 or'] raise: Stackunderflow
+%
+method: OperatorTests
+testXor
+	self assert: (Interpreter run: 'true true xor') printString = '|| false <'.
+	self assert: (Interpreter run: 'true false xor') printString = '|| true <'.
+	self assert: (Interpreter run: 'false true xor') printString = '|| true <'.
+	self assert: (Interpreter run: 'false false xor') printString = '|| false <'.
+	self assert: (Interpreter run: '7 3 xor') printString = '|| 4 <'.
+	self assert: (Interpreter run: '12 3 xor') printString = '|| 15 <'.
+	self should: [Interpreter run: '4 xor'] raise: Stackunderflow
+%
+category: 'Testing Resource'
+method: OperatorTests
+testDefineCategory
+	self assert: (Interpreter run: '
+		true setglobal
+			/catdict /Generic /Category findresource def
+			/Widget catdict /Category defineresource pop
+		false setglobal
+		/Frob1 <</a 1>> /Widget defineresource') printString = '|| <</a 1>> <'.
+	self assert: (Interpreter run: '
+		true setglobal
+			/catdict /Generic /Category findresource def
+			/Widget catdict /Category defineresource pop
+		false setglobal
+		/Frob1 <</a 1>> /Widget defineresource pop
+		/Frob1 /Widget findresource') printString = '|| <</a 1>> <'.
+	self assert: (Interpreter run: '
+		true setglobal
+			/catdict /Generic /Category findresource def
+			/Widget catdict /Category defineresource pop
+		false setglobal
+		/Frob1 <</a 1>> /Widget defineresource pop
+		/Frob1 /Widget resourcestatus') printString = '|| 0 1 true <'.
+	self assert: (Interpreter run: '
+		true setglobal
+			/catdict /Generic /Category findresource def
+			/Widget catdict /Category defineresource pop
+		false setglobal
+		/Frob1 <</a 1>> /Widget defineresource pop
+		(*) {} 10 string /Widget resourceforall') printString = '|| Frob1 <'
+%
+method: OperatorTests
+testGenericCategory
+	| source |
+	self assert: (Interpreter run: '/Generic /Category findresource') stack top size = 5.
+	source := '
+		currentglobal 								% Save the current VM status on the stack.
+		true setglobal
+			/Generic /Category findresource
+			dup length 1 add dict copy
+			dup /InstanceType /dicttype put
+			/Widget exch /Category defineresource pop
+		setglobal 								% Restore the saved VM status.
+		/Button <</a 1>> /Widget defineresource'.
+	self assert: (Interpreter run: source) printString = '|| <</a 1>> <'
+%
+category: 'Testing String'
+method: OperatorTests
+testAnchorsearch
+	self assert: (Interpreter run: '(abbc) (ab) anchorsearch') printString = '|| (bc) (ab) true <'.
+	self assert: (Interpreter run: '(abbc) (bb) anchorsearch') printString = '|| (abbc) false <'.
+	self assert: (Interpreter run: '(abbc) (bc) anchorsearch') printString = '|| (abbc) false <'.
+	self assert: (Interpreter run: '(abbc) (B) anchorsearch') printString = '|| (abbc) false <'.
+	self should: [Interpreter run: '(ab) anchorsearch'] raise: Stackunderflow
+%
+method: OperatorTests
+testSearch
+	self assert: (Interpreter run: '(abbc) (ab) search') printString = '|| (bc) (ab) () true <'.
+	self assert: (Interpreter run: '(abbc) (bb) search') printString = '|| (c) (bb) (a) true <'.
+	self assert: (Interpreter run: '(abbc) (bc) search') printString = '|| () (bc) (ab) true <'.
+	self assert: (Interpreter run: '(abbc) (B) search') printString = '|| (abbc) false <'.
+	self should: [Interpreter run: '(ab) search'] raise: Stackunderflow
+%
+method: OperatorTests
+testString
+	self assert: (Interpreter run: '3 string') printString = '|| (\000\000\000) <'.
+	self should: [Interpreter run: 'string'] raise: Stackunderflow
+%
+method: OperatorTests
+testToken
+	self assert: (Interpreter run: '(15 (St1) {1 2 add}) token') printString = '|| ((St1) {1 2 add}) 15 true <'.
+	self assert: (Interpreter run: '((St1) {1 2 add}) token') printString = '|| ({1 2 add}) (St1) true <'.
+	self assert: (Interpreter run: '({1 2 add}) token') printString = '|| () {1 2 add} true <'.
+	self assert: (Interpreter run: '( ) token') printString = '|| false <'.
+	self should: [Interpreter run: 'token'] raise: Stackunderflow
+%
+category: 'Testing Type, Attribute, and Conversion'
+method: OperatorTests
+testCvi
+	self assert: (Interpreter run: '(3.3E1) cvi') printString = '|| 33 <'.
+	self assert: (Interpreter run: '-47.8 cvi') printString = '|| -47 <'.
+	self assert: (Interpreter run: '520.9 cvi') printString = '|| 520 <'.
+	self should: [Interpreter run: 'cvi'] raise: Stackunderflow
+%
+method: OperatorTests
+testCvn
+	self assert: (Interpreter run: '(abc) cvn') printString = '|| /abc <'.
+	self assert: (Interpreter run: '(abc) cvx cvn') printString = '|| abc <'.
+	self should: [Interpreter run: 'cvn'] raise: Stackunderflow
+%
+method: OperatorTests
+testCvr
+	self assert: (Interpreter run: '(3.3E1) cvr') printString = '|| 33 <'.
+	self assert: (Interpreter run: '-47.8 cvr') printString = '|| -47.8 <'.
+	self assert: (Interpreter run: '(-47.8) cvr') printString = '|| -47.8 <'.
+	self assert: (Interpreter run: '520.9 cvr') printString = '|| 520.9 <'.
+	self should: [Interpreter run: 'cvr'] raise: Stackunderflow
+%
+method: OperatorTests
+testCvrs
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		123 10 temp cvrs') printString = '|| (123) <'.
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		-123 10 temp cvrs') printString = '|| (-123) <'.
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		123.4 10 temp cvrs') printString = '|| (123.4) <'.
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		123 16 temp cvrs') printString = '|| (7B) <'.
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		-123 16 temp cvrs') printString = '|| (FFFFFF85) <'.
+	self assert: (Interpreter run: '
+		/temp 12 string def
+		123.4 16 temp cvrs') printString = '|| (7B) <'.
+	self should: [Interpreter run: '(abc) cvs'] raise: Stackunderflow
+%
+method: OperatorTests
+testCvs
+	self assert: (Interpreter run: '
+		/str 20 string def
+		123 456 add str cvs') printString = '|| (579) <'.
+	self assert: (Interpreter run: '
+		/str 20 string def
+		mark str cvs') printString = '|| (--nostringval--) <'.
+	self should: [Interpreter run: '(abc) cvs'] raise: Stackunderflow
+%
+method: OperatorTests
+testType
+	self assert: (Interpreter run: '[1 2 3] type') printString = '|| arraytype <'.
+	self assert: (Interpreter run: 'true type') printString = '|| booleantype <'.
+	self assert: (Interpreter run: '<</a 1>> type') printString = '|| dicttype <'.
+	self assert: (Interpreter run: '47 type') printString = '|| integertype <'.
+	self assert: (Interpreter run: 'mark type') printString = '|| marktype <'.
+	self assert: (Interpreter run: '/name type') printString = '|| nametype <'.
+	self assert: (Interpreter run: '/name cvx type') printString = '|| operatortype <'.
+	self assert: (Interpreter run: 'null type') printString = '|| nulltype <'.
+	self assert: (Interpreter run: '-47.8 type') printString = '|| realtype <'.
+	self assert: (Interpreter run: '(3.3E1) type') printString = '|| stringtype <'.
+	self assert: (Interpreter run: '(3.3E1) cvx type') printString = '|| stringtype <'.
+	self should: [Interpreter run: 'type'] raise: Stackunderflow
+%
+category: 'testing'
+method: PostScriptTests
+testAddDiv
+	self assert: (Interpreter run: '40 60 add 2 div') printString = '|| 50 <'
+%
+method: PostScriptTests
+testAverage
+	self assert: (Interpreter run: '
+	/average {add 2 div} def
+	40 60 average') printString = '|| 50 <'
+%
+method: PostScriptTests
+testPrintRadix
+	self assert: (0 printPostScriptRadix: 16) = '0'.
+	self assert: (10 printPostScriptRadix: 16) = 'A'.
+	self assert: (20 printPostScriptRadix: 32) = 'K'.
+	self assert: (10 printPostScriptRadix: 8) = '12'.
+	self assert: (9999 printPostScriptRadix: 16) = '270F'.
+%
+category: 'Testing'
+method: ScannerStringTests
+testAsciiBase85String
+	| scanner object |
+	scanner := Scanner on: '<~9jqo^BlbD-BleB1DJ+*+F(f,q/0JhKF<GL>Cj@.4Gp$d7F!,L7@<6@)/0JDEF<G%<+EV:2F!,
+O<DJ+*.@<*K0@<6L(Df-\0Ec5e;DffZ(EZee.Bl.9pF"AGXBPCsi+DGm>@3BB/F*&OCAfu2/AKY
+i(DIb:@FD,*)+C]U=@3BN#EcYf8ATD3s@q?d$AftVqCh[NqF<G:8+EV:.+Cf>-FD5W8ARlolDIa
+l(DId<j@<?3r@:F%a+D58''ATD4$Bl@l3De:,-DJs`8ARoFb/0JMK@qB4^F!,R<AKZ&-DfTqBG%G
+>uD.RTpAKYo''+CT/5+Cei#DII?(E,9)oF*2M7/c~>'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: String).
+	self assert: object = 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.'.
+%
+method: ScannerStringTests
+testHexadecimalString
+	| scanner object |
+	scanner := Scanner on: '<1fEA00a2>'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: String).
+	self assert: object printPostScript = '(\037\352\000\242)'.
+	self assert: object asByteArray = #[31 234 0 162].
+%
+method: ScannerStringTests
+testHexadecimalStrings
+	| scanner |
+	self assert: (Scanner on: '<901fa3>') nextPostScriptObject asByteArray = #[144 31 163].
+	self assert: (Scanner on: '<901fa>') nextPostScriptObject asByteArray = #[144 31 160].
+	self assert: (Scanner on: '<90 1f a>') nextPostScriptObject asByteArray = #[144 31 160].
+	self assert: (Scanner on: '<	9 0	1 f	a >') nextPostScriptObject asByteArray = #[144 31 160].
+	self should: [(Scanner on: '<901faG>') nextPostScriptObject] raise: Syntaxerror.
+	scanner := Scanner on: '<901fa3> 123'.
+	self assert: scanner nextPostScriptObject asByteArray = #[144 31 163].
+	self assert: scanner nextPostScriptObject = 123.
+%
+method: ScannerStringTests
+testNibble
+	self assert: (Scanner new nibbleFor: $0) = 0.
+	self assert: (Scanner new nibbleFor: $1) = 1.
+	self assert: (Scanner new nibbleFor: $2) = 2.
+	self assert: (Scanner new nibbleFor: $3) = 3.
+	self assert: (Scanner new nibbleFor: $4) = 4.
+	self assert: (Scanner new nibbleFor: $5) = 5.
+	self assert: (Scanner new nibbleFor: $6) = 6.
+	self assert: (Scanner new nibbleFor: $7) = 7.
+	self assert: (Scanner new nibbleFor: $8) = 8.
+	self assert: (Scanner new nibbleFor: $9) = 9.
+	self assert: (Scanner new nibbleFor: $A) = 10.
+	self assert: (Scanner new nibbleFor: $B) = 11.
+	self assert: (Scanner new nibbleFor: $C) = 12.
+	self assert: (Scanner new nibbleFor: $D) = 13.
+	self assert: (Scanner new nibbleFor: $E) = 14.
+	self assert: (Scanner new nibbleFor: $F) = 15.
+	self assert: (Scanner new nibbleFor: $a) = 10.
+	self assert: (Scanner new nibbleFor: $b) = 11.
+	self assert: (Scanner new nibbleFor: $c) = 12.
+	self assert: (Scanner new nibbleFor: $d) = 13.
+	self assert: (Scanner new nibbleFor: $e) = 14.
+	self assert: (Scanner new nibbleFor: $f) = 15.
+	self should: [Scanner new nibbleFor: $g] raise: Syntaxerror.
+%
+method: ScannerStringTests
+testOctalCharacterPrinting
+	| object |
+	object := (Scanner on: '(\034)') nextPostScriptObject.
+	self assert: object = (String with: 28 asCharacter).
+	self assert: object printPostScript = '(\034)'.
+%
+method: ScannerStringTests
+testString
+	| scanner object |
+	scanner := Scanner on: '(This is a string)'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: String).
+	self assert: object = 'This is a string'.
+%
+method: ScannerStringTests
+testStringAndNumber
+	| scanner object |
+	scanner := Scanner on: '(This is a string) 123'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: String).
+	self assert: object = 'This is a string'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 123.
+%
+method: ScannerStringTests
+testStrings
+	self assert: (Scanner on: '(This is a string)') nextPostScriptObject = 'This is a string'.
+	self assert: (Scanner on: '(Strings may contain newlines
+and such)') nextPostScriptObject = 'Strings may contain newlines
+and such'.
+	self assert: (Scanner on: '(Strings may contain special characters *!&}^% and
+balanced parentheses () (and so on).)') nextPostScriptObject = 'Strings may contain special characters *!&}^% and
+balanced parentheses () (and so on).'.
+	self assert: (Scanner on: '(The following is an empty string)') nextPostScriptObject = 'The following is an empty string'.
+	self assert: (Scanner on: '()') nextPostScriptObject size isZero.
+	self assert: (Scanner on: '(It has 0 (zero) length.)') nextPostScriptObject = 'It has 0 (zero) length.'.
+%
+method: ScannerStringTests
+testStringsWithBackSlash
+	self assert: (Scanner on: '(These \
+two strings \
+are the same.)') nextPostScriptObject = 'These two strings are the same.'.
+	self assert: (Scanner on: '(This string has a newline at the end of it.
+)') nextPostScriptObject = 'This string has a newline at the end of it.
+'.
+	self assert: (Scanner on: '(So does this one.\n)
+)') nextPostScriptObject = 'So does this one.
+'.
+	self assert: (Scanner on: '(\tAfter a tab and before a cr.\n)') nextPostScriptObject = '	After a tab and before a cr.
+'.
+%
+method: ScannerStringTests
+testStringsWithEscapes
+	self assert: (Scanner on: '(\\)') nextPostScriptObject = '\'.
+	self assert: (Scanner on: '(\/)') nextPostScriptObject = '/'.
+	self assert: (Scanner on: '(\()') nextPostScriptObject = '('.
+	self assert: (Scanner on: '(\))') nextPostScriptObject = ')'.
+	self assert: (Scanner on: '(\\\/\(\))') nextPostScriptObject = '\/()'
+%
+method: ScannerStringTests
+testStringsWithOctalCharacters
+	self assert: (Scanner on: '(\0533)') nextPostScriptObject = '+3'.
+	self assert: (Scanner on: '(\53)') nextPostScriptObject = '+'.
+	self assert: (Scanner on: '(\053)') nextPostScriptObject = '+'
+%
+category: 'Testing'
+method: ScannerTests
+testArrayDefinition
+	| scanner object |
+	scanner := Scanner on: '	[0.1 abc (tx) /bbb] ff'.
+	object := scanner nextPostScriptObject.
+	self assert: object value = #'['.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object value = 0.1.
+	self assert: (object isKindOf: Number).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #abc.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object = 'tx'.
+	self assert: (object isKindOf: String).
+	object := scanner nextPostScriptObject.
+	self assert: object object = #bbb.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #']'.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #ff.
+	self assert: (object isKindOf: Symbol)
+%
+method: ScannerTests
+testArrayDefinitionBook
+	| scanner object |
+	scanner := Scanner on: '	[ 123 /abc (xyz) ]'.
+	object := scanner nextPostScriptObject.
+	self assert: object value = #'['.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object value = 123.
+	self assert: (object isKindOf: Number).
+	object := scanner nextPostScriptObject.
+	self assert: object object = #abc.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object = 'xyz'.
+	self assert: (object isKindOf: String).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #']'.
+	self assert: (object isKindOf: Symbol)
+%
+method: ScannerTests
+testComment
+	| scanner |
+	scanner := Scanner on: '		12.3 45.6 m	% a comment
+78.9'.
+	self assert: scanner nextPostScriptObject = 12.3.
+	self assert: scanner nextPostScriptObject = 45.6.
+	self assert: scanner nextPostScriptObject printPostScript = 'm'.
+	self assert: scanner nextPostScriptObject = 78.9.
+%
+method: ScannerTests
+testDictionaryDefinition
+	| scanner object |
+	scanner := Scanner on: '	<</a 0.1 /abc (tx) /bbb {pop pop}>>ff'.
+	object := scanner nextPostScriptObject.
+	self assert: object value = #<<.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object object = #a.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object value = 0.1.
+	self assert: (object isKindOf: Number).
+	object := scanner nextPostScriptObject.
+	self assert: object object = #abc.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object = 'tx'.
+	self assert: (object isKindOf: String).
+	object := scanner nextPostScriptObject.
+	self assert: object object = #bbb.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object printString = '{pop pop}'.
+	self assert: (object isKindOf: Procedure).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #>>.
+	self assert: (object isKindOf: Symbol).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #ff.
+	self assert: (object isKindOf: Symbol)
+%
+method: ScannerTests
+testEmptyWhitespace
+	| scanner |
+	scanner := Scanner on: '   '.
+	self should: [scanner nextPostScriptObject] raise: EndOfTokenStreamNotification.
+%
+method: ScannerTests
+testEmptyWhitespace2
+	| scanner |
+	scanner := Scanner on: ' 		
+	
+  123'.
+	self assert: scanner nextPostScriptObject = 123
+%
+method: ScannerTests
+testFloatToken
+	| scanner object |
+	scanner := Scanner on: '123.456'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Number).
+	self assert: object = 123.456.
+%
+method: ScannerTests
+testLiteralNames
+	self assert: ((Scanner on: '/abc') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/abc') nextPostScriptObject object = #abc.
+	self assert: ((Scanner on: '/Offset') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/Offset') nextPostScriptObject object = #Offset.
+	self assert: ((Scanner on: '/$$') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/$$') nextPostScriptObject object = #'$$'.
+	self assert: ((Scanner on: '/23A') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/23A') nextPostScriptObject object = #'23A'.
+	self assert: ((Scanner on: '/13-456') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/13-456') nextPostScriptObject object = #'13-456'.
+	self assert: ((Scanner on: '/a.b') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/a.b') nextPostScriptObject object = #'a.b'.
+	self assert: ((Scanner on: '/$MyDict') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/$MyDict') nextPostScriptObject object = #'$MyDict'.
+	self assert: ((Scanner on: '/@pattern') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/@pattern') nextPostScriptObject object = #'@pattern'.
+	self assert: ((Scanner on: '23A') nextPostScriptObject isKindOf: Symbol).
+	self assert: ((Scanner on: '23E1') nextPostScriptObject isKindOf: Number).
+	self assert: ((Scanner on: '23#1') nextPostScriptObject isKindOf: Number)
+%
+method: ScannerTests
+testNames
+	self assert: (Scanner on: 'abc') nextPostScriptObject = #abc.
+	self assert: (Scanner on: 'Offset') nextPostScriptObject = #Offset.
+	self assert: (Scanner on: '$$') nextPostScriptObject = #'$$'.
+	self assert: (Scanner on: '23A') nextPostScriptObject = #'23A'.
+	self assert: (Scanner on: '13-456') nextPostScriptObject = #'13-456'.
+	self assert: (Scanner on: 'a.b') nextPostScriptObject = #'a.b'.
+	self assert: (Scanner on: '$MyDict') nextPostScriptObject = #'$MyDict'.
+	self assert: (Scanner on: '@pattern') nextPostScriptObject = #'@pattern'.
+	self assert: ((Scanner on: '/') nextPostScriptObject isKindOf: LiteralName).
+	self assert: (Scanner on: '/') nextPostScriptObject object = #''.
+	self assert: (Scanner on: '/ abc') nextPostScriptObject object = #''.
+	self assert: ((Scanner on: '23A') nextPostScriptObject isKindOf: Symbol).
+	self assert: ((Scanner on: '23E1') nextPostScriptObject isKindOf: Number).
+	self assert: ((Scanner on: '23#1') nextPostScriptObject isKindOf: Number)
+%
+method: ScannerTests
+testNumberToken
+	| scanner object |
+	scanner := Scanner on: '123'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object value = 123.
+%
+method: ScannerTests
+testNumberZeroToken
+	| scanner object |
+	scanner := Scanner on: '0'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object value = 0.
+%
+method: ScannerTests
+testProcedureDefinition
+	| scanner object |
+	scanner := Scanner on: '	/abc{2 dup mul}def'.
+	object := scanner nextPostScriptObject.
+	self assert: object object = #abc.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object printString = '{2 dup mul}'.
+	self assert: (object isKindOf: Procedure).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #def.
+	self assert: (object isKindOf: Symbol)
+%
+method: ScannerTests
+testProcedureDefinitionWithWhitespace
+	| scanner object |
+	scanner := Scanner on: '	/abc {
+	2 dup mul
+}def'.
+	object := scanner nextPostScriptObject.
+	self assert: object object = #abc.
+	self assert: (object isKindOf: LiteralName).
+	object := scanner nextPostScriptObject.
+	self assert: object printString = '{2 dup mul}'.
+	self assert: (object isKindOf: Procedure).
+	object := scanner nextPostScriptObject.
+	self assert: object value = #def.
+	self assert: (object isKindOf: Symbol)
+%
+method: ScannerTests
+testReturnComment
+	| scanner |
+	scanner := Scanner on: '		12.3 45.6 m	% a comment
+78.9'.
+	self assert: scanner nextPostScriptObject = 12.3.
+	self assert: scanner nextPostScriptObject = 45.6.
+	self assert: scanner nextPostScriptObject printPostScript = 'm'.
+	self assert: scanner nextPostScriptObject = 78.9.
+%
+method: ScannerTests
+testStartComment
+	| scanner |
+	scanner := Scanner on: '	% a comment
+78.9'.
+	self assert: scanner nextPostScriptObject = 78.9.
+%
+method: ScannerTests
+testThreeNumberToken
+	| scanner object |
+	scanner := Scanner on: '123 456 7.89'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 123.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 456.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Number).
+	self assert: object = 7.89
+%
+method: ScannerTests
+testTwoComments
+	| scanner |
+	scanner := Scanner on: '	% a comment
+78.9	 %and another
+m'.
+	self assert: scanner nextPostScriptObject = 78.9.
+	self assert: scanner nextPostScriptObject printPostScript = 'm'.
+%
+method: ScannerTests
+testTwoNumberToken
+	| scanner object |
+	scanner := Scanner on: '123 456'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 123.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 456.
+%
+method: ScannerTests
+testTwoRadixToken
+	| scanner object |
+	scanner := Scanner on: '8#23 16#1ff'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 19.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object = 511.
+%
+method: ScannerTests
+testTwoRealToken
+	| scanner object |
+	scanner := Scanner on: '1.23 +45.6e-23'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Number).
+	self assert: object = 1.23.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Number).
+	self assert: object asFloat asStringLocaleC = '4.56e-22'
+%
+method: ScannerTests
+testWhitespaceAndNumberZeroToken
+	| scanner object |
+	scanner := Scanner on: ' 0'.
+	object := scanner nextPostScriptObject.
+	self assert: (object isKindOf: Integer).
+	self assert: object value = 0.
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+category: '*PostScript Testing-examples'
+classmethod: Category
+exampleResourceDictionary
+	| dict |
+	dict := PSDictionary new.
+	dict at: #DefineResource put: self genericDefineResource.
+	dict at: #UndefineResource put: self genericUndefineResource.
+	dict at: #FindResource put: self genericFindResource.
+	dict at: #ResourceStatus put: self genericResourceStatus.
+	dict at: #ResourceForAll put: self genericResourceForAll.
+	dict at: #Category put: #Example.
+	dict at: #InstanceType put: #dicttype.
+	dict at: #ResourceFileName put: self genericResourceFileName.
+	^dict
+%
+category: '*PostScript Testing-font metric loading'
+classmethod: CharacterNames
+adobeGlyphDecodingForNewFonts
+	"<IdentityDictionary key: Symbol value: Integer>
+	the file format is slightly different from the AGL (Adobe Glyph List)"
+
+	| rst dict |
+	rst := self aglfnTxt readStream.
+	dict := IdentityDictionary new.
+	[rst atEnd] whileFalse: [
+		| line |
+		line := rst upTo: Character lf.
+		(line notEmpty and: [
+		(line first = $#) not]) ifTrue: [
+				| tokens |
+				tokens := line tokensBasedOn: $;.
+				dict at: (tokens at: 2) asSymbol put: ('16r' , tokens first) asNumber]].
+	^dict
+%
+classmethod: CharacterNames
+aglfnTxt
+	"from https://raw.githubusercontent.com/adobe-type-tools/agl-aglfn/master/aglfn.txt"
+
+	^'# -----------------------------------------------------------
+# Copyright 2002-2019 Adobe (http://www.adobe.com/).
+#
+# Redistribution and use in source and binary forms, with or
+# without modification, are permitted provided that the
+# following conditions are met:
+#
+# Redistributions of source code must retain the above
+# copyright notice, this list of conditions and the following
+# disclaimer.
+#
+# Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials
+# provided with the distribution.
+#
+# Neither the name of Adobe nor the names of its contributors
+# may be used to endorse or promote products derived from this
+# software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# -----------------------------------------------------------
+# Name:          Adobe Glyph List For New Fonts
+# Table version: 1.7
+# Date:          November 6, 2008
+# URL:           https://github.com/adobe-type-tools/agl-aglfn
+#
+# Description:
+#
+# AGLFN (Adobe Glyph List For New Fonts) provides a list of base glyph
+# names that are recommended for new fonts, which are compatible with
+# the AGL (Adobe Glyph List) Specification, and which should be used
+# as described in Section 6 of that document. AGLFN comprises the set
+# of glyph names from AGL that map via the AGL Specification rules to
+# the semantically correct UV (Unicode Value). For example, "Asmall"
+# is omitted because AGL maps this glyph name to the PUA (Private Use
+# Area) value U+F761, rather than to the UV that maps from the glyph
+# name "A." Also omitted is "ffi," because AGL maps this to the
+# Alphabetic Presentation Forms value U+FB03, rather than decomposing
+# it into the following sequence of three UVs: U+0066, U+0066, and
+# U+0069. The name "arrowvertex" has been omitted because this glyph
+# now has a real UV, and AGL is now incorrect in mapping it to the PUA
+# value U+F8E6. If you do not find an appropriate name for your glyph
+# in this list, then please refer to Section 6 of the AGL
+# Specification.
+#
+# Format: three semicolon-delimited fields:
+#   (1) Standard UV or CUS UV--four uppercase hexadecimal digits
+#   (2) Glyph name--upper/lowercase letters and digits
+#   (3) Character names: Unicode character names for standard UVs, and
+#       descriptive names for CUS UVs--uppercase letters, hyphen, and
+#       space
+#
+# The records are sorted by glyph name in increasing ASCII order,
+# entries with the same glyph name are sorted in decreasing priority
+# order, the UVs and Unicode character names are provided for
+# convenience, lines starting with "#" are comments, and blank lines
+# should be ignored.
+#
+# Revision History:
+#
+# 1.7 [6 November 2008]
+# - Reverted to the original 1.4 and earlier mappings for Delta,
+#   Omega, and mu.
+# - Removed mappings for "afii" names. These should now be assigned
+#   "uni" names.
+# - Removed mappings for "commaaccent" names. These should now be
+#   assigned "uni" names.
+#
+# 1.6 [30 January 2006]
+# - Completed work intended in 1.5.
+#
+# 1.5 [23 November 2005]
+# - Removed duplicated block at end of file.
+# - Changed mappings:
+#   2206;Delta;INCREMENT changed to 0394;Delta;GREEK CAPITAL LETTER DELTA
+#   2126;Omega;OHM SIGN changed to 03A9;Omega;GREEK CAPITAL LETTER OMEGA
+#   03BC;mu;MICRO SIGN changed to 03BC;mu;GREEK SMALL LETTER MU
+# - Corrected statement above about why "ffi" is omitted.
+#
+# 1.4 [24 September 2003]
+# - Changed version to 1.4, to avoid confusion with the AGL 1.3.
+# - Fixed spelling errors in the header.
+# - Fully removed "arrowvertex," as it is mapped only to a PUA Unicode
+#   value in some fonts.
+#
+# 1.1 [17 April 2003]
+# - Renamed [Tt]cedilla back to [Tt]commaaccent.
+#
+# 1.0 [31 January 2003]
+# - Original version.
+# - Derived from the AGLv1.2 by:
+#   removing the PUA area codes;
+#   removing duplicate Unicode mappings; and
+#   renaming "tcommaaccent" to "tcedilla" and "Tcommaaccent" to "Tcedilla"
+#
+0041;A;LATIN CAPITAL LETTER A
+00C6;AE;LATIN CAPITAL LETTER AE
+01FC;AEacute;LATIN CAPITAL LETTER AE WITH ACUTE
+00C1;Aacute;LATIN CAPITAL LETTER A WITH ACUTE
+0102;Abreve;LATIN CAPITAL LETTER A WITH BREVE
+00C2;Acircumflex;LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+00C4;Adieresis;LATIN CAPITAL LETTER A WITH DIAERESIS
+00C0;Agrave;LATIN CAPITAL LETTER A WITH GRAVE
+0391;Alpha;GREEK CAPITAL LETTER ALPHA
+0386;Alphatonos;GREEK CAPITAL LETTER ALPHA WITH TONOS
+0100;Amacron;LATIN CAPITAL LETTER A WITH MACRON
+0104;Aogonek;LATIN CAPITAL LETTER A WITH OGONEK
+00C5;Aring;LATIN CAPITAL LETTER A WITH RING ABOVE
+01FA;Aringacute;LATIN CAPITAL LETTER A WITH RING ABOVE AND ACUTE
+00C3;Atilde;LATIN CAPITAL LETTER A WITH TILDE
+0042;B;LATIN CAPITAL LETTER B
+0392;Beta;GREEK CAPITAL LETTER BETA
+0043;C;LATIN CAPITAL LETTER C
+0106;Cacute;LATIN CAPITAL LETTER C WITH ACUTE
+010C;Ccaron;LATIN CAPITAL LETTER C WITH CARON
+00C7;Ccedilla;LATIN CAPITAL LETTER C WITH CEDILLA
+0108;Ccircumflex;LATIN CAPITAL LETTER C WITH CIRCUMFLEX
+010A;Cdotaccent;LATIN CAPITAL LETTER C WITH DOT ABOVE
+03A7;Chi;GREEK CAPITAL LETTER CHI
+0044;D;LATIN CAPITAL LETTER D
+010E;Dcaron;LATIN CAPITAL LETTER D WITH CARON
+0110;Dcroat;LATIN CAPITAL LETTER D WITH STROKE
+2206;Delta;INCREMENT
+0045;E;LATIN CAPITAL LETTER E
+00C9;Eacute;LATIN CAPITAL LETTER E WITH ACUTE
+0114;Ebreve;LATIN CAPITAL LETTER E WITH BREVE
+011A;Ecaron;LATIN CAPITAL LETTER E WITH CARON
+00CA;Ecircumflex;LATIN CAPITAL LETTER E WITH CIRCUMFLEX
+00CB;Edieresis;LATIN CAPITAL LETTER E WITH DIAERESIS
+0116;Edotaccent;LATIN CAPITAL LETTER E WITH DOT ABOVE
+00C8;Egrave;LATIN CAPITAL LETTER E WITH GRAVE
+0112;Emacron;LATIN CAPITAL LETTER E WITH MACRON
+014A;Eng;LATIN CAPITAL LETTER ENG
+0118;Eogonek;LATIN CAPITAL LETTER E WITH OGONEK
+0395;Epsilon;GREEK CAPITAL LETTER EPSILON
+0388;Epsilontonos;GREEK CAPITAL LETTER EPSILON WITH TONOS
+0397;Eta;GREEK CAPITAL LETTER ETA
+0389;Etatonos;GREEK CAPITAL LETTER ETA WITH TONOS
+00D0;Eth;LATIN CAPITAL LETTER ETH
+20AC;Euro;EURO SIGN
+0046;F;LATIN CAPITAL LETTER F
+0047;G;LATIN CAPITAL LETTER G
+0393;Gamma;GREEK CAPITAL LETTER GAMMA
+011E;Gbreve;LATIN CAPITAL LETTER G WITH BREVE
+01E6;Gcaron;LATIN CAPITAL LETTER G WITH CARON
+011C;Gcircumflex;LATIN CAPITAL LETTER G WITH CIRCUMFLEX
+0120;Gdotaccent;LATIN CAPITAL LETTER G WITH DOT ABOVE
+0048;H;LATIN CAPITAL LETTER H
+25CF;H18533;BLACK CIRCLE
+25AA;H18543;BLACK SMALL SQUARE
+25AB;H18551;WHITE SMALL SQUARE
+25A1;H22073;WHITE SQUARE
+0126;Hbar;LATIN CAPITAL LETTER H WITH STROKE
+0124;Hcircumflex;LATIN CAPITAL LETTER H WITH CIRCUMFLEX
+0049;I;LATIN CAPITAL LETTER I
+0132;IJ;LATIN CAPITAL LIGATURE IJ
+00CD;Iacute;LATIN CAPITAL LETTER I WITH ACUTE
+012C;Ibreve;LATIN CAPITAL LETTER I WITH BREVE
+00CE;Icircumflex;LATIN CAPITAL LETTER I WITH CIRCUMFLEX
+00CF;Idieresis;LATIN CAPITAL LETTER I WITH DIAERESIS
+0130;Idotaccent;LATIN CAPITAL LETTER I WITH DOT ABOVE
+2111;Ifraktur;BLACK-LETTER CAPITAL I
+00CC;Igrave;LATIN CAPITAL LETTER I WITH GRAVE
+012A;Imacron;LATIN CAPITAL LETTER I WITH MACRON
+012E;Iogonek;LATIN CAPITAL LETTER I WITH OGONEK
+0399;Iota;GREEK CAPITAL LETTER IOTA
+03AA;Iotadieresis;GREEK CAPITAL LETTER IOTA WITH DIALYTIKA
+038A;Iotatonos;GREEK CAPITAL LETTER IOTA WITH TONOS
+0128;Itilde;LATIN CAPITAL LETTER I WITH TILDE
+004A;J;LATIN CAPITAL LETTER J
+0134;Jcircumflex;LATIN CAPITAL LETTER J WITH CIRCUMFLEX
+004B;K;LATIN CAPITAL LETTER K
+039A;Kappa;GREEK CAPITAL LETTER KAPPA
+004C;L;LATIN CAPITAL LETTER L
+0139;Lacute;LATIN CAPITAL LETTER L WITH ACUTE
+039B;Lambda;GREEK CAPITAL LETTER LAMDA
+013D;Lcaron;LATIN CAPITAL LETTER L WITH CARON
+013F;Ldot;LATIN CAPITAL LETTER L WITH MIDDLE DOT
+0141;Lslash;LATIN CAPITAL LETTER L WITH STROKE
+004D;M;LATIN CAPITAL LETTER M
+039C;Mu;GREEK CAPITAL LETTER MU
+004E;N;LATIN CAPITAL LETTER N
+0143;Nacute;LATIN CAPITAL LETTER N WITH ACUTE
+0147;Ncaron;LATIN CAPITAL LETTER N WITH CARON
+00D1;Ntilde;LATIN CAPITAL LETTER N WITH TILDE
+039D;Nu;GREEK CAPITAL LETTER NU
+004F;O;LATIN CAPITAL LETTER O
+0152;OE;LATIN CAPITAL LIGATURE OE
+00D3;Oacute;LATIN CAPITAL LETTER O WITH ACUTE
+014E;Obreve;LATIN CAPITAL LETTER O WITH BREVE
+00D4;Ocircumflex;LATIN CAPITAL LETTER O WITH CIRCUMFLEX
+00D6;Odieresis;LATIN CAPITAL LETTER O WITH DIAERESIS
+00D2;Ograve;LATIN CAPITAL LETTER O WITH GRAVE
+01A0;Ohorn;LATIN CAPITAL LETTER O WITH HORN
+0150;Ohungarumlaut;LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+014C;Omacron;LATIN CAPITAL LETTER O WITH MACRON
+2126;Omega;OHM SIGN
+038F;Omegatonos;GREEK CAPITAL LETTER OMEGA WITH TONOS
+039F;Omicron;GREEK CAPITAL LETTER OMICRON
+038C;Omicrontonos;GREEK CAPITAL LETTER OMICRON WITH TONOS
+00D8;Oslash;LATIN CAPITAL LETTER O WITH STROKE
+01FE;Oslashacute;LATIN CAPITAL LETTER O WITH STROKE AND ACUTE
+00D5;Otilde;LATIN CAPITAL LETTER O WITH TILDE
+0050;P;LATIN CAPITAL LETTER P
+03A6;Phi;GREEK CAPITAL LETTER PHI
+03A0;Pi;GREEK CAPITAL LETTER PI
+03A8;Psi;GREEK CAPITAL LETTER PSI
+0051;Q;LATIN CAPITAL LETTER Q
+0052;R;LATIN CAPITAL LETTER R
+0154;Racute;LATIN CAPITAL LETTER R WITH ACUTE
+0158;Rcaron;LATIN CAPITAL LETTER R WITH CARON
+211C;Rfraktur;BLACK-LETTER CAPITAL R
+03A1;Rho;GREEK CAPITAL LETTER RHO
+0053;S;LATIN CAPITAL LETTER S
+250C;SF010000;BOX DRAWINGS LIGHT DOWN AND RIGHT
+2514;SF020000;BOX DRAWINGS LIGHT UP AND RIGHT
+2510;SF030000;BOX DRAWINGS LIGHT DOWN AND LEFT
+2518;SF040000;BOX DRAWINGS LIGHT UP AND LEFT
+253C;SF050000;BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
+252C;SF060000;BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
+2534;SF070000;BOX DRAWINGS LIGHT UP AND HORIZONTAL
+251C;SF080000;BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+2524;SF090000;BOX DRAWINGS LIGHT VERTICAL AND LEFT
+2500;SF100000;BOX DRAWINGS LIGHT HORIZONTAL
+2502;SF110000;BOX DRAWINGS LIGHT VERTICAL
+2561;SF190000;BOX DRAWINGS VERTICAL SINGLE AND LEFT DOUBLE
+2562;SF200000;BOX DRAWINGS VERTICAL DOUBLE AND LEFT SINGLE
+2556;SF210000;BOX DRAWINGS DOWN DOUBLE AND LEFT SINGLE
+2555;SF220000;BOX DRAWINGS DOWN SINGLE AND LEFT DOUBLE
+2563;SF230000;BOX DRAWINGS DOUBLE VERTICAL AND LEFT
+2551;SF240000;BOX DRAWINGS DOUBLE VERTICAL
+2557;SF250000;BOX DRAWINGS DOUBLE DOWN AND LEFT
+255D;SF260000;BOX DRAWINGS DOUBLE UP AND LEFT
+255C;SF270000;BOX DRAWINGS UP DOUBLE AND LEFT SINGLE
+255B;SF280000;BOX DRAWINGS UP SINGLE AND LEFT DOUBLE
+255E;SF360000;BOX DRAWINGS VERTICAL SINGLE AND RIGHT DOUBLE
+255F;SF370000;BOX DRAWINGS VERTICAL DOUBLE AND RIGHT SINGLE
+255A;SF380000;BOX DRAWINGS DOUBLE UP AND RIGHT
+2554;SF390000;BOX DRAWINGS DOUBLE DOWN AND RIGHT
+2569;SF400000;BOX DRAWINGS DOUBLE UP AND HORIZONTAL
+2566;SF410000;BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
+2560;SF420000;BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
+2550;SF430000;BOX DRAWINGS DOUBLE HORIZONTAL
+256C;SF440000;BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
+2567;SF450000;BOX DRAWINGS UP SINGLE AND HORIZONTAL DOUBLE
+2568;SF460000;BOX DRAWINGS UP DOUBLE AND HORIZONTAL SINGLE
+2564;SF470000;BOX DRAWINGS DOWN SINGLE AND HORIZONTAL DOUBLE
+2565;SF480000;BOX DRAWINGS DOWN DOUBLE AND HORIZONTAL SINGLE
+2559;SF490000;BOX DRAWINGS UP DOUBLE AND RIGHT SINGLE
+2558;SF500000;BOX DRAWINGS UP SINGLE AND RIGHT DOUBLE
+2552;SF510000;BOX DRAWINGS DOWN SINGLE AND RIGHT DOUBLE
+2553;SF520000;BOX DRAWINGS DOWN DOUBLE AND RIGHT SINGLE
+256B;SF530000;BOX DRAWINGS VERTICAL DOUBLE AND HORIZONTAL SINGLE
+256A;SF540000;BOX DRAWINGS VERTICAL SINGLE AND HORIZONTAL DOUBLE
+015A;Sacute;LATIN CAPITAL LETTER S WITH ACUTE
+0160;Scaron;LATIN CAPITAL LETTER S WITH CARON
+015E;Scedilla;LATIN CAPITAL LETTER S WITH CEDILLA
+015C;Scircumflex;LATIN CAPITAL LETTER S WITH CIRCUMFLEX
+03A3;Sigma;GREEK CAPITAL LETTER SIGMA
+0054;T;LATIN CAPITAL LETTER T
+03A4;Tau;GREEK CAPITAL LETTER TAU
+0166;Tbar;LATIN CAPITAL LETTER T WITH STROKE
+0164;Tcaron;LATIN CAPITAL LETTER T WITH CARON
+0398;Theta;GREEK CAPITAL LETTER THETA
+00DE;Thorn;LATIN CAPITAL LETTER THORN
+0055;U;LATIN CAPITAL LETTER U
+00DA;Uacute;LATIN CAPITAL LETTER U WITH ACUTE
+016C;Ubreve;LATIN CAPITAL LETTER U WITH BREVE
+00DB;Ucircumflex;LATIN CAPITAL LETTER U WITH CIRCUMFLEX
+00DC;Udieresis;LATIN CAPITAL LETTER U WITH DIAERESIS
+00D9;Ugrave;LATIN CAPITAL LETTER U WITH GRAVE
+01AF;Uhorn;LATIN CAPITAL LETTER U WITH HORN
+0170;Uhungarumlaut;LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+016A;Umacron;LATIN CAPITAL LETTER U WITH MACRON
+0172;Uogonek;LATIN CAPITAL LETTER U WITH OGONEK
+03A5;Upsilon;GREEK CAPITAL LETTER UPSILON
+03D2;Upsilon1;GREEK UPSILON WITH HOOK SYMBOL
+03AB;Upsilondieresis;GREEK CAPITAL LETTER UPSILON WITH DIALYTIKA
+038E;Upsilontonos;GREEK CAPITAL LETTER UPSILON WITH TONOS
+016E;Uring;LATIN CAPITAL LETTER U WITH RING ABOVE
+0168;Utilde;LATIN CAPITAL LETTER U WITH TILDE
+0056;V;LATIN CAPITAL LETTER V
+0057;W;LATIN CAPITAL LETTER W
+1E82;Wacute;LATIN CAPITAL LETTER W WITH ACUTE
+0174;Wcircumflex;LATIN CAPITAL LETTER W WITH CIRCUMFLEX
+1E84;Wdieresis;LATIN CAPITAL LETTER W WITH DIAERESIS
+1E80;Wgrave;LATIN CAPITAL LETTER W WITH GRAVE
+0058;X;LATIN CAPITAL LETTER X
+039E;Xi;GREEK CAPITAL LETTER XI
+0059;Y;LATIN CAPITAL LETTER Y
+00DD;Yacute;LATIN CAPITAL LETTER Y WITH ACUTE
+0176;Ycircumflex;LATIN CAPITAL LETTER Y WITH CIRCUMFLEX
+0178;Ydieresis;LATIN CAPITAL LETTER Y WITH DIAERESIS
+1EF2;Ygrave;LATIN CAPITAL LETTER Y WITH GRAVE
+005A;Z;LATIN CAPITAL LETTER Z
+0179;Zacute;LATIN CAPITAL LETTER Z WITH ACUTE
+017D;Zcaron;LATIN CAPITAL LETTER Z WITH CARON
+017B;Zdotaccent;LATIN CAPITAL LETTER Z WITH DOT ABOVE
+0396;Zeta;GREEK CAPITAL LETTER ZETA
+0061;a;LATIN SMALL LETTER A
+00E1;aacute;LATIN SMALL LETTER A WITH ACUTE
+0103;abreve;LATIN SMALL LETTER A WITH BREVE
+00E2;acircumflex;LATIN SMALL LETTER A WITH CIRCUMFLEX
+00B4;acute;ACUTE ACCENT
+0301;acutecomb;COMBINING ACUTE ACCENT
+00E4;adieresis;LATIN SMALL LETTER A WITH DIAERESIS
+00E6;ae;LATIN SMALL LETTER AE
+01FD;aeacute;LATIN SMALL LETTER AE WITH ACUTE
+00E0;agrave;LATIN SMALL LETTER A WITH GRAVE
+2135;aleph;ALEF SYMBOL
+03B1;alpha;GREEK SMALL LETTER ALPHA
+03AC;alphatonos;GREEK SMALL LETTER ALPHA WITH TONOS
+0101;amacron;LATIN SMALL LETTER A WITH MACRON
+0026;ampersand;AMPERSAND
+2220;angle;ANGLE
+2329;angleleft;LEFT-POINTING ANGLE BRACKET
+232A;angleright;RIGHT-POINTING ANGLE BRACKET
+0387;anoteleia;GREEK ANO TELEIA
+0105;aogonek;LATIN SMALL LETTER A WITH OGONEK
+2248;approxequal;ALMOST EQUAL TO
+00E5;aring;LATIN SMALL LETTER A WITH RING ABOVE
+01FB;aringacute;LATIN SMALL LETTER A WITH RING ABOVE AND ACUTE
+2194;arrowboth;LEFT RIGHT ARROW
+21D4;arrowdblboth;LEFT RIGHT DOUBLE ARROW
+21D3;arrowdbldown;DOWNWARDS DOUBLE ARROW
+21D0;arrowdblleft;LEFTWARDS DOUBLE ARROW
+21D2;arrowdblright;RIGHTWARDS DOUBLE ARROW
+21D1;arrowdblup;UPWARDS DOUBLE ARROW
+2193;arrowdown;DOWNWARDS ARROW
+2190;arrowleft;LEFTWARDS ARROW
+2192;arrowright;RIGHTWARDS ARROW
+2191;arrowup;UPWARDS ARROW
+2195;arrowupdn;UP DOWN ARROW
+21A8;arrowupdnbse;UP DOWN ARROW WITH BASE
+005E;asciicircum;CIRCUMFLEX ACCENT
+007E;asciitilde;TILDE
+002A;asterisk;ASTERISK
+2217;asteriskmath;ASTERISK OPERATOR
+0040;at;COMMERCIAL AT
+00E3;atilde;LATIN SMALL LETTER A WITH TILDE
+0062;b;LATIN SMALL LETTER B
+005C;backslash;REVERSE SOLIDUS
+007C;bar;VERTICAL LINE
+03B2;beta;GREEK SMALL LETTER BETA
+2588;block;FULL BLOCK
+007B;braceleft;LEFT CURLY BRACKET
+007D;braceright;RIGHT CURLY BRACKET
+005B;bracketleft;LEFT SQUARE BRACKET
+005D;bracketright;RIGHT SQUARE BRACKET
+02D8;breve;BREVE
+00A6;brokenbar;BROKEN BAR
+2022;bullet;BULLET
+0063;c;LATIN SMALL LETTER C
+0107;cacute;LATIN SMALL LETTER C WITH ACUTE
+02C7;caron;CARON
+21B5;carriagereturn;DOWNWARDS ARROW WITH CORNER LEFTWARDS
+010D;ccaron;LATIN SMALL LETTER C WITH CARON
+00E7;ccedilla;LATIN SMALL LETTER C WITH CEDILLA
+0109;ccircumflex;LATIN SMALL LETTER C WITH CIRCUMFLEX
+010B;cdotaccent;LATIN SMALL LETTER C WITH DOT ABOVE
+00B8;cedilla;CEDILLA
+00A2;cent;CENT SIGN
+03C7;chi;GREEK SMALL LETTER CHI
+25CB;circle;WHITE CIRCLE
+2297;circlemultiply;CIRCLED TIMES
+2295;circleplus;CIRCLED PLUS
+02C6;circumflex;MODIFIER LETTER CIRCUMFLEX ACCENT
+2663;club;BLACK CLUB SUIT
+003A;colon;COLON
+20A1;colonmonetary;COLON SIGN
+002C;comma;COMMA
+2245;congruent;APPROXIMATELY EQUAL TO
+00A9;copyright;COPYRIGHT SIGN
+00A4;currency;CURRENCY SIGN
+0064;d;LATIN SMALL LETTER D
+2020;dagger;DAGGER
+2021;daggerdbl;DOUBLE DAGGER
+010F;dcaron;LATIN SMALL LETTER D WITH CARON
+0111;dcroat;LATIN SMALL LETTER D WITH STROKE
+00B0;degree;DEGREE SIGN
+03B4;delta;GREEK SMALL LETTER DELTA
+2666;diamond;BLACK DIAMOND SUIT
+00A8;dieresis;DIAERESIS
+0385;dieresistonos;GREEK DIALYTIKA TONOS
+00F7;divide;DIVISION SIGN
+2593;dkshade;DARK SHADE
+2584;dnblock;LOWER HALF BLOCK
+0024;dollar;DOLLAR SIGN
+20AB;dong;DONG SIGN
+02D9;dotaccent;DOT ABOVE
+0323;dotbelowcomb;COMBINING DOT BELOW
+0131;dotlessi;LATIN SMALL LETTER DOTLESS I
+22C5;dotmath;DOT OPERATOR
+0065;e;LATIN SMALL LETTER E
+00E9;eacute;LATIN SMALL LETTER E WITH ACUTE
+0115;ebreve;LATIN SMALL LETTER E WITH BREVE
+011B;ecaron;LATIN SMALL LETTER E WITH CARON
+00EA;ecircumflex;LATIN SMALL LETTER E WITH CIRCUMFLEX
+00EB;edieresis;LATIN SMALL LETTER E WITH DIAERESIS
+0117;edotaccent;LATIN SMALL LETTER E WITH DOT ABOVE
+00E8;egrave;LATIN SMALL LETTER E WITH GRAVE
+0038;eight;DIGIT EIGHT
+2208;element;ELEMENT OF
+2026;ellipsis;HORIZONTAL ELLIPSIS
+0113;emacron;LATIN SMALL LETTER E WITH MACRON
+2014;emdash;EM DASH
+2205;emptyset;EMPTY SET
+2013;endash;EN DASH
+014B;eng;LATIN SMALL LETTER ENG
+0119;eogonek;LATIN SMALL LETTER E WITH OGONEK
+03B5;epsilon;GREEK SMALL LETTER EPSILON
+03AD;epsilontonos;GREEK SMALL LETTER EPSILON WITH TONOS
+003D;equal;EQUALS SIGN
+2261;equivalence;IDENTICAL TO
+212E;estimated;ESTIMATED SYMBOL
+03B7;eta;GREEK SMALL LETTER ETA
+03AE;etatonos;GREEK SMALL LETTER ETA WITH TONOS
+00F0;eth;LATIN SMALL LETTER ETH
+0021;exclam;EXCLAMATION MARK
+203C;exclamdbl;DOUBLE EXCLAMATION MARK
+00A1;exclamdown;INVERTED EXCLAMATION MARK
+2203;existential;THERE EXISTS
+0066;f;LATIN SMALL LETTER F
+2640;female;FEMALE SIGN
+2012;figuredash;FIGURE DASH
+25A0;filledbox;BLACK SQUARE
+25AC;filledrect;BLACK RECTANGLE
+0035;five;DIGIT FIVE
+215D;fiveeighths;VULGAR FRACTION FIVE EIGHTHS
+0192;florin;LATIN SMALL LETTER F WITH HOOK
+0034;four;DIGIT FOUR
+2044;fraction;FRACTION SLASH
+20A3;franc;FRENCH FRANC SIGN
+0067;g;LATIN SMALL LETTER G
+03B3;gamma;GREEK SMALL LETTER GAMMA
+011F;gbreve;LATIN SMALL LETTER G WITH BREVE
+01E7;gcaron;LATIN SMALL LETTER G WITH CARON
+011D;gcircumflex;LATIN SMALL LETTER G WITH CIRCUMFLEX
+0121;gdotaccent;LATIN SMALL LETTER G WITH DOT ABOVE
+00DF;germandbls;LATIN SMALL LETTER SHARP S
+2207;gradient;NABLA
+0060;grave;GRAVE ACCENT
+0300;gravecomb;COMBINING GRAVE ACCENT
+003E;greater;GREATER-THAN SIGN
+2265;greaterequal;GREATER-THAN OR EQUAL TO
+00AB;guillemotleft;LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+00BB;guillemotright;RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+2039;guilsinglleft;SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+203A;guilsinglright;SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+0068;h;LATIN SMALL LETTER H
+0127;hbar;LATIN SMALL LETTER H WITH STROKE
+0125;hcircumflex;LATIN SMALL LETTER H WITH CIRCUMFLEX
+2665;heart;BLACK HEART SUIT
+0309;hookabovecomb;COMBINING HOOK ABOVE
+2302;house;HOUSE
+02DD;hungarumlaut;DOUBLE ACUTE ACCENT
+002D;hyphen;HYPHEN-MINUS
+0069;i;LATIN SMALL LETTER I
+00ED;iacute;LATIN SMALL LETTER I WITH ACUTE
+012D;ibreve;LATIN SMALL LETTER I WITH BREVE
+00EE;icircumflex;LATIN SMALL LETTER I WITH CIRCUMFLEX
+00EF;idieresis;LATIN SMALL LETTER I WITH DIAERESIS
+00EC;igrave;LATIN SMALL LETTER I WITH GRAVE
+0133;ij;LATIN SMALL LIGATURE IJ
+012B;imacron;LATIN SMALL LETTER I WITH MACRON
+221E;infinity;INFINITY
+222B;integral;INTEGRAL
+2321;integralbt;BOTTOM HALF INTEGRAL
+2320;integraltp;TOP HALF INTEGRAL
+2229;intersection;INTERSECTION
+25D8;invbullet;INVERSE BULLET
+25D9;invcircle;INVERSE WHITE CIRCLE
+263B;invsmileface;BLACK SMILING FACE
+012F;iogonek;LATIN SMALL LETTER I WITH OGONEK
+03B9;iota;GREEK SMALL LETTER IOTA
+03CA;iotadieresis;GREEK SMALL LETTER IOTA WITH DIALYTIKA
+0390;iotadieresistonos;GREEK SMALL LETTER IOTA WITH DIALYTIKA AND TONOS
+03AF;iotatonos;GREEK SMALL LETTER IOTA WITH TONOS
+0129;itilde;LATIN SMALL LETTER I WITH TILDE
+006A;j;LATIN SMALL LETTER J
+0135;jcircumflex;LATIN SMALL LETTER J WITH CIRCUMFLEX
+006B;k;LATIN SMALL LETTER K
+03BA;kappa;GREEK SMALL LETTER KAPPA
+0138;kgreenlandic;LATIN SMALL LETTER KRA
+006C;l;LATIN SMALL LETTER L
+013A;lacute;LATIN SMALL LETTER L WITH ACUTE
+03BB;lambda;GREEK SMALL LETTER LAMDA
+013E;lcaron;LATIN SMALL LETTER L WITH CARON
+0140;ldot;LATIN SMALL LETTER L WITH MIDDLE DOT
+003C;less;LESS-THAN SIGN
+2264;lessequal;LESS-THAN OR EQUAL TO
+258C;lfblock;LEFT HALF BLOCK
+20A4;lira;LIRA SIGN
+2227;logicaland;LOGICAL AND
+00AC;logicalnot;NOT SIGN
+2228;logicalor;LOGICAL OR
+017F;longs;LATIN SMALL LETTER LONG S
+25CA;lozenge;LOZENGE
+0142;lslash;LATIN SMALL LETTER L WITH STROKE
+2591;ltshade;LIGHT SHADE
+006D;m;LATIN SMALL LETTER M
+00AF;macron;MACRON
+2642;male;MALE SIGN
+2212;minus;MINUS SIGN
+2032;minute;PRIME
+00B5;mu;MICRO SIGN
+00D7;multiply;MULTIPLICATION SIGN
+266A;musicalnote;EIGHTH NOTE
+266B;musicalnotedbl;BEAMED EIGHTH NOTES
+006E;n;LATIN SMALL LETTER N
+0144;nacute;LATIN SMALL LETTER N WITH ACUTE
+0149;napostrophe;LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
+0148;ncaron;LATIN SMALL LETTER N WITH CARON
+0039;nine;DIGIT NINE
+2209;notelement;NOT AN ELEMENT OF
+2260;notequal;NOT EQUAL TO
+2284;notsubset;NOT A SUBSET OF
+00F1;ntilde;LATIN SMALL LETTER N WITH TILDE
+03BD;nu;GREEK SMALL LETTER NU
+0023;numbersign;NUMBER SIGN
+006F;o;LATIN SMALL LETTER O
+00F3;oacute;LATIN SMALL LETTER O WITH ACUTE
+014F;obreve;LATIN SMALL LETTER O WITH BREVE
+00F4;ocircumflex;LATIN SMALL LETTER O WITH CIRCUMFLEX
+00F6;odieresis;LATIN SMALL LETTER O WITH DIAERESIS
+0153;oe;LATIN SMALL LIGATURE OE
+02DB;ogonek;OGONEK
+00F2;ograve;LATIN SMALL LETTER O WITH GRAVE
+01A1;ohorn;LATIN SMALL LETTER O WITH HORN
+0151;ohungarumlaut;LATIN SMALL LETTER O WITH DOUBLE ACUTE
+014D;omacron;LATIN SMALL LETTER O WITH MACRON
+03C9;omega;GREEK SMALL LETTER OMEGA
+03D6;omega1;GREEK PI SYMBOL
+03CE;omegatonos;GREEK SMALL LETTER OMEGA WITH TONOS
+03BF;omicron;GREEK SMALL LETTER OMICRON
+03CC;omicrontonos;GREEK SMALL LETTER OMICRON WITH TONOS
+0031;one;DIGIT ONE
+2024;onedotenleader;ONE DOT LEADER
+215B;oneeighth;VULGAR FRACTION ONE EIGHTH
+00BD;onehalf;VULGAR FRACTION ONE HALF
+00BC;onequarter;VULGAR FRACTION ONE QUARTER
+2153;onethird;VULGAR FRACTION ONE THIRD
+25E6;openbullet;WHITE BULLET
+00AA;ordfeminine;FEMININE ORDINAL INDICATOR
+00BA;ordmasculine;MASCULINE ORDINAL INDICATOR
+221F;orthogonal;RIGHT ANGLE
+00F8;oslash;LATIN SMALL LETTER O WITH STROKE
+01FF;oslashacute;LATIN SMALL LETTER O WITH STROKE AND ACUTE
+00F5;otilde;LATIN SMALL LETTER O WITH TILDE
+0070;p;LATIN SMALL LETTER P
+00B6;paragraph;PILCROW SIGN
+0028;parenleft;LEFT PARENTHESIS
+0029;parenright;RIGHT PARENTHESIS
+2202;partialdiff;PARTIAL DIFFERENTIAL
+0025;percent;PERCENT SIGN
+002E;period;FULL STOP
+00B7;periodcentered;MIDDLE DOT
+22A5;perpendicular;UP TACK
+2030;perthousand;PER MILLE SIGN
+20A7;peseta;PESETA SIGN
+03C6;phi;GREEK SMALL LETTER PHI
+03D5;phi1;GREEK PHI SYMBOL
+03C0;pi;GREEK SMALL LETTER PI
+002B;plus;PLUS SIGN
+00B1;plusminus;PLUS-MINUS SIGN
+211E;prescription;PRESCRIPTION TAKE
+220F;product;N-ARY PRODUCT
+2282;propersubset;SUBSET OF
+2283;propersuperset;SUPERSET OF
+221D;proportional;PROPORTIONAL TO
+03C8;psi;GREEK SMALL LETTER PSI
+0071;q;LATIN SMALL LETTER Q
+003F;question;QUESTION MARK
+00BF;questiondown;INVERTED QUESTION MARK
+0022;quotedbl;QUOTATION MARK
+201E;quotedblbase;DOUBLE LOW-9 QUOTATION MARK
+201C;quotedblleft;LEFT DOUBLE QUOTATION MARK
+201D;quotedblright;RIGHT DOUBLE QUOTATION MARK
+2018;quoteleft;LEFT SINGLE QUOTATION MARK
+201B;quotereversed;SINGLE HIGH-REVERSED-9 QUOTATION MARK
+2019;quoteright;RIGHT SINGLE QUOTATION MARK
+201A;quotesinglbase;SINGLE LOW-9 QUOTATION MARK
+0027;quotesingle;APOSTROPHE
+0072;r;LATIN SMALL LETTER R
+0155;racute;LATIN SMALL LETTER R WITH ACUTE
+221A;radical;SQUARE ROOT
+0159;rcaron;LATIN SMALL LETTER R WITH CARON
+2286;reflexsubset;SUBSET OF OR EQUAL TO
+2287;reflexsuperset;SUPERSET OF OR EQUAL TO
+00AE;registered;REGISTERED SIGN
+2310;revlogicalnot;REVERSED NOT SIGN
+03C1;rho;GREEK SMALL LETTER RHO
+02DA;ring;RING ABOVE
+2590;rtblock;RIGHT HALF BLOCK
+0073;s;LATIN SMALL LETTER S
+015B;sacute;LATIN SMALL LETTER S WITH ACUTE
+0161;scaron;LATIN SMALL LETTER S WITH CARON
+015F;scedilla;LATIN SMALL LETTER S WITH CEDILLA
+015D;scircumflex;LATIN SMALL LETTER S WITH CIRCUMFLEX
+2033;second;DOUBLE PRIME
+00A7;section;SECTION SIGN
+003B;semicolon;SEMICOLON
+0037;seven;DIGIT SEVEN
+215E;seveneighths;VULGAR FRACTION SEVEN EIGHTHS
+2592;shade;MEDIUM SHADE
+03C3;sigma;GREEK SMALL LETTER SIGMA
+03C2;sigma1;GREEK SMALL LETTER FINAL SIGMA
+223C;similar;TILDE OPERATOR
+0036;six;DIGIT SIX
+002F;slash;SOLIDUS
+263A;smileface;WHITE SMILING FACE
+0020;space;SPACE
+2660;spade;BLACK SPADE SUIT
+00A3;sterling;POUND SIGN
+220B;suchthat;CONTAINS AS MEMBER
+2211;summation;N-ARY SUMMATION
+263C;sun;WHITE SUN WITH RAYS
+0074;t;LATIN SMALL LETTER T
+03C4;tau;GREEK SMALL LETTER TAU
+0167;tbar;LATIN SMALL LETTER T WITH STROKE
+0165;tcaron;LATIN SMALL LETTER T WITH CARON
+2234;therefore;THEREFORE
+03B8;theta;GREEK SMALL LETTER THETA
+03D1;theta1;GREEK THETA SYMBOL
+00FE;thorn;LATIN SMALL LETTER THORN
+0033;three;DIGIT THREE
+215C;threeeighths;VULGAR FRACTION THREE EIGHTHS
+00BE;threequarters;VULGAR FRACTION THREE QUARTERS
+02DC;tilde;SMALL TILDE
+0303;tildecomb;COMBINING TILDE
+0384;tonos;GREEK TONOS
+2122;trademark;TRADE MARK SIGN
+25BC;triagdn;BLACK DOWN-POINTING TRIANGLE
+25C4;triaglf;BLACK LEFT-POINTING POINTER
+25BA;triagrt;BLACK RIGHT-POINTING POINTER
+25B2;triagup;BLACK UP-POINTING TRIANGLE
+0032;two;DIGIT TWO
+2025;twodotenleader;TWO DOT LEADER
+2154;twothirds;VULGAR FRACTION TWO THIRDS
+0075;u;LATIN SMALL LETTER U
+00FA;uacute;LATIN SMALL LETTER U WITH ACUTE
+016D;ubreve;LATIN SMALL LETTER U WITH BREVE
+00FB;ucircumflex;LATIN SMALL LETTER U WITH CIRCUMFLEX
+00FC;udieresis;LATIN SMALL LETTER U WITH DIAERESIS
+00F9;ugrave;LATIN SMALL LETTER U WITH GRAVE
+01B0;uhorn;LATIN SMALL LETTER U WITH HORN
+0171;uhungarumlaut;LATIN SMALL LETTER U WITH DOUBLE ACUTE
+016B;umacron;LATIN SMALL LETTER U WITH MACRON
+005F;underscore;LOW LINE
+2017;underscoredbl;DOUBLE LOW LINE
+222A;union;UNION
+2200;universal;FOR ALL
+0173;uogonek;LATIN SMALL LETTER U WITH OGONEK
+2580;upblock;UPPER HALF BLOCK
+03C5;upsilon;GREEK SMALL LETTER UPSILON
+03CB;upsilondieresis;GREEK SMALL LETTER UPSILON WITH DIALYTIKA
+03B0;upsilondieresistonos;GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS
+03CD;upsilontonos;GREEK SMALL LETTER UPSILON WITH TONOS
+016F;uring;LATIN SMALL LETTER U WITH RING ABOVE
+0169;utilde;LATIN SMALL LETTER U WITH TILDE
+0076;v;LATIN SMALL LETTER V
+0077;w;LATIN SMALL LETTER W
+1E83;wacute;LATIN SMALL LETTER W WITH ACUTE
+0175;wcircumflex;LATIN SMALL LETTER W WITH CIRCUMFLEX
+1E85;wdieresis;LATIN SMALL LETTER W WITH DIAERESIS
+2118;weierstrass;SCRIPT CAPITAL P
+1E81;wgrave;LATIN SMALL LETTER W WITH GRAVE
+0078;x;LATIN SMALL LETTER X
+03BE;xi;GREEK SMALL LETTER XI
+0079;y;LATIN SMALL LETTER Y
+00FD;yacute;LATIN SMALL LETTER Y WITH ACUTE
+0177;ycircumflex;LATIN SMALL LETTER Y WITH CIRCUMFLEX
+00FF;ydieresis;LATIN SMALL LETTER Y WITH DIAERESIS
+00A5;yen;YEN SIGN
+1EF3;ygrave;LATIN SMALL LETTER Y WITH GRAVE
+007A;z;LATIN SMALL LETTER Z
+017A;zacute;LATIN SMALL LETTER Z WITH ACUTE
+017E;zcaron;LATIN SMALL LETTER Z WITH CARON
+017C;zdotaccent;LATIN SMALL LETTER Z WITH DOT ABOVE
+0030;zero;DIGIT ZERO
+03B6;zeta;GREEK SMALL LETTER ZETA
+# END
+'
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+	| dict components |
+	dict := SymbolDictionary new.
+	dict name: #'PostScript CIDInit Testing'.
+	dict at: #comment put: 'Tests for CMaps'.
+	dict at: #isFunctional put: false.
+	dict at: #notice put: 'The MIT License
+
+Copyright © 2020 Christian Haider
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.'.
+	dict at: #storeVersion put: '2.5.0.1'.
+	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
+	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
+	components at: dict name put: dict.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+# Define class CIDTests
+DoIt
+TestCase
+	subclass: 'CIDTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	CIDTests category: 'PostScript CIDInit Testing'.
+	CIDTests namespacePath: #(#PostScript).
+%
+# Define class CMapTests
+DoIt
+TestCase
+	subclass: 'CMapTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PostScript
+%
+DoIt
+	CMapTests category: 'PostScript CIDInit Testing'.
+	CMapTests namespacePath: #(#PostScript).
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+category: 'testing'
+method: CIDTests
+testBfChar
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginbfchar
+<27> /quotesingle
+<5c> /yen
+endbfchar') dictionaryStack top at: #bfchar) asArray prettyPrintString = '[[<27> /quotesingle] [<5C> /yen]]'.
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginbfchar
+<27> <42>
+<5c> 51
+endbfchar') dictionaryStack top at: #bfchar) asArray prettyPrintString = '[[<27> <42>] [<5C> 51]]'
+%
+method: CIDTests
+testBfCharMultiple
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginbfchar
+<27> /quotesingle
+<5c> /yen
+endbfchar
+2 beginbfchar
+<37> <42>
+<6c> 51
+endbfchar') dictionaryStack top at: #bfchar) asArray prettyPrintString = '[[<27> /quotesingle] [<5C> /yen] [<37> <42>] [<6C> 51]]'
+%
+method: CIDTests
+testBfCharOutOfRange
+	| source cmap |
+	source := '/CIDInit /ProcSet findresource begin
+begincmap
+/CMapName /test def
+/CIDSystemInfo <</Registry (Adobe) /Ordering (UCS) /Supplement 0>> def
+1 begincodespacerange
+<00> <F0>
+endcodespacerange
+4 beginbfchar
+<27> /quotesingle
+<5c> /yen
+<37> <42>
+<FA> <77>
+endbfchar
+endcmap'.
+	cmap := CMap newWith: (Interpreter run: source) dictionaryStack top.
+	self deny: cmap isValid.
+	self deny: cmap bfMappings isValid.
+	self assert: cmap bfMappings unmapped first = ((Code bytes: #[250]) --> 119).
+	self assert: cmap cidMappings isValid.
+	self assert: cmap notdefMappings isValid
+%
+method: CIDTests
+testBfRange
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+2 begincodespacerange
+  <00> <7f>
+  <8121> <EE9E>
+endcodespacerange
+
+2 beginbfrange
+<00> <26>  <00>
+<61> <7d> <61>
+endbfrange
+
+2 beginbfrange
+<8152> <8153> <8152>
+<ed80> <ed96> <ed80>
+endbfrange') dictionaryStack top at: #bfrange) asArray prettyPrintString = '[[<00> <26> <00>] [<61> <7D> <61>] [<8152> <8153> <8152>] [<ED80> <ED96> <ED80>]]'
+%
+method: CIDTests
+testBfRangeNames
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+2 begincodespacerange
+  <00> <7f>
+  <8121> <EE7E>
+endcodespacerange
+
+2 beginbfrange
+<00> <03>  [/a /b /c /d]
+<61> <63> [/A /B /C]
+endbfrange') dictionaryStack top at: #bfrange) asArray prettyPrintString = '[[<00> <03> [/a /b /c /d]] [<61> <63> [/A /B /C]]]'
+%
+method: CIDTests
+testCID
+	| ps cmap |
+	ps := Interpreter run: '/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo
+<< /Registry (Adobe)
+/Ordering (UCS) /Supplement 0 >> def
+/CMapName /Adobe-Identity-UCS def
+/CMapType 2 def
+1 begincodespacerange
+<0000> <FFFF>
+endcodespacerange
+15 beginbfchar
+<0003> <0020>
+<000F> <002C>
+<0010> <002D>
+<0011> <002E>
+<0013> <0030>
+<0014> <0031>
+<0015> <0032>
+<0016> <0033>
+<0017> <0034>
+<0018> <0035>
+<0019> <0036>
+<001A> <0037>
+<001B> <0038>
+<001C> <0039>
+<001D> <003A>
+endbfchar
+endcmap CMapName currentdict /CMap defineresource pop end end'.
+	cmap := (ps resources at: #CMap) at: #'Adobe-Identity-UCS'.
+	self assert: cmap prettyPrintString = '<<
+	/CIDSystemInfo <<
+		/Registry (Adobe)
+		/Ordering (UCS)
+		/Supplement 0>>
+	/CMapName /Adobe-Identity-UCS
+	/CMapType 2
+	/codespacerange [<0000>..<FFFF>]
+	/bfchar [[<0003> <0020>] [<000F> <002C>] [<0010> <002D>] [<0011> <002E>] [<0013> <0030>] [<0014> <0031>] [<0015> <0032>] [<0016> <0033>] [<0017> <0034>] [<0018> <0035>] [<0019> <0036>] [<001A> <0037>] [<001B> <0038>] [<001C> <0039>] [<001D> <003A>]]>>'
+%
+method: CIDTests
+testCIDChar
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+2 begincodespacerange
+  <8100> <83ff>
+  <6400> <65FF>
+endcodespacerange
+
+5 begincidchar
+<8143> 8286
+<8144> 8274
+<814a>  8272
+<8387>  7936
+<838e>  7937
+endcidchar
+
+2 begincidchar
+<6421> 5970
+<6521> 6064
+endcidchar') dictionaryStack top at: #cidchar) asArray prettyPrintString = '[[<8143> 8286] [<8144> 8274] [<814A> 8272] [<8387> 7936] [<838E> 7937] [<6421> 5970] [<6521> 6064]]'
+%
+method: CIDTests
+testCIDRange
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+  <2121> <7E7E>
+endcodespacerange
+
+6 begincidrange
+<2121> <217e>  633
+<2221> <222e>  727
+<223a> <2241>  741
+<224a> <2250>  749
+<225c> <226a>  756
+<2272> <2279>  771
+endcidrange
+
+2 begincidrange
+<6421> <647e> 5970
+<6521> <657e> 6064
+endcidrange') dictionaryStack top at: #cidrange) asArray prettyPrintString = '[[<2121> <217E> 633] [<2221> <222E> 727] [<223A> <2241> 741] [<224A> <2250> 749] [<225C> <226A> 756] [<2272> <2279> 771] [<6421> <647E> 5970] [<6521> <657E> 6064]]'
+%
+method: CIDTests
+testCMapResources
+	self assert: (Interpreter run: '/Identity-H /CMap findresource') stack top size = 8.
+	self assert: (Interpreter run: '(*) {} 10 string /CMap resourceforall') stack size = 181
+%
+method: CIDTests
+testCodeSpaceOverlappingCodes
+	| source cmap |
+	source := '/CIDInit /ProcSet findresource begin
+begincmap
+/CMapName /GBK2K-V def
+/CIDSystemInfo <</Registry (Adobe) /Ordering (GB1) /Supplement 5>> def
+3 begincodespacerange
+	<00><7F>
+	<81308130><FE39FE39>
+	<8140><FEFE>
+endcodespacerange'.
+	cmap := CMap newWith: (Interpreter run: source) dictionaryStack top.
+	self assert: cmap isValid.
+	self assert: (cmap coderanges collect: [:e | e printString]) asSource = '#(''<00>..<7F>'' ''<81308130>..<FE39FE39>'' ''<8140>..<FEFE>'')'.
+%
+method: CIDTests
+testCodeSpaceRange
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<0000> <FFFF>
+endcodespacerange') dictionaryStack top at: #codespacerange) printPostScript = '[<0000>..<FFFF>]'
+%
+method: CIDTests
+testCodeSpaceRangeFromSpec
+	"from 5014.CIDFont_Spec.pdf p. 75"
+
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+4 begincodespacerange
+	<00>    <80>
+	<8140> <9FFC>
+	<A0>    <DF>
+	<E040> <FBFC>
+endcodespacerange') dictionaryStack top at: #codespacerange) printPostScript = '[<00>..<80> <8140>..<9FFC> <A0>..<DF> <E040>..<FBFC>]'
+%
+method: CIDTests
+testCodeSpaceRangeFromSpecOverlappingCodes
+	"from 5014.CIDFont_Spec.pdf p. 75"
+
+	| source |
+	source := '/CIDInit /ProcSet findresource begin
+begincmap
+/CMapName /test def
+/CIDSystemInfo <</Registry (Adobe) /Ordering (UCS) /Supplement 0>> def
+4 begincodespacerange
+	<00>    <80>
+	<8140> <9FFC>
+	<79>    <DF>
+	<E040> <FBFC>
+endcodespacerange'.
+	self should: [CMap newWith: (Interpreter run: source) dictionaryStack top] raise: Error.
+	[CMap newWith: (Interpreter run: source) dictionaryStack top] on: Error do: [:ex |
+		self assert: ex messageText = 'code space is invalid: ranges overlap']
+%
+method: CIDTests
+testCodeSpaceRangeFromSpecWrongCount
+	"from 5014.CIDFont_Spec.pdf p. 75"
+
+	self
+		should: [
+		Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+3 begincodespacerange
+	<00>    <80>
+	<8140> <9FFC>
+	<A0>    <DF>
+	<E040> <FBFC>
+endcodespacerange']
+		raise: Error.
+	[
+	Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+3 begincodespacerange
+	<00>    <80>
+	<8140> <9FFC>
+	<A0>    <DF>
+	<E040> <FBFC>
+endcodespacerange'] on: Error do: [:ex |
+			self assert: ex messageText = 'codespacerange count is wrong']
+%
+method: CIDTests
+testCodeSpaceRangeMultiple
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+1 begincodespacerange
+<A000> <FFFF>
+endcodespacerange') dictionaryStack top at: #codespacerange) printPostScript = '[<00>..<FF> <A000>..<FFFF>]'
+%
+method: CIDTests
+testNotdefChar
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginnotdefchar
+<03> 1
+<0F> 2
+endnotdefchar') dictionaryStack top at: #notdefchar) asArray prettyPrintString = '[[<03> 1] [<0F> 2]]'.
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginnotdefchar
+<03> 1
+<0F> 2
+endnotdefchar
+2 beginnotdefchar
+<05> 3
+<07> 4
+endnotdefchar') dictionaryStack top at: #notdefchar) asArray prettyPrintString = '[[<03> 1] [<0F> 2] [<05> 3] [<07> 4]]'
+%
+method: CIDTests
+testNotdefRange
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginnotdefrange
+<00> <1f> 1
+<fc> <ff> 231
+endnotdefrange') dictionaryStack top at: #notdefrange) asArray prettyPrintString = '[[<00> <1F> 1] [<FC> <FF> 231]]'.
+	self assert: ((Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+<00> <FF>
+endcodespacerange
+2 beginnotdefrange
+<00> <1f> 1
+<fc> <ff> 231
+endnotdefrange
+2 beginnotdefrange
+<30> <39> 56
+<64> <66> 78
+endnotdefrange') dictionaryStack top at: #notdefrange) asArray prettyPrintString = '[[<00> <1F> 1] [<FC> <FF> 231] [<30> <39> 56] [<64> <66> 78]]'
+%
+method: CIDTests
+testPrintCode
+	self assert: (Code bytes: #[0]) printPostScript = '<00>'.
+	self assert: (Code bytes: #[255]) printPostScript = '<FF>'.
+	self assert: (Code bytes: #[0 0]) printPostScript = '<0000>'.
+	self assert: (Code bytes: #[42 89]) printPostScript = '<2A59>'.
+	self assert: (Code bytes: #[0 0 0 0]) printPostScript = '<00000000>'.
+	self assert: (Code bytes: #[42 89 23 74]) printPostScript = '<2A59174A>'.
+%
+method: CIDTests
+testRearrangedFont
+	| ps |
+	ps := Interpreter run: (String fromASCII85: '%51(?6qM91F<E55Ec5GdATT&,Bl7I%ATMd4EarZ''@V''1dD@I%.8p,#+0JP.QBkM+$/P@Zc/Q+/[1N7ME;G0q\/P$=T#qnnnDD<h"/PKkkBQPgc1N7Lh;G0q\/P$<W02QRuFD55n/OO2[DI[6uGtD$G#qo4jBl8!''BhMlK/OMj''9//"X1N7Lh;G0q\/P$<W01L)+Db"_40eb=66>p[N/N>P*FtHTb;bAW4%1+[WF`_OrBl63k0JP.GDerr93&>Ms/Q,5?8hERC#qnhJ9keKH1Ikkf1GBp\>p*TfB5)7(ARTV"@;]^hA7fatF:A[6+C\npBl8''7ASkjtEbTb@>;76S+>=om+>=ol/ho4h+D#G$F`V,2@<?O(GRZAMF`V,+Df0Y+%5f8;AS5^p@V0+`@<)f>1,hB>06),QFCfN-DJ*cs%6QLX4s2M(ASqr>2D@<;05#<6G%D+F2e>/q06CoEA7Z342eG5r4?$k9%:sEf@V0+`@<)ed1*C%;B5)6mAo_<tB4VN70JG[54>JfY+<Wd#0Koq.2DIB<4?$e7+?VP:4q2(@A7B.k@;]^h%1P''8F`V,+Df0Y+%5K&8AS5^p@V0+`@<)f>3&*:#4s2sI0f<H)%6S322D[N>4Cqt[1Hl7ZDId3g@q]:k%1P''8@V''1dDIR3u@;]^h%6QU)1bh0:4?,&P2a/?,4?,&P0g6%/AR[W/4s2t!@Q7m^+?X4E3+G,]ASu$fAo_<tB4VM]1E^g]AS,juF:A[7+C\npBl7BlEa`iuAIUa]0f:^M+?VV<2)@E=+?VV<2)7?)4Cr%_0KpUAARmeZ4s2t!A2l8,%:sEf@V0XhDJ*Mi%5]2MF(Js%DKH<s1*C%;B5)6mAo_<tB4VN73&*9I4s2sI0f:gP+<Wd+0f:dO%6S333G(Gt4Cr#70g6^BARd`44q2(@A7B.k@;]^h%1P0;F`V,+Df0Y+%5Au7AS5^p@V0XhDJ*Mi4D$9$0KpUAAh[h/4s1t%%:sEf@V0XhDJ*Mi%:sEfEb/["Ea`iuARoCkDKH>!DIa1c,pbutA5Zu[Dfp)1AITq378HA^~>').
+	self assert: ps printString = '||  <'.
+	self assert: ((ps resources at: #Font) at: #'Jun101-Light-K-G-R-83pv_RKSJ-H') prettyPrintString = '<<
+	/name #''Jun101-Light-K-G-R-83pv_RKSJ-H''
+	/fonts [/Jun101-Light-83pv-RKSJ-H /Poetica-ChanceryIV /ShinseiKai-CBSK1-83pv-RKSJ-H /FutoGoB101-Bold-83pv-RKSJ-H /FutoMinA101-Bold-83pv-RKSJ-H /HSMinW3Gai30]
+	/Jun101-Light-83pv-RKSJ-H <<
+		/name #''Jun101-Light-83pv-RKSJ-H''
+		/usematrix [1 0 0 1 0 0.15]
+		/bfchar [[<27> /quotesingle] [<5C> /yen] [<60> /grave] [<7E> /tilde] [<7F> <7F>]]
+		/bfrange [[<00> <26> <00>] [<61> <7D> <61>]]>>
+	/Poetica-ChanceryIV <<
+		/name #''Poetica-ChanceryIV''
+		/bfchar [[<815C> <815C>] [<EB63> <EB63>]]
+		/bfrange [[<8141> <8147> <8141>] [<EB8C> <EB8D> <EB8C>]]>>
+	/ShinseiKai-CBSK1-83pv-RKSJ-H <<
+		/name #''ShinseiKai-CBSK1-83pv-RKSJ-H''
+		/bfrange [[<8152> <8153> <8152>] [<ED80> <ED96> <ED80>]]>>
+	/FutoGoB101-Bold-83pv-RKSJ-H <<
+		/name #''FutoGoB101-Bold-83pv-RKSJ-H''
+		/bfrange [[<8154> <8155> <8154>] [<EC9F> <ECF1> <EC9F>]]>>
+	/FutoMinA101-Bold-83pv-RKSJ-H <<
+		/name #''FutoMinA101-Bold-83pv-RKSJ-H''
+		/bfrange [[<F000> <F0FF> 0]]>>>>'
+%
+method: CIDTests
+testUseCMap
+	| ps cmap map1Source map2Source |
+	map1Source := '
+/CIDInit /ProcSet findresource begin 12 dict begin
+begincmap
+/CIDSystemInfo 3 dict dup begin /Registry (Adobe) def /Ordering (Japan1) def /Supplement 0 def end def
+/CMapName /Test-H def
+/CMapVersion 1 def
+/CMapType 0 def
+/WMode 0 def
+1 begincodespacerange
+  <00> <FF>
+endcodespacerange
+5 begincidchar
+<43> 86
+<44> 74
+<4a> 72
+<87> 36
+<8e> 37
+endcidchar
+1 begincidrange
+<41> <42> 78
+endcidrange
+endcmap
+CMapName currentdict /CMap defineresource pop end end'.
+	map2Source := '
+/CIDInit /ProcSet findresource begin 12 dict begin
+begincmap
+/CIDSystemInfo 3 dict dup begin /Registry (Adobe) def /Ordering (Japan1) def /Supplement 0 def end def
+/Test-H usecmap
+/CMapName /Test-V def
+/CMapVersion 1 def
+/CMapType 0 def
+/WMode 1 def
+1 begincidrange
+<81> <83> 87
+endcidrange
+2 begincidchar
+<84> 86
+<85> 82
+endcidchar
+endcmap
+CMapName currentdict /CMap defineresource pop end end'.
+	ps := Interpreter run: map1Source.
+	ps run: map2Source.
+	cmap := (ps resources at: #CMap) at: #'Test-V'.
+	self assert: cmap prettyPrintString = '<<
+	/CIDSystemInfo <<
+		/Registry (Adobe)
+		/Ordering (Japan1)
+		/Supplement 0>>
+	/codespacerange [<00>..<FF>]
+	/cidchar [[<43> 86] [<44> 74] [<4A> 72] [<87> 36] [<8E> 37] [<84> 86] [<85> 82]]
+	/cidrange [[<41> <42> 78] [<81> <83> 87]]
+	/CMapName /Test-V
+	/CMapVersion 1
+	/CMapType 0
+	/WMode 1>>'
+%
+method: CIDTests
+testUseCMap_Ext_RKSJ
+	| ps cmap cmapUsed |
+	(Category respondsTo: #cmapExt_RKSJ_H) ifFalse: [
+		"the CMap instances are not loaded"
+		^self].
+	ps := Interpreter run: '
+/CIDInit /ProcSet findresource begin
+
+12 dict begin
+
+begincmap
+
+/CIDSystemInfo 3 dict dup begin
+	/Registry (Adobe) def
+	/Ordering (Japan1) def
+	/Supplement 0 def
+end def
+
+/Ext-RKSJ-H usecmap
+
+/CMapName /Ext-RKSJ-V def
+/CMapVersion 1 def
+/CMapType 0 def
+
+/UIDOffset 800 def
+/XUID [1 10 25335] def
+
+/WMode 1 def
+
+1 begincidrange
+<8141> <8142> 7887
+endcidrange
+
+5 begincidchar
+<8143> 8286
+<8144> 8274
+<814a> 8272
+<8387> 7936
+<838e> 7937
+endcidchar
+
+endcmap
+
+CMapName currentdict /CMap defineresource pop
+
+end
+end'.
+	cmap := (ps resources at: #CMap) at: #'Ext-RKSJ-V'.
+	cmapUsed := (ps resources at: #CMap) at: #'Ext-RKSJ-H'.
+	self assert: (cmap at: #CIDSystemInfo) prettyPrintString = '<<
+	/Registry (Adobe)
+	/Ordering (Japan1)
+	/Supplement 0>>'.
+	self assert: (cmap at: #CMapName) object = #'Ext-RKSJ-V'.
+	self assert: (cmapUsed at: #CMapName) object = #'Ext-RKSJ-H'.
+	self assert: (cmap at: #CMapType) = 0.
+	self assert: (cmap at: #codespacerange) prettyPrintString = '[<00>..<80> <8140>..<9FFC> <A0>..<DF> <E040>..<FCFC>]'.
+	self assert: (cmap at: #cidrange) size = 666.
+	self assert: (cmapUsed at: #cidrange) size = 665.
+	self assert: (cmap at: #cidchar) prettyPrintString = '[[<8143> 8286] [<8144> 8274] [<814A> 8272] [<8387> 7936] [<838E> 7937]]'.
+	self assert: (cmapUsed includesKey: #cidchar) not.
+	self assert: (cmap at: #WMode) = 1.
+	self assert: (cmapUsed at: #WMode) = 0
+%
+method: CIDTests
+testUseMatrix
+	self assert: (Interpreter run: '
+/CIDInit /ProcSet findresource begin
+
+/Jun101-Light-K-G-R-83pv_RKSJ-H
+[	/Jun101-Light-83pv-RKSJ-H
+	/Poetica-ChanceryIV
+	/ShinseiKai-CBSK1-83pv-RKSJ-H
+	/FutoGoB101-Bold-83pv-RKSJ-H
+	/FutoMinA101-Bold-83pv-RKSJ-H
+	/HSMinW3Gai30 
+] beginrearrangedfont
+
+1 beginusematrix [1 0 0 1 0 0.15] endusematrix
+
+') dictionaryStack top prettyPrintString = '<<
+	/name #''Jun101-Light-K-G-R-83pv_RKSJ-H''
+	/fonts [/Jun101-Light-83pv-RKSJ-H /Poetica-ChanceryIV /ShinseiKai-CBSK1-83pv-RKSJ-H /FutoGoB101-Bold-83pv-RKSJ-H /FutoMinA101-Bold-83pv-RKSJ-H /HSMinW3Gai30]
+	/Jun101-Light-83pv-RKSJ-H <<
+		/name #''Jun101-Light-83pv-RKSJ-H''
+		/usematrix [1 0 0 1 0 0.15]>>>>'
+%
+category: 'testing'
+method: CMapTests
+testCodeLength
+	self assert: (Code bytes: #[0]) length = 1.
+	self assert: (Code bytes: #[0 0]) length = 2.
+	self assert: (Code bytes: #[0 0 0]) length = 3.
+	self assert: (Code bytes: #[0 0 0 0]) length = 4.
+	self assert: (Code bytes: #[]) length = 0
+%
+method: CMapTests
+testCodespaceMappings
+	self assert: ((Code bytes: #[10]) to: (Code bytes: #[50])) asCodespace numberOfMappings = 0.
+	self assert: ((Code bytes: #[10]) to: (Code bytes: #[50])) asCodespace numberOfCodes = 41.
+	self assert: ((Code bytes: #[100 10]) to: (Code bytes: #[200 50])) asCodespace numberOfMappings = 0.
+	self assert: ((Code bytes: #[100 10]) to: (Code bytes: #[200 50])) asCodespace numberOfCodes = 4141
+%
+method: CMapTests
+testCodespaceMappingsAccessing
+	| space1 space2 space3 |
+	space1 := ((Code bytes: #[10]) to: (Code bytes: #[50])) asCodespace.
+	self assert: (space1 at: (Code bytes: #[10])) isNil.
+	space1 addMapping: (Code bytes: #[11]) --> 42.
+	self assert: (space1 at: (Code bytes: #[11])) = ((Code bytes: #[11]) --> 42).
+	space2 := ((Code bytes: #[100 10]) to: (Code bytes: #[200 50])) asCodespace.
+	self assert: (space2 at: (Code bytes: #[100 10])) isNil.
+	space2 addMapping: (Code bytes: #[110 11]) --> 42.
+	self assert: (space2 at: (Code bytes: #[110 11])) = ((Code bytes: #[11]) --> 42).
+	space3 := ((Code bytes: #[20 100 10]) to: (Code bytes: #[22 200 50])) asCodespace.
+	self assert: (space3 at: (Code bytes: #[20 100 10])) isNil.
+	space3 addMapping: (Code bytes: #[21 110 11]) --> 42.
+	self assert: (space3 at: (Code bytes: #[21 110 11])) = ((Code bytes: #[11]) --> 42)
+%
+method: CMapTests
+testDestinations
+	| dict |
+	dict := (Interpreter run: '/CIDInit /ProcSet findresource begin
+begincmap
+1 begincodespacerange
+  <00> <7f>
+endcodespacerange
+3 beginbfchar
+<10> <32>
+<11> 42
+<12> /yen
+endbfchar
+5 beginbfrange
+<00> <03>  [/a /b /c /d]
+<31> <33> [/A /C /D]
+<41> <45> [1 2 3 4 5]
+<51> <55> [<01> <04> <02> <03> <05>]
+<61> <65> [<01> 4 <02> /yen 42]
+endbfrange
+endcmap') dictionaryStack top.
+	self assert: (Mappings
+		fromChars: (dict at: #bfchar)
+		andRanges: (dict at: #bfrange)
+		in: (dict at: #codespacerange)) = (Mappings codespaces: (Array with: (ByteCodespace
+			range: (Range from: #[0] to: #[127])
+			mappings: ((OrderedCollection new: 16)
+				add: (Range from: #[0] to: #[3]) --> 97;
+				add: (Code bytes: #[16]) --> 50;
+				add: (Code bytes: #[17]) --> 42;
+				add: (Code bytes: #[18]) --> 165;
+				add: (Code bytes: #[49]) --> 65;
+				add: (Range from: #[50] to: #[51]) --> 67;
+				add: (Range from: #[65] to: #[69]) --> 1;
+				add: (Code bytes: #[81]) --> 1;
+				add: (Code bytes: #[82]) --> 4;
+				add: (Range from: #[83] to: #[84]) --> 2;
+				add: (Code bytes: #[85]) --> 5;
+				add: (Code bytes: #[97]) --> 1;
+				add: (Code bytes: #[98]) --> 4;
+				add: (Code bytes: #[99]) --> 2;
+				add: (Code bytes: #[100]) --> 165;
+				add: (Code bytes: #[101]) --> 42;
+				yourself))))
+%
+category: 'testing canonical mappings'
+method: CMapTests
+testAsSimplestMapping
+	self assert: ((Code bytes: #[42]) --> 86) asSimplestMapping = ((Code bytes: #[42]) --> 86).
+	self assert: (((Code bytes: #[0 0]) to: (Code bytes: #[0 55])) --> 42) asSimplestMapping = (((Code bytes: #[0 0]) to: (Code bytes: #[0 55])) --> 42).
+	self assert: (((Code bytes: #[0 55]) to: (Code bytes: #[0 55])) --> 42) asSimplestMapping = ((Code bytes: #[0 55]) --> 42)
+%
+method: CMapTests
+testFromMappings
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[48]) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: (Code bytes: #[53]) --> 53)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: (Code bytes: #[48]) --> 48
+				with: (Code bytes: #[53]) --> 53
+				with: (Code bytes: #[57]) --> 57))))
+%
+method: CMapTests
+testFromMappingsIncluding
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: ((Code bytes: #[53]) to: (Code bytes: #[59])) --> 53)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+				with: ((Code bytes: #[53]) to: (Code bytes: #[59])) --> 53))))
+%
+method: CMapTests
+testFromMappingsJoinAfter
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[48]) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: (Code bytes: #[56]) --> 56)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: (Code bytes: #[48]) --> 48
+				with: ((Code bytes: #[56]) to: (Code bytes: #[57])) --> 56)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: ((Code bytes: #[53]) to: (Code bytes: #[56])) --> 53)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+				with: ((Code bytes: #[53]) to: (Code bytes: #[57])) --> 53))))
+%
+method: CMapTests
+testFromMappingsJoinBefore
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[48]) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: (Code bytes: #[49]) --> 49)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[49])) --> 48
+				with: (Code bytes: #[57]) --> 57)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: ((Code bytes: #[52]) to: (Code bytes: #[55])) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[55])) --> 48
+				with: (Code bytes: #[57]) --> 57))))
+%
+method: CMapTests
+testFromMappingsJoinBeforeAndAfter
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[55]) --> 55
+			with: (Code bytes: #[57]) --> 57
+			with: (Code bytes: #[56]) --> 56)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array with: ((Code bytes: #[55]) to: (Code bytes: #[57])) --> 55)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: ((Code bytes: #[52]) to: (Code bytes: #[56])) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array with: ((Code bytes: #[48]) to: (Code bytes: #[57])) --> 48))))
+%
+method: CMapTests
+testFromMappingsOrdering
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[48]) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: (Code bytes: #[53]) --> 53)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: (Code bytes: #[48]) --> 48
+				with: (Code bytes: #[53]) --> 53
+				with: (Code bytes: #[57]) --> 57)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[57]) --> 57
+			with: ((Code bytes: #[53]) to: (Code bytes: #[55])) --> 53)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+				with: ((Code bytes: #[53]) to: (Code bytes: #[55])) --> 53
+				with: (Code bytes: #[57]) --> 57))))
+%
+method: CMapTests
+testFromMappingsOverwriteFirst
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: ((Code bytes: #[42]) to: (Code bytes: #[50])) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[42]) to: (Code bytes: #[50])) --> 52
+				with: (Code bytes: #[51]) --> 51)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[48]) --> 57)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: (Code bytes: #[48]) --> 57
+				with: ((Code bytes: #[49]) to: (Code bytes: #[51])) --> 49))))
+%
+method: CMapTests
+testFromMappingsOverwriteLast
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: ((Code bytes: #[51]) to: (Code bytes: #[60])) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48
+				with: ((Code bytes: #[51]) to: (Code bytes: #[60])) --> 52)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[51])) --> 48
+			with: (Code bytes: #[51]) --> 57)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48
+				with: (Code bytes: #[51]) --> 57))))
+%
+method: CMapTests
+testFromMappingsOverwriteMiddle
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48
+			with: (Code bytes: #[51]) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48
+				with: (Code bytes: #[51]) --> 52
+				with: ((Code bytes: #[52]) to: (Code bytes: #[58])) --> 52)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48
+			with: ((Code bytes: #[51]) to: (Code bytes: #[55])) --> 52)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array
+				with: ((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48
+				with: ((Code bytes: #[51]) to: (Code bytes: #[55])) --> 52
+				with: ((Code bytes: #[56]) to: (Code bytes: #[58])) --> 56))))
+%
+method: CMapTests
+testFromMappingsOverwriteMiddleWithSame
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48
+			with: (Code bytes: #[51]) --> 51)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48)))).
+	self assert: (BfMappings
+		fromMappings: (Array
+			with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48
+			with: ((Code bytes: #[51]) to: (Code bytes: #[55])) --> 51)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) = (BfMappings codespaces: (Array with: (ByteCodespace
+			range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+			mappings: (Array with: ((Code bytes: #[48]) to: (Code bytes: #[58])) --> 48))))
+%
+method: CMapTests
+testMappingsFromChars
+	| mappings |
+	mappings := (OrderedCollection new: 11)
+		add: (Code bytes: #[48]) --> 48;
+		add: (Code bytes: #[49]) --> 49;
+		add: (Code bytes: #[50]) --> 50;
+		add: (Code bytes: #[51]) --> 51;
+		add: (Code bytes: #[52]) --> 52;
+		add: (Code bytes: #[53]) --> 53;
+		add: (Code bytes: #[54]) --> 54;
+		add: (Code bytes: #[55]) --> 55;
+		add: (Code bytes: #[56]) --> 56;
+		add: (Code bytes: #[57]) --> 57;
+		add: (Code bytes: #[0 32]) --> 32;
+		yourself.
+	self assert: (BfMappings
+		fromMappings: mappings
+		in: (Array
+			with: ((Code bytes: #[20]) to: (Code bytes: #[80]))
+			with: ((Code bytes: #[0 0]) to: (Code bytes: #[0 255])))) = (BfMappings codespaces: (Array
+			with: (ByteCodespace
+				range: ((Code bytes: #[20]) to: (Code bytes: #[80]))
+				mappings: (Array with: ((Code bytes: #[48]) to: (Code bytes: #[57])) --> 48))
+			with: (IndexedCodespace
+				range: ((Code bytes: #[0 0]) to: (Code bytes: #[0 255]))
+				codespaces: (Array with: (ByteCodespace
+					range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+					mappings: (Array with: (Code bytes: #[32]) --> 32))))))
+%
+method: CMapTests
+testMappingsOverwrittenCode
+	"overwrite code"
+
+	self assert: ((Code bytes: #[55]) --> 55 mappingsOverwrittenBy: (Code bytes: #[55]) --> 56) = (Array with: (Code bytes: #[55]) --> 56).
+	"overwrite code with range"
+	self assert: ((Code bytes: #[55]) --> 55 mappingsOverwrittenBy: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 56) = (Array with: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 56).
+	"attach in front"
+	self assert: ((Code bytes: #[54]) --> 54 mappingsOverwrittenBy: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 55) = (Array with: ((Code bytes: #[54]) to: (Code bytes: #[58])) --> 54).
+	"attach at the end"
+	self assert: ((Code bytes: #[59]) --> 59 mappingsOverwrittenBy: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 55) = (Array with: ((Code bytes: #[55]) to: (Code bytes: #[59])) --> 55).
+	"not touching -> ignored"
+	self assert: ((Code bytes: #[54]) --> 53 mappingsOverwrittenBy: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 55) = (Array with: ((Code bytes: #[55]) to: (Code bytes: #[58])) --> 55)
+%
+method: CMapTests
+testMappingsOverwrittenRange
+	"overwrite inside range"
+
+	self assert: (((Code bytes: #[52]) to: (Code bytes: #[56])) --> 30 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50).
+	"attach in front"
+	self assert: (((Code bytes: #[40]) to: (Code bytes: #[49])) --> 40 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[40]) to: (Code bytes: #[59])) --> 40).
+	"attach at the end"
+	self assert: (((Code bytes: #[60]) to: (Code bytes: #[69])) --> 60 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[50]) to: (Code bytes: #[69])) --> 50).
+	"overlapping in front"
+	self assert: (((Code bytes: #[40]) to: (Code bytes: #[55])) --> 10 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array
+		with: ((Code bytes: #[40]) to: (Code bytes: #[49])) --> 10
+		with: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50).
+	"overlapping in front - joined"
+	self assert: (((Code bytes: #[40]) to: (Code bytes: #[55])) --> 40 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[40]) to: (Code bytes: #[59])) --> 40).
+	"overlapping at the end"
+	self assert: (((Code bytes: #[55]) to: (Code bytes: #[69])) --> 10 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array
+		with: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50
+		with: ((Code bytes: #[60]) to: (Code bytes: #[69])) --> 15).
+	"overlapping at the end - joined"
+	self assert: (((Code bytes: #[55]) to: (Code bytes: #[69])) --> 55 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[50]) to: (Code bytes: #[69])) --> 50).
+	"fully overlapping"
+	self assert: (((Code bytes: #[40]) to: (Code bytes: #[69])) --> 10 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array
+		with: ((Code bytes: #[40]) to: (Code bytes: #[49])) --> 10
+		with: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50
+		with: ((Code bytes: #[60]) to: (Code bytes: #[69])) --> 30).
+	"fully overlapping - joined"
+	self assert: (((Code bytes: #[40]) to: (Code bytes: #[69])) --> 40 mappingsOverwrittenBy: ((Code bytes: #[50]) to: (Code bytes: #[59])) --> 50) = (Array with: ((Code bytes: #[40]) to: (Code bytes: #[69])) --> 40)
+%
+category: 'testing codespace'
+method: CMapTests
+testCodespace
+	| ordered unordered |
+	ordered := (Array
+		with: ((Code bytes: #[0]) to: (Code bytes: #[127]))
+		with: ((Code bytes: #[192 128]) to: (Code bytes: #[223 191]))
+		with: ((Code bytes: #[224 128 128]) to: (Code bytes: #[239 191 191]))
+		with: ((Code bytes: #[240 128 128 128]) to: (Code bytes: #[247 191 191 191]))).
+	unordered := CMap sortedCodespaceranges: (Array
+		with: ((Code bytes: #[224 128 128]) to: (Code bytes: #[239 191 191]))
+		with: ((Code bytes: #[0]) to: (Code bytes: #[127]))
+		with: ((Code bytes: #[240 128 128 128]) to: (Code bytes: #[247 191 191 191]))
+		with: ((Code bytes: #[192 128]) to: (Code bytes: #[223 191]))).
+	self assert: ordered = unordered
+%
+method: CMapTests
+testCodespaceIsValid
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[0] to: #[255]) with: (Range from: #[0 0] to: #[255 255])))] raise: Error.
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[42] to: #[42]) with: (Range from: #[42] to: #[42])))] raise: Error.
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[0] to: #[42]) with: (Range from: #[42] to: #[255])))] raise: Error.
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[0] to: #[255]) with: (Range from: #[0] to: #[255])))] raise: Error.
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[0] to: #[255]) with: (Range from: #[42] to: #[42])))] raise: Error.
+	self should: [(CMap sortedCodespaceranges: (Array with: (Range from: #[42] to: #[42]) with: (Range from: #[0] to: #[255])))] raise: Error.
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[0] to: #[42]) with: (Range from: #[43] to: #[255]))) = (Array with: (Range from: #[0] to: #[255])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[42] to: #[42]) with: (Range from: #[43] to: #[43]))) = (Array with: (Range from: #[42] to: #[43])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[43] to: #[43]) with: (Range from: #[42] to: #[42]))) = (Array with: (Range from: #[42] to: #[43])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[10 43] to: #[20 43]) with: (Range from: #[10 42] to: #[20 42]))) = (Array with: (Range from: #[10 42] to: #[20 43])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[43 57 10 43] to: #[43 57 20 43]) with: (Range from: #[43 57 10 42] to: #[43 57 20 42]))) = (Array with: (Range from: #[43 57 10 42] to: #[43 57 20 43])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[43 57 10 40] to: #[43 57 20 80]) with: (Range from: #[43 57 21 40] to: #[43 57 70 80]))) = (Array with: (Range from: #[43 57 10 40] to: #[43 57 70 80])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[43 57 10 40] to: #[43 57 20 80]) with: (Range from: #[43 58 10 40] to: #[43 77 20 80]))) = (Array with: (Range from: #[43 57 10 40] to: #[43 77 20 80])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[21 57 10 40] to: #[43 57 20 80]) with: (Range from: #[44 57 10 40] to: #[244 57 20 80]))) = (Array with: (Range from: #[21 57 10 40] to: #[244 57 20 80])).
+	self assert: (CMap sortedCodespaceranges: (Array with: (Range from: #[21 57 10 40] to: #[43 57 20 80]) with: (Range from: #[44 57 10 81] to: #[244 57 20 90]))) = (Array with: (Range from: #[21 57 10 40] to: #[43 57 20 80]) with: (Range from: #[44 57 10 81] to: #[244 57 20 90])).
+%
+method: CMapTests
+testCodespaceJoining
+	self assert: (CMap sortedCodespaceranges: (Array
+		with: ((Code bytes: #[0]) to: (Code bytes: #[127]))
+		with: ((Code bytes: #[128]) to: (Code bytes: #[255])))) = (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))
+%
+method: CMapTests
+testCodespaceJoining2
+	self assert: (CMap sortedCodespaceranges: ((OrderedCollection new: 6)
+		add: ((Code bytes: #[221]) to: (Code bytes: #[240]));
+		add: ((Code bytes: #[32]) to: (Code bytes: #[127]));
+		add: ((Code bytes: #[10]) to: (Code bytes: #[30]));
+		add: ((Code bytes: #[210]) to: (Code bytes: #[220]));
+		add: ((Code bytes: #[128]) to: (Code bytes: #[200]));
+		add: ((Code bytes: #[3]) to: (Code bytes: #[9]));
+		yourself)) = (Array
+			with: ((Code bytes: #[3]) to: (Code bytes: #[30]))
+			with: ((Code bytes: #[32]) to: (Code bytes: #[200]))
+			with: ((Code bytes: #[210]) to: (Code bytes: #[240])))
+%
+category: 'testing decoding'
+method: CMapTests
+testBfMappingsCharacterAt
+	| mappings1 mappings2 |
+	mappings1 := BfMappings
+		fromMappings: (Array with: (Code bytes: #[22]) --> 65)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: (mappings1 characterAt: (Code bytes: #[22])) = $A.
+	self assert: (mappings1 characterAt: (Code bytes: #[21])) isNil.
+	self assert: (mappings1 characterAt: (Code bytes: #[23])) isNil.
+	self assert: (mappings1 characterAt: (Code bytes: #[1 21])) isNil.
+	mappings2 := BfMappings
+		fromMappings: (Array
+			with: (Code bytes: #[21]) --> 50
+			with: ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 65)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: (mappings2 characterAt: (Code bytes: #[21])) = $2.
+	self assert: (mappings2 characterAt: (Code bytes: #[22])) = $A.
+	self assert: (mappings2 characterAt: (Code bytes: #[42])) = $U.
+	self assert: (mappings2 characterAt: (Code bytes: #[20])) isNil.
+	self assert: (mappings2 characterAt: (Code bytes: #[43])) isNil.
+	self assert: (mappings2 characterAt: (Code bytes: #[1 22])) isNil
+%
+method: CMapTests
+testCIDMappingsCidAt
+	| mappings1 mappings2 |
+	mappings1 := CIDMappings
+		fromMappings: (Array with: (Code bytes: #[22]) --> 10)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: (mappings1 cidAt: (Code bytes: #[22])) = 10.
+	self assert: (mappings1 cidAt: (Code bytes: #[21])) isNil.
+	self assert: (mappings1 cidAt: (Code bytes: #[23])) isNil.
+	self assert: (mappings1 cidAt: (Code bytes: #[1 21])) isNil.
+	mappings2 := CIDMappings
+		fromMappings: (Array
+			with: (Code bytes: #[21]) --> 10
+			with: ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 9)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: ((CIDMappings
+		fromMappings: (Array
+			with: (Code bytes: #[21]) --> 10
+			with: ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 10)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))) cidAt: (Code bytes: #[21])) = 10.
+	self assert: (mappings2 cidAt: (Code bytes: #[22])) = 9.
+	self assert: (mappings2 cidAt: (Code bytes: #[42])) = 29.
+	self assert: (mappings2 cidAt: (Code bytes: #[20])) isNil.
+	self assert: (mappings2 cidAt: (Code bytes: #[43])) isNil.
+	self assert: (mappings2 cidAt: (Code bytes: #[1 22])) isNil
+%
+method: CMapTests
+testCodeMappingDestinationCodeAt
+	self assert: ((Code bytes: #[22]) --> 10 destinationAt: (Code bytes: #[22])) = 10.
+	"out of range - no errors"
+	self assert: ((Code bytes: #[22]) --> 10 destinationAt: (Code bytes: #[20])) = 10.
+	self assert: ((Code bytes: #[22]) --> 10 destinationAt: (Code bytes: #[0])) = 10.
+	self assert: ((Code bytes: #[22]) --> 10 destinationAt: (Code bytes: #[255])) = 10.
+	self assert: ((Code bytes: #[22]) --> 10 destinationAt: (Code bytes: #[255 255])) = 10
+%
+method: CMapTests
+testNotdefMappingsCidAt
+	| mappings1 mappings2 |
+	mappings1 := NotdefMappings
+		fromMappings: (Array with: (Code bytes: #[22]) --> 10)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: (mappings1 cidAt: (Code bytes: #[22])) = 10.
+	self assert: (mappings1 cidAt: (Code bytes: #[21])) isNil.
+	self assert: (mappings1 cidAt: (Code bytes: #[23])) isNil.
+	self assert: (mappings1 cidAt: (Code bytes: #[1 21])) isNil.
+	mappings2 := NotdefMappings
+		fromMappings: (Array
+			with: (Code bytes: #[21]) --> 10
+			with: ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 9)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255]))).
+	self assert: (mappings2 cidAt: (Code bytes: #[21])) = 10.
+	self assert: (mappings2 cidAt: (Code bytes: #[22])) = 9.
+	self assert: (mappings2 cidAt: (Code bytes: #[42])) = 9.
+	self assert: (mappings2 cidAt: (Code bytes: #[20])) isNil.
+	self assert: (mappings2 cidAt: (Code bytes: #[43])) isNil.
+	self assert: (mappings2 cidAt: (Code bytes: #[1 22])) isNil
+%
+method: CMapTests
+testRangeMappingDestinationCodeAt
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[22])) = 86.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[42])) = 106.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[32])) = 96.
+	"out of range - no errors"
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[21])) = 85.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[0])) = 64.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[43])) = 107.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[255])) = 319.
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86 destinationAt: (Code bytes: #[2 255])) = 831.
+	"out of range - negative"
+	self assert: (((Code bytes: #[22]) to: (Code bytes: #[42])) --> 0 destinationAt: (Code bytes: #[10])) = -12
+%
+category: 'testing neighbors'
+method: CMapTests
+testCharMappingIsNeighborOfCharMapping
+	self assert: ((Code bytes: #[42]) --> 86 isNext: (Code bytes: #[43]) --> 87).
+	self deny: ((Code bytes: #[42]) --> 86 isNext: (Code bytes: #[42]) --> 86).
+	self deny: ((Code bytes: #[42]) --> 86 isNext: (Code bytes: #[43]) --> 85).
+	self assert: ((Code bytes: #[0 42]) --> 86 isNext: (Code bytes: #[0 43]) --> 87).
+	self deny: ((Code bytes: #[0 42]) --> 86 isNext: (Code bytes: #[0 42]) --> 86).
+	self deny: ((Code bytes: #[0 42]) --> 86 isNext: (Code bytes: #[0 43]) --> 85).
+	self deny: ((Code bytes: #[0 42]) --> 86 isNext: (Code bytes: #[1 42]) --> 87)
+%
+method: CMapTests
+testCharMappingIsNeighborOfRangeMapping
+	| mapping1 mapping2 |
+	mapping1 := (Code bytes: #[42]) --> 106.
+	self assert: (mapping1 isNext: ((Code bytes: #[43]) to: (Code bytes: #[48])) --> 107).
+	self deny: (mapping1 isNext: ((Code bytes: #[42]) to: (Code bytes: #[48])) --> 107).
+	self deny: (mapping1 isNext: ((Code bytes: #[43]) to: (Code bytes: #[48])) --> 106).
+	mapping2 := (Code bytes: #[0 42]) --> 106.
+	self assert: (mapping2 isNext: ((Code bytes: #[0 43]) to: (Code bytes: #[0 48])) --> 107).
+	self deny: (mapping2 isNext: ((Code bytes: #[0 42]) to: (Code bytes: #[0 48])) --> 106).
+	self deny: (mapping2 isNext: ((Code bytes: #[0 43]) to: (Code bytes: #[0 48])) --> 105).
+	self deny: (mapping2 isNext: ((Code bytes: #[1 42]) to: (Code bytes: #[1 48])) --> 107).
+	self deny: ((Code bytes: #[0 255]) --> 86 isNext: ((Code bytes: #[1 00]) to: (Code bytes: #[1 10])) --> 87)
+%
+method: CMapTests
+testRangeMappingIsNeighborOfCharMapping
+	| mapping1 mapping2 |
+	mapping1 := ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86.
+	self assert: mapping1 lastDestination = 106.
+	self assert: (mapping1 isNext: (Code bytes: #[43]) --> 107).
+	self deny: (mapping1 isNext: (Code bytes: #[42]) --> 107).
+	self deny: (mapping1 isNext: (Code bytes: #[43]) --> 106).
+	mapping2 := ((Code bytes: #[0 22]) to: (Code bytes: #[0 42])) --> 86.
+	self assert: mapping2 lastDestination = 106.
+	self assert: (mapping2 isNext: (Code bytes: #[0 43]) --> 107).
+	self deny: (mapping2 isNext: (Code bytes: #[0 42]) --> 106).
+	self deny: (mapping2 isNext: (Code bytes: #[0 43]) --> 105).
+	self deny: (mapping2 isNext: (Code bytes: #[1 42]) --> 107).
+	self deny: (((Code bytes: #[0 250]) to: (Code bytes: #[0 255])) --> 86 isNext: (Code bytes: #[1 00]) --> 92)
+%
+method: CMapTests
+testRangeMappingIsNeighborOfRangeMapping
+	| mapping1 mapping2 |
+	mapping1 := ((Code bytes: #[22]) to: (Code bytes: #[42])) --> 86.
+	self assert: mapping1 lastDestination = 106.
+	self assert: (mapping1 isNext: ((Code bytes: #[43]) to: (Code bytes: #[48])) --> 107).
+	self deny: (mapping1 isNext: ((Code bytes: #[42]) to: (Code bytes: #[48])) --> 107).
+	self deny: (mapping1 isNext: ((Code bytes: #[43]) to: (Code bytes: #[48])) --> 106).
+	mapping2 := ((Code bytes: #[0 22]) to: (Code bytes: #[0 42])) --> 86.
+	self assert: mapping2 lastDestination = 106.
+	self assert: (mapping2 isNext: ((Code bytes: #[0 43]) to: (Code bytes: #[0 48])) --> 107).
+	self deny: (mapping2 isNext: ((Code bytes: #[0 42]) to: (Code bytes: #[0 48])) --> 106).
+	self deny: (mapping2 isNext: ((Code bytes: #[0 43]) to: (Code bytes: #[0 48])) --> 105).
+	self deny: (mapping2 isNext: ((Code bytes: #[1 42]) to: (Code bytes: #[1 48])) --> 107).
+	self deny: (((Code bytes: #[0 250]) to: (Code bytes: #[0 255])) --> 86 isNext: ((Code bytes: #[1 00]) to: (Code bytes: #[1 10])) --> 92)
+%
+category: 'testing order'
+method: CMapTests
+testCodeSmallerThanRange
+	self assert: (Code bytes: #[0]) <= ((Code bytes: #[20]) to: (Code bytes: #[200])).
+	self assert: (Code bytes: #[42]) <= ((Code bytes: #[42]) to: (Code bytes: #[44])).
+	self assert: (Code bytes: #[42]) <= ((Code bytes: #[43]) to: (Code bytes: #[48])).
+	self assert: (Code bytes: #[42 250]) <= ((Code bytes: #[43]) to: (Code bytes: #[48])).
+	self assert: (Code bytes: #[42]) <= ((Code bytes: #[43 250]) to: (Code bytes: #[48 255])).
+	self assert: (Code bytes: #[42]) <= ((Code bytes: #[250]) to: (Code bytes: #[255])).
+	self deny: (Code bytes: #[255]) <= ((Code bytes: #[43]) to: (Code bytes: #[48])).
+	self deny: (Code bytes: #[42]) <= ((Code bytes: #[40]) to: (Code bytes: #[42])).
+	self deny: (Code bytes: #[42]) <= ((Code bytes: #[0]) to: (Code bytes: #[10])).
+%
+method: CMapTests
+testRangeSmallerThanCode
+	self assert: ((Code bytes: #[0]) to: (Code bytes: #[200])) <= (Code bytes: #[255]).
+	self assert: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[42]).
+	self assert: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[43]).
+	self assert: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[255]).
+	self assert: ((Code bytes: #[40 0]) to: (Code bytes: #[42 255])) <= (Code bytes: #[43]).
+	self deny: ((Code bytes: #[40 0]) to: (Code bytes: #[42 255])) <= (Code bytes: #[40]).
+	self deny: ((Code bytes: #[40]) to: (Code bytes: #[255])) <= (Code bytes: #[0]).
+	self deny: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[39]).
+	self deny: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[39 255]).
+	self deny: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[0]).
+	self deny: ((Code bytes: #[40]) to: (Code bytes: #[42])) <= (Code bytes: #[0 255]).
+%
+method: CMapTests
+testSmaller
+	self assert: (Code bytes: #[0]) < (Code bytes: #[255]).
+	self deny: (Code bytes: #[42]) < (Code bytes: #[42]).
+	self assert: (Code bytes: #[42]) < (Code bytes: #[43]).
+	self assert: (Code bytes: #[42]) < (Code bytes: #[255]).
+	self deny: (Code bytes: #[255]) < (Code bytes: #[0]).
+	self deny: (Code bytes: #[42]) < (Code bytes: #[41]).
+	self deny: (Code bytes: #[42]) < (Code bytes: #[0]).
+%
+method: CMapTests
+testSmaller2
+	self assert: (Code bytes: #[0 0]) < (Code bytes: #[255 255]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[42 42]).
+	self assert: (Code bytes: #[42 42]) < (Code bytes: #[43 43]).
+	self assert: (Code bytes: #[42 42]) < (Code bytes: #[42 43]).
+	self assert: (Code bytes: #[42 42]) < (Code bytes: #[43 42]).
+	self assert: (Code bytes: #[0 42]) < (Code bytes: #[255 42]).
+	self assert: (Code bytes: #[0 42]) < (Code bytes: #[255 255]).
+	self deny: (Code bytes: #[255 255]) < (Code bytes: #[0 0]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[41 41]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[41 42]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[42 41]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[0 42]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[0 255]).
+	self assert: (Code bytes: #[42 42]) < (Code bytes: #[255 0]).
+	self deny: (Code bytes: #[42 42]) < (Code bytes: #[0 0]).
+%
+method: CMapTests
+testSmaller3
+	self assert: (Code bytes: #[0 0 0]) < (Code bytes: #[255 255 255]).
+	self deny: (Code bytes: #[42 42 42]) < (Code bytes: #[42 42 42]).
+	self assert: (Code bytes: #[42 42 42]) < (Code bytes: #[42 42 43]).
+	self assert: (Code bytes: #[42 42 42]) < (Code bytes: #[42 43 42]).
+	self assert: (Code bytes: #[42 42 42]) < (Code bytes: #[43 42 42]).
+	self deny: (Code bytes: #[255 255 255]) < (Code bytes: #[0 0 0]).
+	self deny: (Code bytes: #[42 42 42]) < (Code bytes: #[42 42 41]).
+	self deny: (Code bytes: #[42 42 42]) < (Code bytes: #[42 41 42]).
+	self deny: (Code bytes: #[42 42 42]) < (Code bytes: #[41 42 42]).
+	self deny: (Code bytes: #[42 42 42]) < (Code bytes: #[41 41 41]).
+%
+method: CMapTests
+testSmaller4
+	self assert: (Code bytes: #[0 0 0 0]) < (Code bytes: #[255 255 255 255]).
+	self deny: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 42 42 42]).
+	self assert: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 42 42 43]).
+	self assert: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 42 43 42]).
+	self assert: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 43 42 42]).
+	self assert: (Code bytes: #[42 42 42 42]) < (Code bytes: #[43 42 42 42]).
+	self deny: (Code bytes: #[255 255 255 255]) < (Code bytes: #[0 0 0 0]).
+	self deny: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 42 42 41]).
+	self deny: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 42 41 42]).
+	self deny: (Code bytes: #[42 42 42 42]) < (Code bytes: #[42 41 42 42]).
+	self deny: (Code bytes: #[42 42 42 42]) < (Code bytes: #[41 42 42 42]).
+%
+method: CMapTests
+testSmallerDifferentLength
+	self assert: (Code bytes: #[]) < (Code bytes: #[42]).
+	self assert: (Code bytes: #[0 42]) < (Code bytes: #[42]).
+	self assert: (Code bytes: #[42]) < (Code bytes: #[42 0]).
+	self assert: (Code bytes: #[0 42]) < (Code bytes: #[42 65 74])
+%
+method: CMapTests
+testSmallerThan
+	self assert: (Code bytes: #[0]) <= (Code bytes: #[255]).
+	self assert: (Code bytes: #[42]) <= (Code bytes: #[42]).
+	self assert: (Code bytes: #[42]) <= (Code bytes: #[43]).
+	self assert: (Code bytes: #[42]) <= (Code bytes: #[255]).
+	self deny: (Code bytes: #[255]) <= (Code bytes: #[0]).
+	self deny: (Code bytes: #[42]) <= (Code bytes: #[41]).
+	self deny: (Code bytes: #[42]) <= (Code bytes: #[0]).
+%
+method: CMapTests
+testSmallerThan2
+	self assert: (Code bytes: #[0 0]) <= (Code bytes: #[255 255]).
+	self assert: (Code bytes: #[42 42]) <= (Code bytes: #[42 42]).
+	self assert: (Code bytes: #[42 42]) <= (Code bytes: #[43 43]).
+	self assert: (Code bytes: #[42 42]) <= (Code bytes: #[42 43]).
+	self assert: (Code bytes: #[42 42]) <= (Code bytes: #[43 42]).
+	self assert: (Code bytes: #[0 42]) <= (Code bytes: #[255 42]).
+	self assert: (Code bytes: #[0 42]) <= (Code bytes: #[255 255]).
+	self deny: (Code bytes: #[255 255]) <= (Code bytes: #[0 0]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[41 41]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[41 42]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[42 41]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[0 42]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[0 255]).
+	self assert: (Code bytes: #[42 42]) <= (Code bytes: #[255 0]).
+	self deny: (Code bytes: #[42 42]) <= (Code bytes: #[0 0]).
+%
+method: CMapTests
+testSmallerThan3
+	self assert: (Code bytes: #[0 0 0]) <= (Code bytes: #[255 255 255]).
+	self assert: (Code bytes: #[42 42 42]) <= (Code bytes: #[42 42 42]).
+	self assert: (Code bytes: #[42 42 42]) <= (Code bytes: #[42 42 43]).
+	self assert: (Code bytes: #[42 42 42]) <= (Code bytes: #[42 43 42]).
+	self assert: (Code bytes: #[42 42 42]) <= (Code bytes: #[43 42 42]).
+	self deny: (Code bytes: #[255 255 255]) <= (Code bytes: #[0 0 0]).
+	self deny: (Code bytes: #[42 42 42]) <= (Code bytes: #[42 42 41]).
+	self deny: (Code bytes: #[42 42 42]) <= (Code bytes: #[42 41 42]).
+	self deny: (Code bytes: #[42 42 42]) <= (Code bytes: #[41 42 42]).
+	self deny: (Code bytes: #[42 42 42]) <= (Code bytes: #[41 41 41]).
+%
+method: CMapTests
+testSmallerThan4
+	self assert: (Code bytes: #[0 0 0 0]) <= (Code bytes: #[255 255 255 255]).
+	self assert: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 42 42 42]).
+	self assert: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 42 42 43]).
+	self assert: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 42 43 42]).
+	self assert: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 43 42 42]).
+	self assert: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[43 42 42 42]).
+	self deny: (Code bytes: #[255 255 255 255]) <= (Code bytes: #[0 0 0 0]).
+	self deny: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 42 42 41]).
+	self deny: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 42 41 42]).
+	self deny: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[42 41 42 42]).
+	self deny: (Code bytes: #[42 42 42 42]) <= (Code bytes: #[41 42 42 42]).
+%
+method: CMapTests
+testSmallerThanDifferentLength
+	self assert: (Code bytes: #[]) <= (Code bytes: #[42]).
+	self assert: (Code bytes: #[0 42]) <= (Code bytes: #[42]).
+	self assert: (Code bytes: #[42]) <= (Code bytes: #[42 0]).
+	self assert: (Code bytes: #[0 42]) <= (Code bytes: #[42 65 74])
+%
+category: 'testing ranges'
+method: CMapTests
+testRangeErrors
+	self should: [(Code bytes: #[]) to: (Code bytes: #[42])] raise: Error.
+	[(Code bytes: #[]) to: (Code bytes: #[42])] on: Error do: [:ex |
+		self assert: ex messageText = 'The range is not valid'].
+	self should: [(Code bytes: #[0 42]) to: (Code bytes: #[42])] raise: Error.
+	[(Code bytes: #[0 42]) to: (Code bytes: #[42])] on: Error do: [:ex |
+		self assert: ex messageText = 'The range is not valid'].
+	self should: [(Code bytes: #[0 42]) to: (Code bytes: #[42 65 74])] raise: Error.
+	[(Code bytes: #[0 42]) to: (Code bytes: #[42 65 74])] on: Error do: [:ex |
+		self assert: ex messageText = 'The range is not valid'].
+%
+method: CMapTests
+testRangeIncludes
+	self assert: (((Code bytes: #[42]) to: (Code bytes: #[42])) includesCode: (Code bytes: #[42])).
+	self deny: (((Code bytes: #[42]) to: (Code bytes: #[42])) includesCode: (Code bytes: #[41])).
+	self deny: (((Code bytes: #[42]) to: (Code bytes: #[42])) includesCode: (Code bytes: #[43])).
+	self assert: (((Code bytes: #[0]) to: (Code bytes: #[255])) includesCode: (Code bytes: #[42])).
+	self assert: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[42 42])).
+	self assert: (((Code bytes: #[42 42]) to: (Code bytes: #[43 42])) includesCode: (Code bytes: #[42 42])).
+	self assert: (((Code bytes: #[42 42]) to: (Code bytes: #[42 43])) includesCode: (Code bytes: #[42 42])).
+	self assert: (((Code bytes: #[42 42]) to: (Code bytes: #[43 43])) includesCode: (Code bytes: #[42 42])).
+	self assert: (((Code bytes: #[0 0]) to: (Code bytes: #[255 255])) includesCode: (Code bytes: #[42 42])).
+	self assert: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[42 42])).
+	self deny: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[43 42])).
+	self deny: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[42 43])).
+	self deny: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[43 43])).
+	self assert: (((Code bytes: #[0 0 0]) to: (Code bytes: #[255 255 255])) includesCode: (Code bytes: #[42 42 42])).
+	self assert: (((Code bytes: #[42 42 42]) to: (Code bytes: #[42 42 42])) includesCode: (Code bytes: #[42 42 42])).
+	self deny: (((Code bytes: #[42 42 42]) to: (Code bytes: #[42 42 42])) includesCode: (Code bytes: #[42 41 42])).
+	self assert: (((Code bytes: #[0 0 0 0]) to: (Code bytes: #[255 255 255 255])) includesCode: (Code bytes: #[42 42 42 42])).
+	self assert: (((Code bytes: #[42 42 42 42]) to: (Code bytes: #[42 42 42 42])) includesCode: (Code bytes: #[42 42 42 42])).
+	self deny: (((Code bytes: #[42 42 42 42]) to: (Code bytes: #[42 42 42 42])) includesCode: (Code bytes: #[42 42 41 42])).
+%
+method: CMapTests
+testRangeIncludesDifferentLength
+	self deny: (((Code bytes: #[42]) to: (Code bytes: #[42])) includesCode: (Code bytes: #[])).
+	self deny: (((Code bytes: #[42]) to: (Code bytes: #[42])) includesCode: (Code bytes: #[42 42])).
+	self deny: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[42])).
+	self deny: (((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) includesCode: (Code bytes: #[42 42 42])).
+	self deny: (((Code bytes: #[42 42 42]) to: (Code bytes: #[42 42 42])) includesCode: (Code bytes: #[42 42])).
+	self deny: (((Code bytes: #[42 42 42 42]) to: (Code bytes: #[42 42 42 42])) includesCode: (Code bytes: #[42 42 42])).
+%
+method: CMapTests
+testRangeLength
+	self assert: ((Code bytes: #[0]) to: (Code bytes: #[255])) length = 1.
+	self assert: ((Code bytes: #[0 0]) to: (Code bytes: #[255 255])) length = 2.
+	self assert: ((Code bytes: #[0 0 0]) to: (Code bytes: #[255 255 255])) length = 3.
+	self assert: ((Code bytes: #[0 0 0 0]) to: (Code bytes: #[255 255 255 255])) length = 4.
+	self assert: ((Code bytes: #[]) to: (Code bytes: #[])) length = 0.
+%
+method: CMapTests
+testRangeNumberOfCodes
+	self assert: ((Code bytes: #[0]) to: (Code bytes: #[255])) class == Range.
+	self assert: ((Code bytes: #[42]) to: (Code bytes: #[42])) numberOfCodes = 1.
+	self assert: ((Code bytes: #[42]) to: (Code bytes: #[43])) numberOfCodes = 2.
+	self assert: ((Code bytes: #[42]) to: (Code bytes: #[255])) numberOfCodes = 214.
+	self assert: ((Code bytes: #[0]) to: (Code bytes: #[255])) numberOfCodes = 256.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[42 42])) numberOfCodes = 1.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[42 43])) numberOfCodes = 2.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[43 42])) numberOfCodes = 2.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[43 43])) numberOfCodes = 4.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[255 42])) numberOfCodes = 214.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[42 255])) numberOfCodes = 214.
+	self assert: ((Code bytes: #[42 42]) to: (Code bytes: #[255 255])) numberOfCodes = 45796.
+	self assert: ((Code bytes: #[0 0]) to: (Code bytes: #[255 255])) numberOfCodes = 65536.
+	self assert: ((Code bytes: #[0 0 0]) to: (Code bytes: #[255 255 255])) numberOfCodes = 16777216.
+	self assert: ((Code bytes: #[42 42 42]) to: (Code bytes: #[42 42 42])) numberOfCodes = 1.
+	self assert: ((Code bytes: #[0 0 0 0]) to: (Code bytes: #[255 255 255 255])) numberOfCodes = 4294967296.
+	self assert: ((Code bytes: #[42 42 42 42]) to: (Code bytes: #[42 42 42 42])) numberOfCodes = 1.
+%
+method: CMapTests
+testRangeOverlaps1
+	self assert: ((Range from: #[42] to: #[42]) overlaps: (Range from: #[42] to: #[42])).
+	self assert: ((Range from: #[0] to: #[42]) overlaps: (Range from: #[42] to: #[255])).
+	self assert: ((Range from: #[0] to: #[255]) overlaps: (Range from: #[0] to: #[255])).
+	self assert: ((Range from: #[0] to: #[255]) overlaps: (Range from: #[42] to: #[42])).
+	self assert: ((Range from: #[42] to: #[42]) overlaps: (Range from: #[0] to: #[255])).
+	self deny: ((Range from: #[0] to: #[42]) overlaps: (Range from: #[43] to: #[255])).
+	self deny: ((Range from: #[42] to: #[42]) overlaps: (Range from: #[43] to: #[43])).
+	self deny: ((Range from: #[43] to: #[43]) overlaps: (Range from: #[42] to: #[42])).
+%
+method: CMapTests
+testRangeOverlaps12
+	self assert: ((Range from: #[42] to: #[42]) overlaps: (Range from: #[42 42] to: #[42 42])).
+	self assert: ((Range from: #[42 42] to: #[42 42]) overlaps: (Range from: #[42] to: #[42])).
+%
+method: CMapTests
+testRangeOverlaps2
+	self assert: ((Range from: #[42 42] to: #[42 42]) overlaps: (Range from: #[42 42] to: #[42 42])).
+	self assert: ((Range from: #[42 0] to: #[42 42]) overlaps: (Range from: #[42 42] to: #[42 255])).
+	self assert: ((Range from: #[0 42] to: #[42 42]) overlaps: (Range from: #[42 42] to: #[255 42])).
+	self assert: ((Range from: #[42 0] to: #[42 255]) overlaps: (Range from: #[42 0] to: #[42 255])).
+	self assert: ((Range from: #[0 42] to: #[255 42]) overlaps: (Range from: #[0 42] to: #[255 42])).
+	self assert: ((Range from: #[42 0] to: #[42 255]) overlaps: (Range from: #[42 42] to: #[42 42])).
+	self assert: ((Range from: #[0 42] to: #[255 42]) overlaps: (Range from: #[42 42] to: #[42 42])).
+	self assert: ((Range from: #[42 42] to: #[42 42]) overlaps: (Range from: #[42 0] to: #[42 255])).
+	self assert: ((Range from: #[42 42] to: #[42 42]) overlaps: (Range from: #[0 42] to: #[255 42])).
+	self deny: ((Range from: #[42 0] to: #[42 42]) overlaps: (Range from: #[42 43] to: #[42 255])).
+	self deny: ((Range from: #[0 42] to: #[42 42]) overlaps: (Range from: #[43 42] to: #[255 42])).
+	self deny: ((Range from: #[42 42] to: #[42 42]) overlaps: (Range from: #[42 43] to: #[42 43])).
+	self deny: ((Range from: #[42 43] to: #[42 43]) overlaps: (Range from: #[42 42] to: #[42 42])).
+%
+method: CMapTests
+testRangeWith
+	self assert: ((Code bytes: #[48]) --> 48 rangeWith: (Code bytes: #[49]) --> 49) = (((Code bytes: #[48]) to: (Code bytes: #[49])) --> 48).
+	self assert: (((Code bytes: #[48]) to: (Code bytes: #[49])) --> 48 rangeWith: (Code bytes: #[50]) --> 50) = (((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48).
+	self assert: (((Code bytes: #[48]) to: (Code bytes: #[50])) --> 48 rangeWith: ((Code bytes: #[51]) to: (Code bytes: #[54])) --> 51) = (((Code bytes: #[48]) to: (Code bytes: #[54])) --> 48)
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: PostScript at: 1.
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: BfMappings
+example
+	^self
+		fromMappings: ((OrderedCollection new)
+			add: (Code bytes: #[0 3]) --> 32;
+			add: (Code bytes: #[0 20]) --> 49;
+			add: (Code bytes: #[0 36]) --> 65;
+			add: (Code bytes: #[0 38]) --> 67;
+			add: (Code bytes: #[0 39]) --> 68;
+			add: (Code bytes: #[0 40]) --> 69;
+			add: (Code bytes: #[0 42]) --> 71;
+			add: (Code bytes: #[0 43]) --> 72;
+			add: (Code bytes: #[0 46]) --> 75;
+			add: (Code bytes: #[0 47]) --> 76;
+			add: (Code bytes: #[0 48]) --> 77;
+			add: (Code bytes: #[0 49]) --> 78;
+			add: (Code bytes: #[0 51]) --> 80;
+			add: (Code bytes: #[0 53]) --> 82;
+			add: (Code bytes: #[0 54]) --> 83;
+			add: (Code bytes: #[0 55]) --> 84;
+			add: (Code bytes: #[0 56]) --> 85;
+			add: (Code bytes: #[0 57]) --> 86;
+			add: (Code bytes: #[0 59]) --> 88;
+			add: (Code bytes: #[0 60]) --> 89;
+			add: (Code bytes: #[0 66]) --> 95;
+			add: (Code bytes: #[0 68]) --> 97;
+			add: (Code bytes: #[0 69]) --> 98;
+			add: (Code bytes: #[0 70]) --> 99;
+			add: (Code bytes: #[0 71]) --> 100;
+			add: (Code bytes: #[0 72]) --> 101;
+			add: (Code bytes: #[0 73]) --> 102;
+			add: (Code bytes: #[0 74]) --> 103;
+			add: (Code bytes: #[0 75]) --> 104;
+			add: (Code bytes: #[0 76]) --> 105;
+			add: (Code bytes: #[0 79]) --> 108;
+			add: (Code bytes: #[0 80]) --> 109;
+			add: (Code bytes: #[0 81]) --> 110;
+			add: (Code bytes: #[0 82]) --> 111;
+			add: (Code bytes: #[0 83]) --> 112;
+			add: (Code bytes: #[0 85]) --> 114;
+			add: (Code bytes: #[0 86]) --> 115;
+			add: (Code bytes: #[0 87]) --> 116;
+			add: (Code bytes: #[0 88]) --> 117;
+			add: (Code bytes: #[0 89]) --> 118;
+			add: (Code bytes: #[0 90]) --> 119;
+			add: (Code bytes: #[0 91]) --> 120;
+			add: (Code bytes: #[0 92]) --> 121;
+			yourself)
+		in: (Array with: ((Code bytes: #[0 0]) to: (Code bytes: #[0 255])))
+%
+classmethod: BfMappings
+exampleFromWrongCodespace
+	^BfMappings
+		fromMappings: ((OrderedCollection new: 11)
+			add: (Code bytes: #[48]) --> 48;
+			add: (Code bytes: #[49]) --> 49;
+			add: (Code bytes: #[50]) --> 50;
+			add: (Code bytes: #[51]) --> 51;
+			add: (Code bytes: #[52]) --> 52;
+			add: (Code bytes: #[53]) --> 53;
+			add: (Code bytes: #[54]) --> 54;
+			add: (Code bytes: #[55]) --> 55;
+			add: (Code bytes: #[56]) --> 56;
+			add: (Code bytes: #[57]) --> 57;
+			add: (Code bytes: #[0 32]) --> 32;
+			yourself)
+		in: (Array with: ((Code bytes: #[0 0]) to: (Code bytes: #[255 255])))
+%
+classmethod: BfMappings
+exampleFromWrongHebrewText
+	"https://stackoverflow.com/questions/27252359/pdf-hebrew-convert-issue"
+
+	| source |
+	source := '/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CMapName /WrongMapping def
+/CMapType 2 def
+1 begincodespacerange
+<0000> <FFFF>
+endcodespacerange
+2 beginbfchar
+<0003> <0020>
+<0010> <002D>
+endbfchar
+1 beginbfrange
+<0014> <001A> [<0036> <0031> <0034> <0034> <0037> <0031> <0034>]
+endbfrange
+endcmap CMapName currentdict /CMap defineresource pop end end'.
+	^CMap newWith: (((Interpreter run: source) resources at: #CMap) at: #WrongMapping)
+%
+classmethod: BfMappings
+exampleOnlyChars
+	^BfMappings
+		fromMappings: ((OrderedCollection new: 43)
+			add: (Code bytes: #[0 3]) --> 32;
+			add: (Code bytes: #[0 20]) --> 49;
+			add: (Code bytes: #[0 36]) --> 65;
+			add: (Code bytes: #[0 38]) --> 67;
+			add: (Code bytes: #[0 39]) --> 68;
+			add: (Code bytes: #[0 40]) --> 69;
+			add: (Code bytes: #[0 42]) --> 71;
+			add: (Code bytes: #[0 43]) --> 72;
+			add: (Code bytes: #[0 46]) --> 75;
+			add: (Code bytes: #[0 47]) --> 76;
+			add: (Code bytes: #[0 48]) --> 77;
+			add: (Code bytes: #[0 49]) --> 78;
+			add: (Code bytes: #[0 51]) --> 80;
+			add: (Code bytes: #[0 53]) --> 82;
+			add: (Code bytes: #[0 54]) --> 83;
+			add: (Code bytes: #[0 55]) --> 84;
+			add: (Code bytes: #[0 56]) --> 85;
+			add: (Code bytes: #[0 57]) --> 86;
+			add: (Code bytes: #[0 59]) --> 88;
+			add: (Code bytes: #[0 60]) --> 89;
+			add: (Code bytes: #[0 66]) --> 95;
+			add: (Code bytes: #[0 68]) --> 97;
+			add: (Code bytes: #[0 69]) --> 98;
+			add: (Code bytes: #[0 70]) --> 99;
+			add: (Code bytes: #[0 71]) --> 100;
+			add: (Code bytes: #[0 72]) --> 101;
+			add: (Code bytes: #[0 73]) --> 102;
+			add: (Code bytes: #[0 74]) --> 103;
+			add: (Code bytes: #[0 75]) --> 104;
+			add: (Code bytes: #[0 76]) --> 105;
+			add: (Code bytes: #[0 79]) --> 108;
+			add: (Code bytes: #[0 80]) --> 109;
+			add: (Code bytes: #[0 81]) --> 110;
+			add: (Code bytes: #[0 82]) --> 111;
+			add: (Code bytes: #[0 83]) --> 112;
+			add: (Code bytes: #[0 85]) --> 114;
+			add: (Code bytes: #[0 86]) --> 115;
+			add: (Code bytes: #[0 87]) --> 116;
+			add: (Code bytes: #[0 88]) --> 117;
+			add: (Code bytes: #[0 89]) --> 118;
+			add: (Code bytes: #[0 90]) --> 119;
+			add: (Code bytes: #[0 91]) --> 120;
+			add: (Code bytes: #[0 92]) --> 121;
+			yourself)
+		in: (Array with: ((Code bytes: #[0 0]) to: (Code bytes: #[255 255])))
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: ByteCodespace
+example
+	^ByteCodespace
+		range: ((Code bytes: #[0]) to: (Code bytes: #[255]))
+		mappings: (Array
+			with: (Code bytes: #[31]) --> 10
+			with: ((Code bytes: #[32]) to: (Code bytes: #[126])) --> 32)
+%
+category: '*PostScript CIDInit Testing-profiling'
+classmethod: Category
+profileTimeToLoadAllCMaps
+	"this loads all 181 CMaps into the PostScript Interpreter - this is very slow and should not run as regular test case"
+	"self profileTimeToLoadAllCMaps"
+
+	[Interpreter run: '(*) {cvn /CMap findresource pop} 10 string /CMap resourceforall'] timeProfile
+%
+classmethod: Category
+profileTimeToLoadUniCNS_UCS2_H
+	"this loads the largest CMaps into the PostScript Interpreter"
+	"self profileTimeToLoadUniCNS_UCS2_H"
+
+	[100 timesRepeat: [Interpreter run: '/UniCNS-UCS2-H /CMap findresource']] timeProfile
+%
+classmethod: Category
+showTimeToLoadAllCMaps
+	"this loads all 181 CMaps into the PostScript Interpreter - this is very slow and should not run as regular test case"
+	"self showTimeToLoadAllCMaps"
+
+	| time |
+	time := [Interpreter run: '(*) {cvn /CMap findresource pop} 10 string /CMap resourceforall'] timeToRun.
+	Transcript
+		cr;
+		show: time printString
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: CharMapping
+example
+	^(Code bytes: #[42]) --> 86
+%
+classmethod: CharMapping
+exampleName
+	^(Code bytes: #[42]) --> #yen
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: CIDMappings
+example
+	^self
+		fromMappings: (Array
+			with: (Code bytes: #[0 0 0 160]) --> 1
+			with: (Code bytes: #[0 0 0 161]) --> 22480
+			with: (Code bytes: #[0 0 0 169]) --> 100
+			with: (Code bytes: #[0 0 0 170]) --> 22484) , (Array
+				with: (Range first: (Code bytes: #[0 0 0 32]) last: (Code bytes: #[0 0 0 126])) --> 1
+				with: (Range first: (Code bytes: #[0 0 0 162]) last: (Code bytes: #[0 0 0 165])) --> 96
+				with: (Range first: (Code bytes: #[0 0 0 166]) last: (Code bytes: #[0 0 0 168])) --> 22481
+				with: (Range first: (Code bytes: #[0 0 0 171]) last: (Code bytes: #[0 0 0 172])) --> 11878)
+		in: (Array with: ((Code bytes: #[0 0 0 0]) to: (Code bytes: #[255 255 255 255])))
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: CMap
+allCMaps
+	"this loads all 181 CMaps"
+	"Tools.TimeProfiler profile: [self allCMaps]"
+	"self allCMaps"
+
+	^(Interpreter run: '(*) {cvn /CMap findresource} 10 string /CMap resourceforall') stack objects collect: [:dict |
+		self newWith: dict]
+%
+classmethod: CMap
+example
+	| ps cmap |
+	ps := Interpreter run: '/CIDInit /ProcSet findresource begin
+12 dict begin
+begincmap
+/CIDSystemInfo
+<< /Registry (Adobe)
+/Ordering (UCS) /Supplement 0 >> def
+/CMapName /Adobe-Identity-UCS def
+/CMapType 2 def
+1 begincodespacerange
+<0000> <FFFF>
+endcodespacerange
+15 beginbfchar
+<0003> <0020>
+<000F> <002C>
+<0010> <002D>
+<0011> <002E>
+<0013> <0030>
+<0014> <0031>
+<0015> <0032>
+<0016> <0033>
+<0017> <0034>
+<0018> <0035>
+<0019> <0036>
+<001A> <0037>
+<001B> <0038>
+<001C> <0039>
+<001D> <003A>
+endbfchar
+endcmap CMapName currentdict /CMap defineresource pop end end'.
+	cmap := (ps resources at: #CMap) at: #'Adobe-Identity-UCS'.
+	^self newWith: cmap
+%
+classmethod: CMap
+exampleWrong
+	"self exampleWrong"
+	"the 3rd operator >find< is not PostScript. We can use the correct /findresource instead"
+
+	| ps |
+	ps := [Interpreter run: self exampleWrongSource] on: LookupError do: [:ex |
+		(ex reason = #valueAt: asString and: [
+		ex key = #find])
+				ifTrue: [
+				ex resume: (ex receiver valueAt: #findresource)]
+				ifFalse: [
+				ex pass]].
+	^self newWith: ((ps resources at: #CMap) at: #F1)
+%
+classmethod: CMap
+exampleWrongFixBefore
+	"self exampleWrongFixBefore"
+	"the 3rd operator >find< is not PostScript. We can define it as alias before"
+
+	| source ps resources |
+	source := self exampleWrongSource.
+	ps := Interpreter new.
+	resources := [(ps run: source) resources] on: LookupError do: [:ex |
+		(ex reason = #valueAt: asString and: [
+		ex key = #find])
+				ifTrue: [
+				| ps1 |
+				ps1 := Interpreter run: '/find /findresource cvx def'.
+				ex return: (ps1 run: source) resources]
+				ifFalse: [
+				ex pass]].
+	^self newWith: ((resources at: #CMap) at: #F1)
+%
+classmethod: CMap
+exampleWrongSource
+	"the 3rd operator >find< is not PostScript. We can define it as alias before"
+
+	^'/CIDInit/ProcSet
+find begin 12 dict begin begincmap /CIDSystemInfo<</Registry(Adobe)
+/Ordering(Identity)
+/Supplement 0
+>>
+def
+/CMapName/F1 def
+1 begincodespacerange <0000> <FFFF> endcodespacerange
+54 beginbfrange
+<20> <20> <0020>
+<21> <21> <0055>
+<22> <22> <0073>
+<23> <23> <0074>
+<24> <24> <002D>
+<25> <25> <0049>
+<26> <26> <0044>
+<27> <27> <0064>
+<28> <28> <0065>
+<29> <29> <0072>
+<2A> <2A> <0053>
+<2B> <2B> <0050>
+<2C> <2C> <004B>
+<2D> <2D> <007A>
+<2E> <2E> <0075>
+<2F> <2F> <004C>
+<30> <30> <00FC>
+<31> <31> <0062>
+<32> <32> <0063>
+<33> <33> <006B>
+<34> <34> <0041>
+<35> <35> <0047>
+<36> <36> <003A>
+<37> <37> <0045>
+<38> <38> <0038>
+<39> <39> <0031>
+<3A> <3A> <0034>
+<3B> <3B> <0030>
+<3C> <3C> <0033>
+<3D> <3D> <0036>
+<3E> <3E> <0037>
+<3F> <3F> <0042>
+<40> <40> <0069>
+<41> <41> <0052>
+<42> <42> <0066>
+<43> <43> <0061>
+<44> <44> <0067>
+<45> <45> <006E>
+<46> <46> <0077>
+<47> <47> <0068>
+<48> <48> <0043>
+<49> <49> <0076>
+<4A> <4A> <006D>
+<4B> <4B> <0048>
+<4C> <4C> <006F>
+<4D> <4D> <0032>
+<4E> <4E> <0054>
+<4F> <4F> <006C>
+<50> <50> <002F>
+<51> <51> <0039>
+<52> <52> <0035>
+<53> <53> <0078>
+<54> <54> <004E>
+<55> <55> <002E>
+endbfrange
+endcmap CMapName currentdict /CMap defineresource pop end end
+'
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: Code
+example
+	^Code bytes: #[42]
+%
+classmethod: Code
+example2
+	^Code bytes: #[00 42]
+%
+classmethod: Code
+example3
+	^Code bytes: #[12 00 42]
+%
+classmethod: Code
+example4
+	^Code bytes: #[255 12 00 42]
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: IndexedCodespace
+example
+	^IndexedCodespace
+		range: ((Code bytes: #[0 0]) to: (Code bytes: #[255 255]))
+		codespaces: ((Array new: 256)
+			at: 172 put: ByteCodespace example;
+			yourself)
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: NotdefMappings
+example
+	^self
+		fromMappings: (Array
+			with: (Code bytes: #[255]) --> 1
+			with: ((Code bytes: #[0]) to: (Code bytes: #[31])) --> 1)
+		in: (Array with: ((Code bytes: #[0]) to: (Code bytes: #[255])))
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: Range
+example
+	^Range first: (Code bytes: #[0 0]) last: (Code bytes: #[255 255])
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: RangeMapping
+example
+	^(Range first: (Code bytes: #[0 0]) last: (Code bytes: #[0 55])) --> 42
+%
+classmethod: RangeMapping
+exampleNames
+	^(Range first: (Code bytes: #[0 50]) last: (Code bytes: #[0 55])) --> #(#yen #one #two #a #A #quotesingle)
+%
+category: '*PostScript CIDInit Testing-test instances'
+classmethod: RegisteredCharacterCollection
+example
+	^RegisteredCharacterCollection registry: 'Adobe' ordering: 'Japan1' supplement: 1
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+	| dict components |
+	dict := SymbolDictionary new.
+	dict name: #'PDFtalk Fonts tests'.
+	dict at: #comment put: 'Tests for the basics of external font types
+'.
+	dict at: #isFunctional put: false.
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'PDFtalk Fonts tests'.
-	dict at: #storeVersion put: '2.0.0.9'.
+	dict at: #storeVersion put: '2.3.0.0'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
 %
 DoIt
 System myUserProfile insertDictionary: (PDFtalk at: #Fonts) at: 1.
+%
+# Define class PFMTests
+DoIt
+(PDFtalk at: #Tests)
+	subclass: 'PFMTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Fonts
+%
+DoIt
+	PFMTests category: 'PDFtalk Fonts tests'.
+	PFMTests namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class FontMetricsTests
 DoIt
@@ -7987,20 +11550,6 @@ DoIt
 DoIt
 	FontMetricsTests category: 'PDFtalk Fonts tests'.
 	FontMetricsTests namespacePath: #(#PDFtalk #Fonts).
-%
-# Define class FontEncodingTest
-DoIt
-(PDFtalk at: #Tests)
-	subclass: 'FontEncodingTest'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: Fonts
-%
-DoIt
-	FontEncodingTest category: 'PDFtalk Fonts tests'.
-	FontEncodingTest namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class FontProgramTests
 DoIt
@@ -8030,10 +11579,10 @@ DoIt
 	CharacterDecodingTests category: 'PDFtalk Fonts tests'.
 	CharacterDecodingTests namespacePath: #(#PDFtalk #Fonts).
 %
-# Define class PFMTests
+# Define class FontEncodingTest
 DoIt
 (PDFtalk at: #Tests)
-	subclass: 'PFMTests'
+	subclass: 'FontEncodingTest'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8041,8 +11590,8 @@ DoIt
 	inDictionary: Fonts
 %
 DoIt
-	PFMTests category: 'PDFtalk Fonts tests'.
-	PFMTests namespacePath: #(#PDFtalk #Fonts).
+	FontEncodingTest category: 'PDFtalk Fonts tests'.
+	FontEncodingTest namespacePath: #(#PDFtalk #Fonts).
 %
 # Define class AfmParsingTest
 DoIt
@@ -8057,26 +11606,6 @@ DoIt
 DoIt
 	AfmParsingTest category: 'PDFtalk Fonts tests'.
 	AfmParsingTest namespacePath: #(#PDFtalk #Fonts).
-%
-DoIt
-System myUserProfile removeDictionaryAt: 1.
-%
-DoIt
-System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #OpenType) at: 1.
-%
-# Define class OpenTypeTests
-DoIt
-(PDFtalk at: #Tests)
-	subclass: 'OpenTypeTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: OpenType
-%
-DoIt
-	OpenTypeTests category: 'PDFtalk Fonts tests'.
-	OpenTypeTests namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8097,6 +11626,26 @@ DoIt
 DoIt
 	CFFTests category: 'PDFtalk Fonts tests'.
 	CFFTests namespacePath: #(#PDFtalk #Fonts #CFF).
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #OpenType) at: 1.
+%
+# Define class OpenTypeTests
+DoIt
+(PDFtalk at: #Tests)
+	subclass: 'OpenTypeTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: OpenType
+%
+DoIt
+	OpenTypeTests category: 'PDFtalk Fonts tests'.
+	OpenTypeTests namespacePath: #(#PDFtalk #Fonts #OpenType).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8269,36 +11818,36 @@ testAdobeExamples
 	or http://www.adobe.com/devnet-archive/opentype/archives/glyph.html
 	section 3"
 
-	self assert: (FontBody unicodesForGlyphName: #Lcommaaccent) size = 1.
-	self assert: (FontBody unicodesForGlyphName: #Lcommaaccent) first = 16r013B.
-	self assert: (FontBody unicodesForGlyphName: #Lcommaaccent) first asCharacter asSource = '$Ļ'.
-	self assert: (FontBody unicodesForGlyphName: #uni20AC0308) size = 2.
-	self assert: (FontBody unicodesForGlyphName: #uni20AC0308) asArray = #(16r20AC 16r0308).
-	self assert: (FontBody unicodesForGlyphName: #uni20AC0308) first asCharacter asSource = '$€'.
-	self assert: (FontBody unicodesForGlyphName: #uni20AC0308) last asCharacter asSource = '$̈'.
-	self assert: (FontBody unicodesForGlyphName: #u1040C) size = 1.
-	self assert: (FontBody unicodesForGlyphName: #u1040C) first = 16r1040C.
-	self assert: (FontBody unicodesForGlyphName: #uniD801DC0C) isEmpty.
-	self assert: (FontBody unicodesForGlyphName: #uni20ac) isEmpty.
-	self assert: (FontBody unicodesForGlyphName: #'Lcommaaccent_uni20AC0308_u1040C.alternate') size = 4.
-	self assert: (FontBody unicodesForGlyphName: #'Lcommaaccent_uni20AC0308_u1040C.alternate') asArray = #(16r013B 16r20AC 16r0308 16r1040C).
-	self assert: (FontBody unicodesForGlyphName: #foo) isEmpty.
-	self assert: (FontBody unicodesForGlyphName: #'.notdef') isEmpty
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #Lcommaaccent) size = 1.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #Lcommaaccent) first = 16r013B.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #Lcommaaccent) first asCharacter asSource = '$Ļ'.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uni20AC0308) size = 2.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uni20AC0308) asArray = #(16r20AC 16r0308).
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uni20AC0308) first asCharacter asSource = '$€'.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uni20AC0308) last asCharacter asSource = '$̈'.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #u1040C) size = 1.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #u1040C) first = 16r1040C.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uniD801DC0C) isEmpty.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uni20ac) isEmpty.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #'Lcommaaccent_uni20AC0308_u1040C.alternate') size = 4.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #'Lcommaaccent_uni20AC0308_u1040C.alternate') asArray = #(16r013B 16r20AC 16r0308 16r1040C).
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #foo) isEmpty.
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #'.notdef') isEmpty
 %
 method: CharacterDecodingTests
 testCharacterNames
-	self assert: (FontBody characterNamesAtUnicode: 16r013B) sorted = #(#Lcedilla #Lcommaaccent).
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16r013B) sorted = #(#Lcedilla #Lcommaaccent).
 	self assert: ((FontBody named: 'Helvetica') characterNameAtUnicode: 16r013B) = #Lcommaaccent.
-	self assert: (FontBody characterNamesAtUnicode: 16r20AC) sorted = #(#euro #Euro).
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16r20AC) sorted = #(#euro #Euro).
 	self assert: ((FontBody named: 'Helvetica') characterNameAtUnicode: 16r20AC) = #Euro.
-	self assert: (FontBody characterNamesAtUnicode: 16r0308) = #(#dieresiscmb).
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16r0308) = #(#dieresiscmb).
 	self assert: ((FontBody named: 'Helvetica') characterNameAtUnicode: 16r0308) = #'.notdef'.
-	self assert: (FontBody characterNamesAtUnicode: 16r1040C) = #(#u1040C).
-	self assert: (FontBody characterNamesAtUnicode: 16rD801) = #(#'.notdef').
-	self assert: (FontBody characterNamesAtUnicode: 16rDC0C) = #(#'.notdef').
-	self assert: (FontBody characterNamesAtUnicode: 16rFFFF) = #(#uniFFFF).
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16r1040C) = #(#u1040C).
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16rD801) = #(#'.notdef').
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16rDC0C) = #(#'.notdef').
+	self assert: ((PostScript at: #CharacterNames) characterNamesAtUnicode: 16rFFFF) = #(#uniFFFF).
 	self assert: ((FontBody named: 'Helvetica') characterNameAtUnicode: 16rFFFF) = #'.notdef'.
-	self assert: (FontBody unicodesForGlyphName: #uniFFFF) asArray = #(16rFFFF).
+	self assert: ((PostScript at: #CharacterNames) unicodesForGlyphName: #uniFFFF) asArray = #(16rFFFF).
 %
 category: 'Testing'
 method: FontEncodingTest
@@ -8420,9 +11969,9 @@ testCharMetricsTimesRoman
 %
 method: FontMetricsTests
 testStringWidth
-	self assert: ((Font fontAt: #Courier) stringWidthOf: 'abcdefghijqrstuvwxyz' at: 10) asSource = '120.0'.
-	self assert: ((Font fontAt: #Helvetica) stringWidthOf: 'abcdefghijqrstuvwxyz' at: 10) asSource = '95.03'.
-	self assert: ((Font fontAt: #'Times-Roman') stringWidthOf: 'abcdefghijqrstuvwxyz' at: 10) asSource = '88.87'.
+	self assert: (((Font fontAt: #Courier) widthOfString: 'abcdefghijqrstuvwxyz') * 10) asSource = '120'.
+	self assert: (((Font fontAt: #Helvetica) widthOfString: 'abcdefghijqrstuvwxyz') * 10) asFloat asSource = '95.03'.
+	self assert: (((Font fontAt: #'Times-Roman') widthOfString: 'abcdefghijqrstuvwxyz') * 10) asFloat asSource = '88.87'
 %
 category: 'tests'
 method: FontProgramTests
@@ -8461,6 +12010,32 @@ testReadWrite
 	self assert: (ExtTextMetrics fromBytes: ExtTextMetrics exampleBytes) asBytes = ExtTextMetrics exampleBytes.
 	self assert: (PairKern fromBytes: PairKern exampleBytes) asBytes = PairKern exampleBytes.
 	self assert: (PostScriptFontMetrics fromBytes: PostScriptFontMetrics exampleBytes) asBytes = PostScriptFontMetrics exampleBytes.
+%
+DoIt
+System myUserProfile removeDictionaryAt: 1.
+%
+DoIt
+System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #CFF) at: 1.
+%
+category: 'tests'
+method: CFFTests
+testDictIntegers
+	self assert: (Dict integerFrom: #[16r8B] readStream) = 0.
+	self assert: (Dict integerFrom: #[16rEF] readStream) = 100.
+	self assert: (Dict integerFrom: #[16r27] readStream) = -100.
+	self assert: (Dict integerFrom: #[16rFA 16r7C] readStream) = 1000.
+	self assert: (Dict integerFrom: #[16rFE 16r7C] readStream) = -1000.
+	self assert: (Dict integerFrom: #[16r1C 16r27 16r10] readStream) = 10000.
+	self assert: (Dict integerFrom: #[16r1C 16rD8 16rF0] readStream) = -10000.
+	self assert: (Dict integerFrom: #[16r1D 16r00 16r01 16r86 16rA0] readStream) = 100000.
+	self assert: (Dict integerFrom: #[16r1D 16rFF 16rFE 16r79 16r60] readStream) = -100000.
+%
+method: CFFTests
+testDictReals
+	self assert: (Dict realStringFrom: #[16r1E 16rE2 16rA2 16r5F] readStream) = '-2.25'.
+	self assert: (Dict realFrom: #[16r1E 16rE2 16rA2 16r5F] readStream) = -2.25.
+	self assert: (Dict realStringFrom: #[16r1E 16r0A 16r14 16r05 16r41 16rC3 16rFF] readStream) = '0.140541e-3'.
+	self assert: (Dict realFrom: #[16r1E 16r0A 16r14 16r05 16r41 16rC3 16rFF] readStream) = 0.140541e-3.
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8541,33 +12116,7 @@ testStringWidthWithUndefinedGlyphs
 		with: 32 asCharacter
 		with: 3 asCharacter
 		with: $A.
-	self shouldnt: [font stringWidthOf: string at: 10] raise: Error
-%
-DoIt
-System myUserProfile removeDictionaryAt: 1.
-%
-DoIt
-System myUserProfile insertDictionary: ((PDFtalk at: #Fonts) at: #CFF) at: 1.
-%
-category: 'tests'
-method: CFFTests
-testDictIntegers
-	self assert: (Dict integerFrom: #[16r8B] readStream) = 0.
-	self assert: (Dict integerFrom: #[16rEF] readStream) = 100.
-	self assert: (Dict integerFrom: #[16r27] readStream) = -100.
-	self assert: (Dict integerFrom: #[16rFA 16r7C] readStream) = 1000.
-	self assert: (Dict integerFrom: #[16rFE 16r7C] readStream) = -1000.
-	self assert: (Dict integerFrom: #[16r1C 16r27 16r10] readStream) = 10000.
-	self assert: (Dict integerFrom: #[16r1C 16rD8 16rF0] readStream) = -10000.
-	self assert: (Dict integerFrom: #[16r1D 16r00 16r01 16r86 16rA0] readStream) = 100000.
-	self assert: (Dict integerFrom: #[16r1D 16rFF 16rFE 16r79 16r60] readStream) = -100000.
-%
-method: CFFTests
-testDictReals
-	self assert: (Dict realStringFrom: #[16r1E 16rE2 16rA2 16r5F] readStream) = '-2.25'.
-	self assert: (Dict realFrom: #[16r1E 16rE2 16rA2 16r5F] readStream) = -2.25.
-	self assert: (Dict realStringFrom: #[16r1E 16r0A 16r14 16r05 16r41 16rC3 16rFF] readStream) = '0.140541e-3'.
-	self assert: (Dict realFrom: #[16r1E 16r0A 16r14 16r05 16r41 16rC3 16rFF] readStream) = 0.140541e-3.
+	self shouldnt: [(font widthOfString: string) * 10] raise: Error
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -8578,29 +12127,9 @@ DoIt
 	dict name: #'PDFtalk tests'.
 	dict at: #comment put: 'Tests'.
 	dict at: #isFunctional put: false.
-	dict at: #notice put: 'The MIT License
-
-Copyright © 2011-2017 Christian Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'.
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'PDFtalk tests'.
-	dict at: #storeVersion put: '2.0.8.0'.
+	dict at: #storeVersion put: '2.5.0.4'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
 	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
@@ -8621,48 +12150,6 @@ DoIt
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
 %
-# Define class AttributeTests
-DoIt
-Tests
-	subclass: 'AttributeTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	AttributeTests category: 'PDFtalk tests'.
-	AttributeTests namespacePath: #(#PDFtalk).
-%
-# Define class BugReportTests
-DoIt
-Tests
-	subclass: 'BugReportTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	BugReportTests category: 'PDFtalk tests'.
-	BugReportTests namespacePath: #(#PDFtalk).
-%
-# Define class ColorTests
-DoIt
-Tests
-	subclass: 'ColorTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ColorTests category: 'PDFtalk tests'.
-	ColorTests namespacePath: #(#PDFtalk).
-%
 # Define class ImageXTests
 DoIt
 Tests
@@ -8678,10 +12165,10 @@ DoIt
 	ImageXTests comment: 'Tests for the PDF ImageX object'.
 	ImageXTests namespacePath: #(#PDFtalk).
 %
-# Define class TypingTests
+# Define class AttributeTests
 DoIt
 Tests
-	subclass: 'TypingTests'
+	subclass: 'AttributeTests'
 	instVarNames: #()
 	classVars: #()
 	classInstVars: #()
@@ -8689,190 +12176,8 @@ Tests
 	inDictionary: PDFtalk
 %
 DoIt
-	TypingTests category: 'PDFtalk tests'.
-	TypingTests namespacePath: #(#PDFtalk).
-%
-# Define class TrailerTests
-DoIt
-Tests
-	subclass: 'TrailerTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TrailerTests category: 'PDFtalk tests'.
-	TrailerTests namespacePath: #(#PDFtalk).
-%
-# Define class FontEncodingTests
-DoIt
-Tests
-	subclass: 'FontEncodingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	FontEncodingTests category: 'PDFtalk tests'.
-	FontEncodingTests namespacePath: #(#PDFtalk).
-%
-# Define class NameTests
-DoIt
-Tests
-	subclass: 'NameTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	NameTests category: 'PDFtalk tests'.
-	NameTests namespacePath: #(#PDFtalk).
-%
-# Define class MatrixTests
-DoIt
-Tests
-	subclass: 'MatrixTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	MatrixTests category: 'PDFtalk tests'.
-	MatrixTests namespacePath: #(#PDFtalk).
-%
-# Define class ReferenceTests
-DoIt
-Tests
-	subclass: 'ReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ReferenceTests category: 'PDFtalk tests'.
-	ReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class PagesTests
-DoIt
-Tests
-	subclass: 'PagesTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PagesTests category: 'PDFtalk tests'.
-	PagesTests namespacePath: #(#PDFtalk).
-%
-# Define class TypecheckingTests
-DoIt
-Tests
-	subclass: 'TypecheckingTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	TypecheckingTests category: 'PDFtalk tests'.
-	TypecheckingTests namespacePath: #(#PDFtalk).
-%
-# Define class PDFObjectTests
-DoIt
-Tests
-	subclass: 'PDFObjectTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	PDFObjectTests category: 'PDFtalk tests'.
-	PDFObjectTests namespacePath: #(#PDFtalk).
-%
-# Define class StringTests
-DoIt
-Tests
-	subclass: 'StringTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	StringTests category: 'PDFtalk tests'.
-	StringTests namespacePath: #(#PDFtalk).
-%
-# Define class ContentsTests
-DoIt
-Tests
-	subclass: 'ContentsTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	ContentsTests category: 'PDFtalk tests'.
-	ContentsTests namespacePath: #(#PDFtalk).
-%
-# Define class CrossReferenceTests
-DoIt
-Tests
-	subclass: 'CrossReferenceTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CrossReferenceTests category: 'PDFtalk tests'.
-	CrossReferenceTests namespacePath: #(#PDFtalk).
-%
-# Define class LibraryTests
-DoIt
-Tests
-	subclass: 'LibraryTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	LibraryTests category: 'PDFtalk tests'.
-	LibraryTests namespacePath: #(#PDFtalk).
-%
-# Define class CatalogTests
-DoIt
-Tests
-	subclass: 'CatalogTests'
-	instVarNames: #()
-	classVars: #()
-	classInstVars: #()
-	poolDictionaries: #()
-	inDictionary: PDFtalk
-%
-DoIt
-	CatalogTests category: 'PDFtalk tests'.
-	CatalogTests namespacePath: #(#PDFtalk).
+	AttributeTests category: 'PDFtalk tests'.
+	AttributeTests namespacePath: #(#PDFtalk).
 %
 # Define class StreamTests
 DoIt
@@ -8887,6 +12192,34 @@ Tests
 DoIt
 	StreamTests category: 'PDFtalk tests'.
 	StreamTests namespacePath: #(#PDFtalk).
+%
+# Define class DocumentTests
+DoIt
+Tests
+	subclass: 'DocumentTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	DocumentTests category: 'PDFtalk tests'.
+	DocumentTests namespacePath: #(#PDFtalk).
+%
+# Define class StringTests
+DoIt
+Tests
+	subclass: 'StringTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	StringTests category: 'PDFtalk tests'.
+	StringTests namespacePath: #(#PDFtalk).
 %
 # Define class SimpleObjectTests
 DoIt
@@ -8916,6 +12249,188 @@ DoIt
 	FileTests category: 'PDFtalk tests'.
 	FileTests namespacePath: #(#PDFtalk).
 %
+# Define class PDFObjectTests
+DoIt
+Tests
+	subclass: 'PDFObjectTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PDFObjectTests category: 'PDFtalk tests'.
+	PDFObjectTests namespacePath: #(#PDFtalk).
+%
+# Define class ReferenceTests
+DoIt
+Tests
+	subclass: 'ReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ReferenceTests category: 'PDFtalk tests'.
+	ReferenceTests namespacePath: #(#PDFtalk).
+%
+# Define class TypecheckingTests
+DoIt
+Tests
+	subclass: 'TypecheckingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TypecheckingTests category: 'PDFtalk tests'.
+	TypecheckingTests namespacePath: #(#PDFtalk).
+%
+# Define class TypingTests
+DoIt
+Tests
+	subclass: 'TypingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TypingTests category: 'PDFtalk tests'.
+	TypingTests namespacePath: #(#PDFtalk).
+%
+# Define class ContentsTests
+DoIt
+Tests
+	subclass: 'ContentsTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ContentsTests category: 'PDFtalk tests'.
+	ContentsTests namespacePath: #(#PDFtalk).
+%
+# Define class LibraryTests
+DoIt
+Tests
+	subclass: 'LibraryTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	LibraryTests category: 'PDFtalk tests'.
+	LibraryTests namespacePath: #(#PDFtalk).
+%
+# Define class NameTests
+DoIt
+Tests
+	subclass: 'NameTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	NameTests category: 'PDFtalk tests'.
+	NameTests namespacePath: #(#PDFtalk).
+%
+# Define class TrailerTests
+DoIt
+Tests
+	subclass: 'TrailerTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	TrailerTests category: 'PDFtalk tests'.
+	TrailerTests namespacePath: #(#PDFtalk).
+%
+# Define class FontEncodingTests
+DoIt
+Tests
+	subclass: 'FontEncodingTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	FontEncodingTests category: 'PDFtalk tests'.
+	FontEncodingTests namespacePath: #(#PDFtalk).
+%
+# Define class PagesTests
+DoIt
+Tests
+	subclass: 'PagesTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	PagesTests category: 'PDFtalk tests'.
+	PagesTests namespacePath: #(#PDFtalk).
+%
+# Define class CatalogTests
+DoIt
+Tests
+	subclass: 'CatalogTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CatalogTests category: 'PDFtalk tests'.
+	CatalogTests namespacePath: #(#PDFtalk).
+%
+# Define class MatrixTests
+DoIt
+Tests
+	subclass: 'MatrixTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	MatrixTests category: 'PDFtalk tests'.
+	MatrixTests namespacePath: #(#PDFtalk).
+%
+# Define class BugReportTests
+DoIt
+Tests
+	subclass: 'BugReportTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	BugReportTests category: 'PDFtalk tests'.
+	BugReportTests namespacePath: #(#PDFtalk).
+%
 # Define class ObjectStreamTests
 DoIt
 Tests
@@ -8929,6 +12444,34 @@ Tests
 DoIt
 	ObjectStreamTests category: 'PDFtalk tests'.
 	ObjectStreamTests namespacePath: #(#PDFtalk).
+%
+# Define class ColorTests
+DoIt
+Tests
+	subclass: 'ColorTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	ColorTests category: 'PDFtalk tests'.
+	ColorTests namespacePath: #(#PDFtalk).
+%
+# Define class CrossReferenceTests
+DoIt
+Tests
+	subclass: 'CrossReferenceTests'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: PDFtalk
+%
+DoIt
+	CrossReferenceTests category: 'PDFtalk tests'.
+	CrossReferenceTests namespacePath: #(#PDFtalk).
 %
 DoIt
 System myUserProfile removeDictionaryAt: 1.
@@ -9092,9 +12635,9 @@ method: AttributeTests
 testCatalog
 	| dict |
 	dict := (PDF classAt: #Catalog) example.
-	self assert: dict attributeNames = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (dict attributesPresent collect: #selector) = #(#Type #Pages #PageLabels).
-	self assert: (dict attributesRequired collect: #selector) = #(#Type #Pages).
+	self assert: dict attributeNames asArray = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering #AF).
+	self assert: (dict attributesPresent collect: #selector) asArray = #(#Type #Pages #PageLabels).
+	self assert: (dict attributesRequired collect: #selector) asArray = #(#Type #Pages).
 	self assert: dict hasRequiredAttributes.
 	self assert: dict pdfVersion = Version pdf1_3.
 	self assert: dict PageLabels = (PDF classAt: #NumberTree) nodeClass new.
@@ -9106,9 +12649,9 @@ method: AttributeTests
 testCrossReferenceStream
 	| dict |
 	dict := (PDF classAt: #XRefStream) example.
-	self assert: dict attributeNames = #(#Length #Filter #DecodeParms #F #FFilter #FDecodeParms #DL #Type #Size #Index #Prev #W #Root #Info #ID).
-	self assert: (dict attributesPresent collect: #selector) = #(#Length #Filter #Type #Size #Index #W #Root).
-	self assert: (dict attributesRequired collect: #selector) = #(#Length #Type #Size #W #Root).
+	self assert: dict attributeNames asArray = #(#Length #Filter #DecodeParms #F #FFilter #FDecodeParms #DL #Type #Size #Index #Prev #W #Root #Info #ID).
+	self assert: (dict attributesPresent collect: #selector) asArray = #(#Length #Filter #Type #Size #Index #W #Root).
+	self assert: (dict attributesRequired collect: #selector) asArray = #(#Length #Type #Size #W #Root).
 	self assert: dict hasRequiredAttributes.
 	self assert: dict pdfVersion = Version pdf1_5.
 	self assert: dict Filter = #ASCIIHexDecode asPDF.
@@ -9122,9 +12665,9 @@ method: AttributeTests
 testObjectStream
 	| dict |
 	dict := (PDF classAt: #ObjectStream) example.
-	self assert: dict attributeNames = #(#Length #Filter #DecodeParms #F #FFilter #FDecodeParms #DL #Type #N #First #Extends).
-	self assert: (dict attributesPresent collect: #selector) = #(#Length #Type #N #First).
-	self assert: (dict attributesRequired collect: #selector) = #(#Length #Type #N #First).
+	self assert: dict attributeNames asArray = #(#Length #Filter #DecodeParms #F #FFilter #FDecodeParms #DL #Type #N #First #Extends).
+	self assert: (dict attributesPresent collect: #selector) asArray = #(#Length #Type #N #First).
+	self assert: (dict attributesRequired collect: #selector) asArray = #(#Length #Type #N #First).
 	self assert: dict hasRequiredAttributes.
 	self assert: dict pdfVersion = Version pdf1_5.
 	self assert: dict First = 15 asPDF.
@@ -9138,9 +12681,9 @@ method: AttributeTests
 testTrailer
 	| dict |
 	dict := (PDF classAt: #Trailer) example.
-	self assert: dict attributeNames = #(#Size #Prev #Root #Encrypt #Info #ID #XRefStm).
-	self assert: (dict attributesPresent collect: #selector) = #(#Size #Root #Info #ID).
-	self assert: (dict attributesRequired collect: #selector) = #(#Size #Root).
+	self assert: dict attributeNames asArray = #(#Size #Prev #Root #Encrypt #Info #ID #XRefStm).
+	self assert: (dict attributesPresent collect: #selector) asArray = #(#Size #Root #Info #ID).
+	self assert: (dict attributesRequired collect: #selector) asArray = #(#Size #Root).
 	self assert: dict hasRequiredAttributes.
 	self assert: dict pdfVersion = Version pdf1_1.
 	self assert: dict ID size = 2.
@@ -9159,16 +12702,15 @@ testFileHasTypeMismatch
 	
 	| pdf fontDescriptor |
 	pdf := File exampleWithTypeMismatch.
-	fontDescriptor := ((pdf firstPage Resources at: #Font) objectAt: #F1) at: #FontDescriptor.
+	fontDescriptor := [((pdf firstPage Resources at: #Font) objectAt: #F1) at: #FontDescriptor] on: TypeError do: [:ex | ex resume].
 	self assert: fontDescriptor class == TypeMismatch.
 	self assert: (fontDescriptor myObject at: #FontFile3) class == Reference.
-	self assert: (fontDescriptor myObject at: #FontFile3) number = 6.
 	self assert: (fontDescriptor myObject objectAt: #FontFile3) class == PDF Stream.
 	self assert: (fontDescriptor myObject objectAt: #FontFile3) keys asArray sorted = #(#Filter #Length #Subtype).
 %
 method: BugReportTests
 testMergedFilesWithTypeMismatch
-	| cover toMerge pagesReference pages addPagesReference wst merged fontDescriptor |
+	| cover toMerge pagesReference pages addPagesReference merged fontDescriptor |
 	cover := File exampleHelloWorld.
 	toMerge := File exampleWithTypeMismatch.
 	pagesReference := cover root at: #Pages.
@@ -9177,16 +12719,14 @@ testMergedFilesWithTypeMismatch
 	addPagesReference referent at: #Parent put: pagesReference.
 	pages at: #Kids put: (pages Kids with: addPagesReference).
 	pages at: #Count put: pages count.
-	wst := Writer on: String new.
-	merged := cover asDocument.
+	merged := [cover asDocument] on: TypeError do: [:ex | ex resume].
 	"write out to assign new reference numbers"
-	merged writeFile: 'merged.pdf' on: wst.
+	merged bytesForFile: 'merged.pdf'.
 	fontDescriptor := (((merged root pageAt: 2) Resources at: #Font) objectAt: #F1) at: #FontDescriptor.
 	self assert: fontDescriptor class == TypeMismatch.
 	self assert: (fontDescriptor myObject at: #FontFile3) class == Reference.
-	self assert: (fontDescriptor myObject at: #FontFile3) number = 10.
 	self assert: (fontDescriptor myObject objectAt: #FontFile3) class == PDF Stream.
-	self assert: (fontDescriptor myObject objectAt: #FontFile3) keys asArray sorted = #(#Filter #Length #Subtype).
+	self assert: (fontDescriptor myObject objectAt: #FontFile3) keys asArray sorted = #(#Filter #Length #Subtype)
 %
 category: 'tests'
 method: CatalogTests
@@ -9197,9 +12737,9 @@ testAttributes
 	self assert: root Pages = (PDF classAt: #Pages) new.
 	self assert: root PageLabels = (PDF classAt: #NumberTree) nodeClass new.
 	self assert: root Names isEmpty.
-	self assert: root attributeNames = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (root attributesPresent collect: #selector) = #(#Type #Pages #PageLabels).
-	self assert: (root attributesRequired collect: #selector) = #(#Type #Pages).
+	self assert: root attributeNames asArray = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering #AF).
+	self assert: (root attributesPresent collect: #selector) asArray = #(#Type #Pages #PageLabels).
+	self assert: (root attributesRequired collect: #selector) asArray = #(#Type #Pages).
 	self assert: root pdfVersion = Version pdf1_3.
 	self assert: root hasRequiredAttributes
 %
@@ -9213,9 +12753,9 @@ testAttributesWithoutPages
 	self should: [root Pages] raise: LookupError.
 	self assert: (root at: #PageLabels) referent = (PDF classAt: #NumberTree) nodeClass new.
 	self assert: root Names isEmpty.
-	self assert: root attributeNames = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (root attributesPresent collect: #selector) = #(#Type #PageLabels).
-	self assert: (root attributesRequired collect: #selector) = #(#Type #Pages).
+	self assert: root attributeNames asArray = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering #AF).
+	self assert: (root attributesPresent collect: #selector) asArray = #(#Type #PageLabels).
+	self assert: (root attributesRequired collect: #selector) asArray = #(#Type #Pages).
 	self assert: root pdfVersion = Version pdf1_3.
 	self assert: root hasRequiredAttributes not
 %
@@ -9229,9 +12769,9 @@ testAttributesWithoutType
 	self assert: root Pages = (PDF classAt: #Pages) new.
 	self assert: root PageLabels = (PDF classAt: #NumberTree) nodeClass new.
 	self assert: root Names isEmpty.
-	self assert: root attributeNames = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (root attributesPresent collect: #selector) = #(#Pages #PageLabels).
-	self assert: (root attributesRequired collect: #selector) = #(#Type #Pages).
+	self assert: root attributeNames asArray = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering #AF).
+	self assert: (root attributesPresent collect: #selector) asArray = #(#Pages #PageLabels).
+	self assert: (root attributesRequired collect: #selector) asArray = #(#Type #Pages).
 	self assert: root pdfVersion = Version pdf1_3.
 	self assert: root hasRequiredAttributes not
 %
@@ -9243,9 +12783,9 @@ testFullAttributes
 	self assert: root Pages pdfType name = #Pages.
 	self assert: root PageLabels isNil.
 	self assert: root Names = (PDF classAt: #Names) new.
-	self assert: root attributeNames = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (root attributesPresent collect: #selector) = #(#Type #Version #Extensions #Pages #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
-	self assert: (root attributesRequired collect: #selector) = #(#Type #Pages).
+	self assert: root attributeNames asArray = #(#Type #Version #Extensions #Pages #PageLabels #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #Metadata #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering #AF).
+	self assert: (root attributesPresent collect: #selector) asArray = #(#Type #Version #Extensions #Pages #Names #Dests #ViewerPreferences #PageLayout #PageMode #Outlines #Threads #OpenAction #AA #URI #AcroForm #StructTreeRoot #MarkInfo #Lang #SpiderInfo #OutputIntents #PieceInfo #OCProperties #Perms #Legal #Requirements #Collection #NeedsRendering).
+	self assert: (root attributesRequired collect: #selector) asArray = #(#Type #Pages).
 	self assert: root pdfVersion = Version pdf1_7.
 	self assert: root hasRequiredAttributes
 %
@@ -9372,22 +12912,22 @@ method: CrossReferenceTests
 testReadReference
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '0000012345 00073 n ' , self stringLf) parser) = (UsedReference value: 12345 number: 0 generation: 73).
+		from: (File readTesterOn: '0000012345 00073 n ' , self stringLf) parser) = (UsedReference id: (ObjectId number: 0 generation: 73) value: 12345).
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '1234567890 00000 n ' , self stringLf) parser) = (UsedReference value: 1234567890 number: 0 generation: 0).
+		from: (File readTesterOn: '1234567890 00000 n ' , self stringLf) parser) = (UsedReference id: (ObjectId number: 0) value: 1234567890).
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '0000000003 00015 f ' , self stringLf) parser) = (FreeReference value: 3 number: 0 generation: 15).
+		from: (File readTesterOn: '0000000003 00015 f ' , self stringLf) parser) = (FreeReference id: (ObjectId number: 0 generation: 15) value: 3).
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '0000000000 65535 f ' , self stringLf) parser) = (FreeReference value: 0 number: 0 generation: 65535).
+		from: (File readTesterOn: '0000000000 65535 f ' , self stringLf) parser) = (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0).
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '0000012345 00073 n ' , (String with: Character cr)) parser) = (UsedReference value: 12345 number: 0 generation: 73).
+		from: (File readTesterOn: '0000012345 00073 n ' , (String with: Character cr)) parser) = (UsedReference id: (ObjectId number: 0 generation: 73) value: 12345).
 	self assert: (CrossReference
 		read: 0
-		from: (File readTesterOn: '0000012345 00073 n' , (String with: Character cr) , self stringLf) parser) = (UsedReference value: 12345 number: 0 generation: 73)
+		from: (File readTesterOn: '0000012345 00073 n' , (String with: Character cr) , self stringLf) parser) = (UsedReference id: (ObjectId number: 0 generation: 73) value: 12345)
 %
 method: CrossReferenceTests
 testReadReferenceErrors
@@ -9535,62 +13075,174 @@ testReadSubsection
 %
 method: CrossReferenceTests
 testWriteReference
-	self assert: (UsedReference value: 123 number: 0 generation: 0) valueString = '0000000123'.
-	self assert: (UsedReference value: 1234567890 number: 0 generation: 0) valueString = '1234567890'.
-	self assert: (UsedReference value: 123456789 number: 0 generation: 0) valueString = '0123456789'.
-	self assert: (UsedReference value: 12345 number: 0 generation: 0) generationString = '00000'.
-	self assert: (UsedReference value: 12345 number: 0 generation: 65535) generationString = '65535'.
-	self assert: (UsedReference value: 12345 number: 0 generation: 73) generationString = '00073'.
-	self assert: (UsedReference value: 12345 number: 0 generation: 73) pdfSource = ('0000012345 00073 n ' , self stringLf).
-	self assert: (FreeReference value: 3 number: 0 generation: 15) pdfSource = ('0000000003 00015 f ' , self stringLf).
-	self assert: (FreeReference value: 0 number: 0 generation: 65535) pdfSource = ('0000000000 65535 f ' , self stringLf)
+	self assert: (UsedReference id: (ObjectId number: 0) value: 123) valueString = '0000000123'.
+	self assert: (UsedReference id: (ObjectId number: 0) value: 1234567890) valueString = '1234567890'.
+	self assert: (UsedReference id: (ObjectId number: 0) value: 123456789) valueString = '0123456789'.
+	self assert: (UsedReference id: (ObjectId number: 0) value: 12345) generationString = '00000'.
+	self assert: (UsedReference id: (ObjectId number: 0 generation: 65535) value: 12345) generationString = '65535'.
+	self assert: (UsedReference id: (ObjectId number: 0 generation: 73) value: 12345) generationString = '00073'.
+	self assert: (UsedReference id: (ObjectId number: 0 generation: 73) value: 12345) pdfSource = ('0000012345 00073 n ' , self stringLf).
+	self assert: (FreeReference id: (ObjectId number: 0 generation: 15) value: 3) pdfSource = ('0000000003 00015 f ' , self stringLf).
+	self assert: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0) pdfSource = ('0000000000 65535 f ' , self stringLf)
 %
 method: CrossReferenceTests
 testWriteSection
-	self assert: (CrossReferenceSection readFrom: (File readTesterOn: CrossReferenceSection example pdfSource) parser) = CrossReferenceSection example
+	self assert: (CrossReferenceSection readFrom: (File readTesterOn: 'xref', self stringLf, CrossReferenceSection example pdfSource) parser) = CrossReferenceSection example
+%
+category: 'tests'
+method: DocumentTests
+testAddPDFRaws
+	| doc bytes docNew |
+	doc := Document new.
+	doc appendAllRawPagesFrom: File example.
+	doc appendAllRawPagesFrom: (File readFrom: File exampleByteArray2 readStream).
+	doc appendAllRawPagesFrom: File exampleHelloWorld.
+	doc appendAllRawPagesFrom: (File readFrom: File exampleMinimalByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleMinimalByteArrayWithFreeReference readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleObjectStreamByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleUpdate1ByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleUpdate2ByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleUpdate3ByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleUpdate4ByteArray readStream).
+	doc appendAllRawPagesFrom: (File readFrom: File exampleWithReferenceToReference readStream).
+	doc appendAllRawPagesFrom: File exampleWithTypeMismatch.
+	self should: [doc root pages] raise: MessageNotUnderstood.
+	self assert: ((doc root at: #Pages) pdfObject at: #Count) = 12 asPDF.
+	bytes := doc bytesForFile: 'test.pdf'.
+	docNew := File readFrom: bytes readStream.
+	self assert: docNew root pages size = 12.
+	self assert: docNew root Pages Count = 12 asPDF.
+%
+method: DocumentTests
+testAddPDFs
+	| doc bytes docNew docDouble |
+	doc := Document new.
+	doc appendAllPagesFrom: File example.
+	doc appendAllPagesFrom: (File readFrom: File exampleByteArray2 readStream).
+	doc appendAllPagesFrom: File exampleHelloWorld.
+	doc appendAllPagesFrom: (File readFrom: File exampleMinimalByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleMinimalByteArrayWithFreeReference readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleObjectStreamByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleUpdate1ByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleUpdate2ByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleUpdate3ByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleUpdate4ByteArray readStream).
+	doc appendAllPagesFrom: (File readFrom: File exampleWithReferenceToReference readStream).
+	doc appendAllPagesFrom: File exampleWithTypeMismatch.
+	self assert: doc root pages size = 12.
+	self assert: doc root Pages Count = 12 asPDF.
+	bytes := doc bytesForFile: 'test.pdf'.
+	docNew := File readFrom: bytes readStream.
+	self assert: docNew root pages size = 12.
+	self assert: docNew root Pages Count = 12 asPDF.
+	docDouble := Document new.
+	docDouble appendAllPagesFrom: (File readFrom: bytes readStream).
+	docDouble appendAllPagesFrom: (File readFrom: bytes readStream).
+	self assert: docDouble root pages size = 24.
+	self assert: docDouble root Pages Count = 24 asPDF.
+%
+method: DocumentTests
+testAppendPages
+	| doc |
+	doc := Document new.
+	doc appendPages: (File example root at: #Pages).
+	self assert: doc root Pages class = (PDF classAt: #Pages).
+	self assert: doc root Pages Kids size = 1.
+	self assert: doc root Pages Kids first class = (PDF classAt: #Pages).
+	self assert: doc root Pages Kids first Kids size = 1.
+	doc appendPages: (File exampleHelloWorld root at: #Pages).
+	self assert: doc root Pages Kids size = 2.
+	self assert: doc root Pages Kids first class = (PDF classAt: #Pages).
+	self assert: doc root Pages Kids last class = (PDF classAt: #Pages).
+	self assert: doc root Pages Kids first Kids size = 1.
+	self assert: doc root Pages Kids first Kids first class = PDF Page.
+	self assert: doc root Pages Kids last Kids size = 1.
+	self assert: doc root Pages Kids last Kids first class = PDF Page
+%
+method: DocumentTests
+testAppendRawPages
+	| doc file1 file2 |
+	doc := Document new.
+	file1 := File example.
+	(file1 root at: #Pages) readAllRawObjects.
+	doc appendRawPages: (file1 root at: #Pages).
+	self assert: doc root Pages class = PDF Dictionary.
+	self assert: (doc root Pages at: #Kids) size = 1.
+	self assert: ((doc root Pages at: #Kids) first at: #Type) = #Pages asPDF.
+	self assert: (doc root Pages at: #Kids) first class = PDF Dictionary.
+	self assert: ((doc root Pages at: #Kids) first at: #Kids) size = 1.
+	self assert: (((doc root Pages at: #Kids) first at: #Kids) first at: #Type) = #Page asPDF.
+	self assert: ((doc root Pages at: #Kids) first at: #Kids) first class = PDF Dictionary.
+	file2 := File exampleHelloWorld.
+	(file2 root at: #Pages) readAllRawObjects.
+	doc appendRawPages: (file2 root at: #Pages).
+	self assert: doc root Pages class = PDF Dictionary.
+	self assert: (doc root Pages at: #Kids) size = 2.
+	self assert: ((doc root Pages at: #Kids) first at: #Type) = #Pages asPDF.
+	self assert: (doc root Pages at: #Kids) first class = PDF Dictionary.
+	self assert: ((doc root Pages at: #Kids) last at: #Type) = #Pages asPDF.
+	self assert: (doc root Pages at: #Kids) last class = PDF Dictionary.
+	self assert: ((doc root Pages at: #Kids) first at: #Kids) size = 1.
+	self assert: (((doc root Pages at: #Kids) first at: #Kids) first at: #Type) = #Page asPDF.
+	self assert: ((doc root Pages at: #Kids) first at: #Kids) first class = PDF Dictionary.
+	self assert: ((doc root Pages at: #Kids) last at: #Kids) size = 1.
+	self assert: (((doc root Pages at: #Kids) last at: #Kids) first at: #Type) = #Page asPDF.
+	self assert: ((doc root Pages at: #Kids) last at: #Kids) first class = PDF Dictionary
+%
+method: DocumentTests
+testVersionUpdate
+	| doc |
+	doc := Document new.
+	self assert: doc version isNil.
+	self assert: (doc updateVersion: Version pdf1_4) = Version pdf1_4.
+	self assert: doc version = Version pdf1_4.
+	self assert: (doc updateVersion: Version pdf1_7) = Version pdf1_7.
+	self assert: doc version = Version pdf1_7.
+	self assert: (doc updateVersion: Version pdf1_3) = Version pdf1_7.
+	self assert: doc version = Version pdf1_7.
 %
 category: 'tests'
 method: FileTests
 testRead
 	| file |
 	file := File readFrom: File exampleByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 2)).
+	self assert: file header = (Header version: Version pdf1_2).
 	self assert: file trailer Size = 7 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file crossReferences = (CrossReferences
 		crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 			firstNumber: 0
 			entries: ((OrderedCollection new)
-				add: (FreeReference value: 0 number: 0 generation: 65535);
-				add: (UsedReference value: 15 number: 1 generation: 0);
-				add: (UsedReference value: 64 number: 2 generation: 0);
-				add: (UsedReference value: 147 number: 3 generation: 0);
-				add: (UsedReference value: 372 number: 4 generation: 0);
-				add: (UsedReference value: 230 number: 5 generation: 0);
-				add: (UsedReference value: 462 number: 6 generation: 0);
+				add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+				add: (UsedReference id: (ObjectId number: 1) value: 15);
+				add: (UsedReference id: (ObjectId number: 2) value: 64);
+				add: (UsedReference id: (ObjectId number: 3) value: 147);
+				add: (UsedReference id: (ObjectId number: 4) value: 372);
+				add: (UsedReference id: (ObjectId number: 5) value: 230);
+				add: (UsedReference id: (ObjectId number: 6) value: 462);
 				asArray))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 7
-			with: #Root -> (file referenceAt: 1))).
-	self assert: (file crossReferences crossReferenceAt: (file referenceAt: 1)) = (UsedReference value: 15 number: 1 generation: 0).
-	self assert: (file readObjectFor: (file referenceAt: 1)) content = (PDF Dictionary
+			with: #Root -> (file referenceAt: (ObjectId number: 1)))).
+	self assert: (file crossReferenceAtId: (file referenceAt: (ObjectId number: 1))) = (UsedReference id: (ObjectId number: 1) value: 15).
+	self assert: (file referenceAt: (ObjectId number: 1)) baseObject content = (PDF Dictionary
 		with: #Type -> #Catalog
-		with: #Pages -> (file referenceAt: 2)) content.
-	self assert: (file readObjectFor: (file referenceAt: 2)) = (PDF Dictionary
+		with: #Pages -> (file referenceAt: (ObjectId number: 2))) content.
+	self assert: (file referenceAt: (ObjectId number: 2)) baseObject = (PDF Dictionary
 		with: #Type -> #Pages
 		with: #MediaBox -> #(0 0 792 612)
-		with: #Kids -> (Array with: (file referenceAt: 3)) asPDF
+		with: #Kids -> (Array with: (file referenceAt: (ObjectId number: 3))) asPDF
 		with: #Count -> 1).
-	self assert: (file readObjectFor: (file referenceAt: 3)) = (PDF Dictionary
+	self assert: (file referenceAt: (ObjectId number: 3)) baseObject = (PDF Dictionary
 		with: #Type -> #Page
-		with: #Parent -> (file referenceAt: 2)
-		with: #Resources -> (file referenceAt: 4)
-		with: #Contents -> (Array with: (file referenceAt: 5)) asPDF).
-	self assert: (file readObjectFor: (file referenceAt: 4)) = (PDF Dictionary
+		with: #Parent -> (file referenceAt: (ObjectId number: 2))
+		with: #Resources -> (file referenceAt: (ObjectId number: 4))
+		with: #Contents -> (Array with: (file referenceAt: (ObjectId number: 5))) asPDF).
+	self assert: (file referenceAt: (ObjectId number: 4)) baseObject = (PDF Dictionary
 		with: #ProcSet -> #(#PDF #Text)
-		with: #Font -> (PDF Dictionary with: #F1 -> (file referenceAt: 6))
+		with: #Font -> (PDF Dictionary with: #F1 -> (file referenceAt: (ObjectId number: 6)))
 		with: #XObject -> PDF Dictionary new).
-	self assert: (file readObjectFor: (file referenceAt: 5)) = (PDF Stream
+	self assert: (file referenceAt: (ObjectId number: 5)) baseObject = (PDF Stream
 		on: (Dictionary with: #Length -> 82)
 		internal: 'BT
 1 0 0 1 30 550 Tm
@@ -9600,62 +13252,101 @@ testRead
 (Hello, World! \(From PDFTester\))Tj
 ET
 ' withLf).
-	self assert: (file readObjectFor: (file referenceAt: 6)) = (PDF Dictionary
+	self assert: (file referenceAt: (ObjectId number: 6)) baseObject = (PDF Dictionary
 		with: #Type -> #Font
 		with: #Subtype -> #Type1
 		with: #BaseFont -> #Courier)
 %
 method: FileTests
+testReadAllPages
+	| file |
+	file := File readFrom: File exampleByteArray readStream.
+	(file root at: #Pages) resolveAllReferences.
+	self assert: file crossReferences usedReferences size = 6.
+	self assert: file objects size = 6.
+	self assert: (((file objects values collect: #pdfObject) collect: #class) collect: #name) sorted asArray = #(#Catalog #Contents #Page #Pages #Resources #StandardFont).
+%
+method: FileTests
+testReadAllPagesBreathFirst
+	| file |
+	file := File readFrom: File exampleByteArray readStream.
+	(file root at: #Pages) resolveAllReferencesBreathFirst.
+	self assert: file crossReferences usedReferences size = 6.
+	self assert: file objects size = 6.
+	self assert: (((file objects values collect: #pdfObject) collect: #class) collect: #name) sorted asArray = #(#Catalog #Contents #Page #Pages #Resources #StandardFont).
+%
+method: FileTests
+testReadAllPagesRaw
+	"the objects are read without typing"
+
+	| file |
+	file := File readFrom: File exampleByteArray readStream.
+	(file root at: #Pages) readAllRawObjects.
+	self assert: file crossReferences usedReferences size = 6.
+	self assert: file objects size = 6.
+	self assert: (((file objects values collect: #pdfObject) collect: #class) collect: #name) sorted asArray = #(#Catalog #PDFDictionary #PDFDictionary #PDFDictionary #PDFDictionary #PDFStream)
+%
+method: FileTests
+testReadAllRaw
+	| file |
+	file := File readFrom: File exampleByteArray readStream.
+	(file root at: #Pages) readAllRawObjects.
+	self assert: file crossReferences usedReferences size = 6.
+	self assert: file objects size = 6.
+	self assert: (((file objects values collect: #pdfObject) collect: #class) collect: #name) sorted asArray = #(#Catalog #PDFDictionary #PDFDictionary #PDFDictionary #PDFDictionary #PDFStream)
+%
+method: FileTests
 testReadMinimalFile
 	| file |
 	file := File readFrom: File exampleMinimalByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
+	self assert: file header = (Header version: Version pdf1_4).
 	self assert: file trailer Size = 7 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file crossReferences = (CrossReferences
 		crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 			firstNumber: 0
 			entries: ((OrderedCollection new)
-				add: (FreeReference value: 0 number: 0 generation: 65535);
-				add: (UsedReference value: 9 number: 1 generation: 0);
-				add: (UsedReference value: 81 number: 2 generation: 0);
-				add: (UsedReference value: 131 number: 3 generation: 0);
-				add: (UsedReference value: 197 number: 4 generation: 0);
-				add: (UsedReference value: 329 number: 5 generation: 0);
-				add: (UsedReference value: 405 number: 6 generation: 0);
+				add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+				add: (UsedReference id: (ObjectId number: 1) value: 9);
+				add: (UsedReference id: (ObjectId number: 2) value: 81);
+				add: (UsedReference id: (ObjectId number: 3) value: 131);
+				add: (UsedReference id: (ObjectId number: 4) value: 197);
+				add: (UsedReference id: (ObjectId number: 5) value: 329);
+				add: (UsedReference id: (ObjectId number: 6) value: 405);
 				asArray))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 7
-			with: #Root -> (file referenceAt: 1))).
-	self assert: (file crossReferences crossReferenceAt: (file referenceAt: 1)) = (UsedReference value: 9 number: 1 generation: 0).
-	self assert: (file readObjectFor: (file referenceAt: 1)) = (PDF Dictionary
+			with: #Root -> (file referenceAt: (ObjectId number: 1)))).
+	self assert: (file crossReferenceAtId: (file referenceAt: (ObjectId number: 1))) = (UsedReference id: (ObjectId number: 1) value: 9).
+	self assert: (file referenceAt: (ObjectId number: 1)) baseObject = ((PDF classAt: #Catalog)
 		with: #Type -> #Catalog
-		with: #Outlines -> (file referenceAt: 2)
-		with: #Pages -> (file referenceAt: 3)).
-	self assert: (file readObjectFor: (file referenceAt: 2)) = (PDF Dictionary
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3))).
+	self assert: (file referenceAt: (ObjectId number: 2)) baseObject = (PDF Dictionary
 		with: #Type -> #Outlines
 		with: #Count -> 0).
-	self assert: (file readObjectFor: (file referenceAt: 3)) = (PDF Dictionary
+	self assert: (file referenceAt: (ObjectId number: 3)) baseObject = (PDF Dictionary
 		with: #Type -> #Pages
-		with: #Kids -> (Array with: (file referenceAt: 4)) asPDF
+		with: #Kids -> (Array with: (file referenceAt: (ObjectId number: 4))) asPDF
 		with: #Count -> 1).
-	self assert: (file readObjectFor: (file referenceAt: 4)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 4)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Page;
-		at: #Parent put: (file referenceAt: 3);
+		at: #Parent put: (file referenceAt: (ObjectId number: 3));
 		at: #MediaBox put: #(0 0 612 792);
-		at: #Contents put: (file referenceAt: 5);
-		at: #Resources put: (PDF Dictionary with: #ProcSet -> (file referenceAt: 6));
+		at: #Contents put: (file referenceAt: (ObjectId number: 5));
+		at: #Resources
+			put: (PDF Dictionary with: #ProcSet -> (file referenceAt: (ObjectId number: 6)));
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 5)) = (PDF Stream
+	self assert: (file referenceAt: (ObjectId number: 5)) baseObject = (PDF Stream
 		on: (Dictionary with: #Length -> 25)
 		external: '(Page-marking operators)' , self stringLf).
-	self assert: (file readObjectFor: (file referenceAt: 6)) = (Array with: #PDF) asPDF
+	self assert: (file referenceAt: (ObjectId number: 6)) baseObject = (Array with: #PDF) asPDF
 %
 method: FileTests
 testReadObjectStream
 	| file |
 	file := File readFrom: File exampleObjectStreamByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 5)).
+	self assert: file header = (Header version: Version pdf1_5).
 	self assert: file trailer size = 2.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file trailer Prev isNil.
@@ -9668,36 +13359,36 @@ testReadObjectStream
 	self assert: file crossReferences subsections first = (CrossReferenceSubsection
 		firstNumber: 0
 		entries: ((OrderedCollection new)
-			add: (FreeReference value: 0 number: 0 generation: 65535);
-			add: (UsedReference value: 50 number: 1 generation: 0);
-			add: (UsedReference value: 122 number: 2 generation: 0);
-			add: (UsedReference value: 172 number: 3 generation: 0);
-			add: (UsedReference value: 238 number: 4 generation: 0);
-			add: (UsedReference value: 370 number: 5 generation: 0);
-			add: (UsedReference value: 446 number: 6 generation: 0);
-			add: (StreamReference value: 10 number: 7 generation: 0);
-			add: (StreamReference value: 10 number: 8 generation: 1);
-			add: (StreamReference value: 10 number: 9 generation: 2);
-			add: (UsedReference value: 472 number: 10 generation: 0);
+			add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+			add: (UsedReference id: (ObjectId number: 1) value: 50);
+			add: (UsedReference id: (ObjectId number: 2) value: 122);
+			add: (UsedReference id: (ObjectId number: 3) value: 172);
+			add: (UsedReference id: (ObjectId number: 4) value: 238);
+			add: (UsedReference id: (ObjectId number: 5) value: 370);
+			add: (UsedReference id: (ObjectId number: 6) value: 446);
+			add: (StreamReference id: (ObjectId number: 7) value: 10);
+			add: (StreamReference id: (ObjectId number: 8 generation: 1) value: 10);
+			add: (StreamReference id: (ObjectId number: 9 generation: 2) value: 10);
+			add: (UsedReference id: (ObjectId number: 10) value: 472);
 			asArray)).
-	self assert: (file readObjectFor: (file referenceAt: 6)) = #(#PDF) asPDF.
-	self assert: (file readObjectFor: (file referenceAt: 7)) = (PDF Dictionary
+	self assert: (file referenceAt: (ObjectId number: 6)) baseObject = #(#PDF) asPDF.
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = (PDF Dictionary
 		with: #Type -> #Font
 		with: #Subtype -> #TrueType
-		with: #FontDescriptor -> (file referenceAt: 12)).
-	self assert: ((file readObjectFor: (file referenceAt: 10)) isKindOf: PDF Stream).
-	self assert: (file readObjectFor: (file referenceAt: 10)) content = (PDF Dictionary
+		with: #FontDescriptor -> (file referenceAt: (ObjectId number: 12))).
+	self assert: ((file referenceAt: (ObjectId number: 10)) baseObject isKindOf: PDF Stream).
+	self assert: (file referenceAt: (ObjectId number: 10)) baseObject content = (PDF Dictionary
 		with: #Type -> #ObjStm
 		with: #Length -> 191
 		with: #N -> 3
 		with: #First -> 15) content.
-	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference value: 0 number: 0 generation: 65535))
+	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0))
 %
 method: FileTests
 testReadUpdate1
 	| file |
 	file := File readFrom: File exampleUpdate1ByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
+	self assert: file header = (Header version: Version pdf1_4).
 	self assert: file trailer Size = 12 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file trailer Prev = 431 asPDF.
@@ -9705,73 +13396,74 @@ testReadUpdate1
 		crossReferenceSection: (CrossReferenceSection subsections: (Array
 			with: (CrossReferenceSubsection
 				firstNumber: 0
-				entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+				entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 			with: (CrossReferenceSubsection
 				firstNumber: 4
-				entries: (Array with: (UsedReference value: 640 number: 4 generation: 0)))
+				entries: (Array with: (UsedReference id: (ObjectId number: 4) value: 640)))
 			with: (CrossReferenceSubsection
 				firstNumber: 7
 				entries: ((OrderedCollection new)
-					add: (UsedReference value: 788 number: 7 generation: 0);
-					add: (UsedReference value: 842 number: 8 generation: 0);
-					add: (UsedReference value: 960 number: 9 generation: 0);
-					add: (UsedReference value: 1080 number: 10 generation: 0);
-					add: (UsedReference value: 1200 number: 11 generation: 0);
+					add: (UsedReference id: (ObjectId number: 7) value: 788);
+					add: (UsedReference id: (ObjectId number: 8) value: 842);
+					add: (UsedReference id: (ObjectId number: 9) value: 960);
+					add: (UsedReference id: (ObjectId number: 10) value: 1080);
+					add: (UsedReference id: (ObjectId number: 11) value: 1200);
 					asArray))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 12
-			with: #Root -> (file referenceAt: 1)
+			with: #Root -> (file referenceAt: (ObjectId number: 1))
 			with: #Prev -> 431)
 		previous: (CrossReferences
 			crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 				firstNumber: 0
 				entries: ((OrderedCollection new)
-					add: (FreeReference value: 0 number: 0 generation: 65535);
-					add: (UsedReference value: 9 number: 1 generation: 0);
-					add: (UsedReference value: 81 number: 2 generation: 0);
-					add: (UsedReference value: 131 number: 3 generation: 0);
-					add: (UsedReference value: 197 number: 4 generation: 0);
-					add: (UsedReference value: 329 number: 5 generation: 0);
-					add: (UsedReference value: 405 number: 6 generation: 0);
+					add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+					add: (UsedReference id: (ObjectId number: 1) value: 9);
+					add: (UsedReference id: (ObjectId number: 2) value: 81);
+					add: (UsedReference id: (ObjectId number: 3) value: 131);
+					add: (UsedReference id: (ObjectId number: 4) value: 197);
+					add: (UsedReference id: (ObjectId number: 5) value: 329);
+					add: (UsedReference id: (ObjectId number: 6) value: 405);
 					asArray))))
 			trailer: ((PDF classAt: #Trailer)
 				with: #Size -> 7
-				with: #Root -> (file referenceAt: 1)))).
-	self assert: (file readObjectFor: (file referenceAt: 4)) = ((PDF Dictionary new)
+				with: #Root -> (file referenceAt: (ObjectId number: 1))))).
+	self assert: (file referenceAt: (ObjectId number: 4)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Page;
-		at: #Parent put: (file referenceAt: 3);
+		at: #Parent put: (file referenceAt: (ObjectId number: 3));
 		at: #MediaBox put: #(0 0 612 792);
-		at: #Contents put: (file referenceAt: 5);
-		at: #Resources put: (PDF Dictionary with: #ProcSet -> (file referenceAt: 6));
-		at: #Annots put: (file referenceAt: 7);
+		at: #Contents put: (file referenceAt: (ObjectId number: 5));
+		at: #Resources
+			put: (PDF Dictionary with: #ProcSet -> (file referenceAt: (ObjectId number: 6)));
+		at: #Annots put: (file referenceAt: (ObjectId number: 7));
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 7)) = (Array
-		with: (file referenceAt: 8)
-		with: (file referenceAt: 9)
-		with: (file referenceAt: 10)
-		with: (file referenceAt: 11)) asPDF.
-	self assert: (file readObjectFor: (file referenceAt: 8)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = (Array
+		with: (file referenceAt: (ObjectId number: 8))
+		with: (file referenceAt: (ObjectId number: 9))
+		with: (file referenceAt: (ObjectId number: 10))
+		with: (file referenceAt: (ObjectId number: 11))) asPDF.
+	self assert: (file referenceAt: (ObjectId number: 8)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(44 616 162 735);
 		at: #Contents put: ' Text #1 ';
 		at: #Open put: true;
 		yourself) content asPDF.
-	self assert: (file readObjectFor: (file referenceAt: 9)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 9)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(224 668 457 735);
 		at: #Contents put: ' Text #2 ';
 		at: #Open put: false;
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 10)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 10)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(239 393 328 622);
 		at: #Contents put: ' Text #3 ';
 		at: #Open put: true;
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 11)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 11)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(34 398 225 575);
@@ -9783,7 +13475,7 @@ method: FileTests
 testReadUpdate2
 	| file |
 	file := File readFrom: File exampleUpdate2ByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
+	self assert: file header = (Header version: Version pdf1_4).
 	self assert: file trailer Size = 12 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file trailer Prev = 1320 asPDF.
@@ -9791,77 +13483,78 @@ testReadUpdate2
 		crossReferenceSection: (CrossReferenceSection subsections: (Array
 			with: (CrossReferenceSubsection
 				firstNumber: 0
-				entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+				entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 			with: (CrossReferenceSubsection
 				firstNumber: 10
-				entries: (Array with: (UsedReference value: 1551 number: 10 generation: 0)))))
+				entries: (Array with: (UsedReference id: (ObjectId number: 10) value: 1551)))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 12
-			with: #Root -> (file referenceAt: 1)
+			with: #Root -> (file referenceAt: (ObjectId number: 1))
 			with: #Prev -> 1320)
 		previous: (CrossReferences
 			crossReferenceSection: (CrossReferenceSection subsections: (Array
 				with: (CrossReferenceSubsection
 					firstNumber: 0
-					entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+					entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 				with: (CrossReferenceSubsection
 					firstNumber: 4
-					entries: (Array with: (UsedReference value: 640 number: 4 generation: 0)))
+					entries: (Array with: (UsedReference id: (ObjectId number: 4) value: 640)))
 				with: (CrossReferenceSubsection
 					firstNumber: 7
 					entries: ((OrderedCollection new)
-						add: (UsedReference value: 788 number: 7 generation: 0);
-						add: (UsedReference value: 842 number: 8 generation: 0);
-						add: (UsedReference value: 960 number: 9 generation: 0);
-						add: (UsedReference value: 1080 number: 10 generation: 0);
-						add: (UsedReference value: 1200 number: 11 generation: 0);
+						add: (UsedReference id: (ObjectId number: 7) value: 788);
+						add: (UsedReference id: (ObjectId number: 8) value: 842);
+						add: (UsedReference id: (ObjectId number: 9) value: 960);
+						add: (UsedReference id: (ObjectId number: 10) value: 1080);
+						add: (UsedReference id: (ObjectId number: 11) value: 1200);
 						asArray))))
 			trailer: ((PDF classAt: #Trailer)
 				with: #Size -> 12
-				with: #Root -> (file referenceAt: 1)
+				with: #Root -> (file referenceAt: (ObjectId number: 1))
 				with: #Prev -> 431)
 			previous: (CrossReferences
 				crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 					firstNumber: 0
 					entries: ((OrderedCollection new)
-						add: (FreeReference value: 0 number: 0 generation: 65535);
-						add: (UsedReference value: 9 number: 1 generation: 0);
-						add: (UsedReference value: 81 number: 2 generation: 0);
-						add: (UsedReference value: 131 number: 3 generation: 0);
-						add: (UsedReference value: 197 number: 4 generation: 0);
-						add: (UsedReference value: 329 number: 5 generation: 0);
-						add: (UsedReference value: 405 number: 6 generation: 0);
+						add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+						add: (UsedReference id: (ObjectId number: 1) value: 9);
+						add: (UsedReference id: (ObjectId number: 2) value: 81);
+						add: (UsedReference id: (ObjectId number: 3) value: 131);
+						add: (UsedReference id: (ObjectId number: 4) value: 197);
+						add: (UsedReference id: (ObjectId number: 5) value: 329);
+						add: (UsedReference id: (ObjectId number: 6) value: 405);
 						asArray))))
 				trailer: ((PDF classAt: #Trailer)
 					with: #Size -> 7
-					with: #Root -> (file referenceAt: 1))))).
-	self assert: (file readObjectFor: (file referenceAt: 4)) = ((PDF Dictionary new)
+					with: #Root -> (file referenceAt: (ObjectId number: 1)))))).
+	self assert: (file referenceAt: (ObjectId number: 4)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Page;
-		at: #Parent put: (file referenceAt: 3);
+		at: #Parent put: (file referenceAt: (ObjectId number: 3));
 		at: #MediaBox put: #(0 0 612 792);
-		at: #Contents put: (file referenceAt: 5);
-		at: #Resources put: (PDF Dictionary with: #ProcSet -> (file referenceAt: 6));
-		at: #Annots put: (file referenceAt: 7);
+		at: #Contents put: (file referenceAt: (ObjectId number: 5));
+		at: #Resources
+			put: (PDF Dictionary with: #ProcSet -> (file referenceAt: (ObjectId number: 6)));
+		at: #Annots put: (file referenceAt: (ObjectId number: 7));
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 7)) = (Array
-		with: (file referenceAt: 8)
-		with: (file referenceAt: 9)
-		with: (file referenceAt: 10)
-		with: (file referenceAt: 11)) asPDF.
-	self assert: (file readObjectFor: (file referenceAt: 10)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = (Array
+		with: (file referenceAt: (ObjectId number: 8))
+		with: (file referenceAt: (ObjectId number: 9))
+		with: (file referenceAt: (ObjectId number: 10))
+		with: (file referenceAt: (ObjectId number: 11))) asPDF.
+	self assert: (file referenceAt: (ObjectId number: 10)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(239 393 328 622);
 		at: #Contents put: ' Modified Text #3 ';
 		at: #Open put: true;
 		yourself).
-	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference value: 0 number: 0 generation: 65535))
+	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0))
 %
 method: FileTests
 testReadUpdate3
 	| file |
 	file := File readFrom: File exampleUpdate3ByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
+	self assert: file header = (Header version: Version pdf1_4).
 	self assert: file trailer Size = 12 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file trailer Prev = 1680 asPDF.
@@ -9869,80 +13562,80 @@ testReadUpdate3
 		crossReferenceSection: (CrossReferenceSection subsections: (Array
 			with: (CrossReferenceSubsection
 				firstNumber: 0
-				entries: (Array with: (FreeReference value: 8 number: 0 generation: 65535)))
+				entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 8)))
 			with: (CrossReferenceSubsection
 				firstNumber: 7
 				entries: (Array
-					with: (UsedReference value: 1809 number: 7 generation: 0)
-					with: (FreeReference value: 9 number: 8 generation: 1)
-					with: (FreeReference value: 0 number: 9 generation: 1)))))
+					with: (UsedReference id: (ObjectId number: 7) value: 1809)
+					with: (FreeReference id: (ObjectId number: 8 generation: 1) value: 9)
+					with: (FreeReference id: (ObjectId number: 9 generation: 1) value: 0)))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 12
-			with: #Root -> (file referenceAt: 1)
+			with: #Root -> (file referenceAt: (ObjectId number: 1))
 			with: #Prev -> 1680)
 		previous: (CrossReferences
 			crossReferenceSection: (CrossReferenceSection subsections: (Array
 				with: (CrossReferenceSubsection
 					firstNumber: 0
-					entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+					entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 				with: (CrossReferenceSubsection
 					firstNumber: 10
-					entries: (Array with: (UsedReference value: 1551 number: 10 generation: 0)))))
+					entries: (Array with: (UsedReference id: (ObjectId number: 10) value: 1551)))))
 			trailer: ((PDF classAt: #Trailer)
 				with: #Size -> 12
-				with: #Root -> (file referenceAt: 1)
+				with: #Root -> (file referenceAt: (ObjectId number: 1))
 				with: #Prev -> 1320)
 			previous: (CrossReferences
 				crossReferenceSection: (CrossReferenceSection subsections: (Array
 					with: (CrossReferenceSubsection
 						firstNumber: 0
-						entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+						entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 					with: (CrossReferenceSubsection
 						firstNumber: 4
-						entries: (Array with: (UsedReference value: 640 number: 4 generation: 0)))
+						entries: (Array with: (UsedReference id: (ObjectId number: 4) value: 640)))
 					with: (CrossReferenceSubsection
 						firstNumber: 7
 						entries: ((OrderedCollection new)
-							add: (UsedReference value: 788 number: 7 generation: 0);
-							add: (UsedReference value: 842 number: 8 generation: 0);
-							add: (UsedReference value: 960 number: 9 generation: 0);
-							add: (UsedReference value: 1080 number: 10 generation: 0);
-							add: (UsedReference value: 1200 number: 11 generation: 0);
+							add: (UsedReference id: (ObjectId number: 7) value: 788);
+							add: (UsedReference id: (ObjectId number: 8) value: 842);
+							add: (UsedReference id: (ObjectId number: 9) value: 960);
+							add: (UsedReference id: (ObjectId number: 10) value: 1080);
+							add: (UsedReference id: (ObjectId number: 11) value: 1200);
 							asArray))))
 				trailer: ((PDF classAt: #Trailer)
 					with: #Size -> 12
-					with: #Root -> (file referenceAt: 1)
+					with: #Root -> (file referenceAt: (ObjectId number: 1))
 					with: #Prev -> 431)
 				previous: (CrossReferences
 					crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 						firstNumber: 0
 						entries: ((OrderedCollection new)
-							add: (FreeReference value: 0 number: 0 generation: 65535);
-							add: (UsedReference value: 9 number: 1 generation: 0);
-							add: (UsedReference value: 81 number: 2 generation: 0);
-							add: (UsedReference value: 131 number: 3 generation: 0);
-							add: (UsedReference value: 197 number: 4 generation: 0);
-							add: (UsedReference value: 329 number: 5 generation: 0);
-							add: (UsedReference value: 405 number: 6 generation: 0);
+							add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+							add: (UsedReference id: (ObjectId number: 1) value: 9);
+							add: (UsedReference id: (ObjectId number: 2) value: 81);
+							add: (UsedReference id: (ObjectId number: 3) value: 131);
+							add: (UsedReference id: (ObjectId number: 4) value: 197);
+							add: (UsedReference id: (ObjectId number: 5) value: 329);
+							add: (UsedReference id: (ObjectId number: 6) value: 405);
 							asArray))))
 					trailer: ((PDF classAt: #Trailer)
 						with: #Size -> 7
-						with: #Root -> (file referenceAt: 1)))))).
-	self assert: (file readObjectFor: (file referenceAt: 7)) = (Array
-		with: (file referenceAt: 10)
-		with: (file referenceAt: 11)) asPDF.
-	self assert: (file readObjectFor: (file referenceAt: 8)) = nil.
-	self assert: (file readObjectFor: (file referenceAt: 9)) = nil.
+						with: #Root -> (file referenceAt: (ObjectId number: 1))))))).
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = (Array
+		with: (file referenceAt: (ObjectId number: 10))
+		with: (file referenceAt: (ObjectId number: 11))) asPDF.
+	self assert: (file referenceAt: (ObjectId number: 8)) baseObject = nil.
+	self assert: (file referenceAt: (ObjectId number: 9)) baseObject = nil.
 	self assert: file crossReferences freeReferences asArray = (Array
-		with: (FreeReference value: 8 number: 0 generation: 65535)
-		with: (FreeReference value: 9 number: 8 generation: 1)
-		with: (FreeReference value: 0 number: 9 generation: 1))
+		with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 8)
+		with: (FreeReference id: (ObjectId number: 8 generation: 1) value: 9)
+		with: (FreeReference id: (ObjectId number: 9 generation: 1) value: 0))
 %
 method: FileTests
 testReadUpdate4
 	| file |
 	file := File readFrom: File exampleUpdate4ByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
+	self assert: file header = (Header version: Version pdf1_4).
 	self assert: file trailer Size = 13 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file trailer Prev = 1847 asPDF.
@@ -9950,107 +13643,107 @@ testReadUpdate4
 		crossReferenceSection: (CrossReferenceSection subsections: (Array
 			with: (CrossReferenceSubsection
 				firstNumber: 0
-				entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+				entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 			with: (CrossReferenceSubsection
 				firstNumber: 7
 				entries: (Array
-					with: (UsedReference value: 2015 number: 7 generation: 0)
-					with: (UsedReference value: 2078 number: 8 generation: 1)
-					with: (UsedReference value: 2200 number: 9 generation: 1)))
+					with: (UsedReference id: (ObjectId number: 7) value: 2015)
+					with: (UsedReference id: (ObjectId number: 8 generation: 1) value: 2078)
+					with: (UsedReference id: (ObjectId number: 9 generation: 1) value: 2200)))
 			with: (CrossReferenceSubsection
 				firstNumber: 12
-				entries: (Array with: (UsedReference value: 2324 number: 12 generation: 0)))))
+				entries: (Array with: (UsedReference id: (ObjectId number: 12) value: 2324)))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 13
-			with: #Root -> (file referenceAt: 1)
+			with: #Root -> (file referenceAt: (ObjectId number: 1))
 			with: #Prev -> 1847)
 		previous: (CrossReferences
 			crossReferenceSection: (CrossReferenceSection subsections: (Array
 				with: (CrossReferenceSubsection
 					firstNumber: 0
-					entries: (Array with: (FreeReference value: 8 number: 0 generation: 65535)))
+					entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 8)))
 				with: (CrossReferenceSubsection
 					firstNumber: 7
 					entries: (Array
-						with: (UsedReference value: 1809 number: 7 generation: 0)
-						with: (FreeReference value: 9 number: 8 generation: 1)
-						with: (FreeReference value: 0 number: 9 generation: 1)))))
+						with: (UsedReference id: (ObjectId number: 7) value: 1809)
+						with: (FreeReference id: (ObjectId number: 8 generation: 1) value: 9)
+						with: (FreeReference id: (ObjectId number: 9 generation: 1) value: 0)))))
 			trailer: ((PDF classAt: #Trailer)
 				with: #Size -> 12
-				with: #Root -> (file referenceAt: 1)
+				with: #Root -> (file referenceAt: (ObjectId number: 1))
 				with: #Prev -> 1680)
 			previous: (CrossReferences
 				crossReferenceSection: (CrossReferenceSection subsections: (Array
 					with: (CrossReferenceSubsection
 						firstNumber: 0
-						entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+						entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 					with: (CrossReferenceSubsection
 						firstNumber: 10
-						entries: (Array with: (UsedReference value: 1551 number: 10 generation: 0)))))
+						entries: (Array with: (UsedReference id: (ObjectId number: 10) value: 1551)))))
 				trailer: ((PDF classAt: #Trailer)
 					with: #Size -> 12
-					with: #Root -> (file referenceAt: 1)
+					with: #Root -> (file referenceAt: (ObjectId number: 1))
 					with: #Prev -> 1320)
 				previous: (CrossReferences
 					crossReferenceSection: (CrossReferenceSection subsections: (Array
 						with: (CrossReferenceSubsection
 							firstNumber: 0
-							entries: (Array with: (FreeReference value: 0 number: 0 generation: 65535)))
+							entries: (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0)))
 						with: (CrossReferenceSubsection
 							firstNumber: 4
-							entries: (Array with: (UsedReference value: 640 number: 4 generation: 0)))
+							entries: (Array with: (UsedReference id: (ObjectId number: 4) value: 640)))
 						with: (CrossReferenceSubsection
 							firstNumber: 7
 							entries: ((OrderedCollection new)
-								add: (UsedReference value: 788 number: 7 generation: 0);
-								add: (UsedReference value: 842 number: 8 generation: 0);
-								add: (UsedReference value: 960 number: 9 generation: 0);
-								add: (UsedReference value: 1080 number: 10 generation: 0);
-								add: (UsedReference value: 1200 number: 11 generation: 0);
+								add: (UsedReference id: (ObjectId number: 7) value: 788);
+								add: (UsedReference id: (ObjectId number: 8) value: 842);
+								add: (UsedReference id: (ObjectId number: 9) value: 960);
+								add: (UsedReference id: (ObjectId number: 10) value: 1080);
+								add: (UsedReference id: (ObjectId number: 11) value: 1200);
 								asArray))))
 					trailer: ((PDF classAt: #Trailer)
 						with: #Size -> 12
-						with: #Root -> (file referenceAt: 1)
+						with: #Root -> (file referenceAt: (ObjectId number: 1))
 						with: #Prev -> 431)
 					previous: (CrossReferences
 						crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 							firstNumber: 0
 							entries: ((OrderedCollection new)
-								add: (FreeReference value: 0 number: 0 generation: 65535);
-								add: (UsedReference value: 9 number: 1 generation: 0);
-								add: (UsedReference value: 81 number: 2 generation: 0);
-								add: (UsedReference value: 131 number: 3 generation: 0);
-								add: (UsedReference value: 197 number: 4 generation: 0);
-								add: (UsedReference value: 329 number: 5 generation: 0);
-								add: (UsedReference value: 405 number: 6 generation: 0);
+								add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+								add: (UsedReference id: (ObjectId number: 1) value: 9);
+								add: (UsedReference id: (ObjectId number: 2) value: 81);
+								add: (UsedReference id: (ObjectId number: 3) value: 131);
+								add: (UsedReference id: (ObjectId number: 4) value: 197);
+								add: (UsedReference id: (ObjectId number: 5) value: 329);
+								add: (UsedReference id: (ObjectId number: 6) value: 405);
 								asArray))))
 						trailer: ((PDF classAt: #Trailer)
 							with: #Size -> 7
-							with: #Root -> (file referenceAt: 1))))))).
-	self assert: (file readObjectFor: (file referenceAt: 7)) = ((OrderedCollection new)
-		add: (file referenceAt: 10);
-		add: (file referenceAt: 11);
-		add: (file referenceAt: 8 generation: 1);
-		add: (file referenceAt: 9 generation: 1);
-		add: (file referenceAt: 12);
+							with: #Root -> (file referenceAt: (ObjectId number: 1)))))))).
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = ((OrderedCollection new)
+		add: (file referenceAt: (ObjectId number: 10));
+		add: (file referenceAt: (ObjectId number: 11));
+		add: (file referenceAt: (ObjectId number: 8 generation: 1));
+		add: (file referenceAt: (ObjectId number: 9 generation: 1));
+		add: (file referenceAt: (ObjectId number: 12));
 		asPDF).
-	self assert: (file readObjectFor: (file referenceAt: 8 generation: 1)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 8 generation: 1)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(58 657 172 742);
 		at: #Contents put: ' New Text #1 ';
 		at: #Open put: true;
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 9 generation: 1)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 9 generation: 1)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(389 459 570 537);
 		at: #Contents put: ' New Text #2 ';
 		at: #Open put: false;
 		yourself).
-	self assert: (file readObjectFor: (file referenceAt: 8)) = nil.
-	self assert: (file readObjectFor: (file referenceAt: 9)) = nil.
-	self assert: (file readObjectFor: (file referenceAt: 12)) = ((PDF Dictionary new)
+	self assert: (file referenceAt: (ObjectId number: 8)) baseObject = nil.
+	self assert: (file referenceAt: (ObjectId number: 9)) baseObject = nil.
+	self assert: (file referenceAt: (ObjectId number: 12)) baseObject = ((PDF Dictionary new)
 		at: #Type put: #Annot;
 		at: #Subtype put: #Text;
 		at: #Rect put: #(44 253 473 337);
@@ -10058,58 +13751,58 @@ testReadUpdate4
 			put: (' New Text #3' , (String with: 131 asCharacter) , 'a longer text annotation which we will continue onto a second line ') asPDF;
 		at: #Open put: true;
 		yourself).
-	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference value: 0 number: 0 generation: 65535))
+	self assert: file crossReferences freeReferences asArray = (Array with: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0))
 %
 method: FileTests
 testReadWithDeferredStreamLength
 	| file |
 	file := File readFrom: File exampleByteArray2 readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 2)).
+	self assert: file header = (Header version: Version pdf1_2).
 	self assert: file trailer Size = 8 asPDF.
 	self assert: (file trailer Root isKindOf: (PDF classAt: #Catalog)).
 	self assert: file crossReferences = (CrossReferences
 		crossReferenceSection: (CrossReferenceSection subsections: (Array with: (CrossReferenceSubsection
 			firstNumber: 0
 			entries: ((OrderedCollection new)
-				add: (FreeReference value: 0 number: 0 generation: 65535);
-				add: (UsedReference value: 15 number: 1 generation: 0);
-				add: (UsedReference value: 64 number: 2 generation: 0);
-				add: (UsedReference value: 147 number: 3 generation: 0);
-				add: (UsedReference value: 320 number: 4 generation: 0);
-				add: (UsedReference value: 230 number: 5 generation: 0);
-				add: (UsedReference value: 411 number: 6 generation: 0);
-				add: (UsedReference value: 1224 number: 7 generation: 0);
+				add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+				add: (UsedReference id: (ObjectId number: 1) value: 15);
+				add: (UsedReference id: (ObjectId number: 2) value: 64);
+				add: (UsedReference id: (ObjectId number: 3) value: 147);
+				add: (UsedReference id: (ObjectId number: 4) value: 320);
+				add: (UsedReference id: (ObjectId number: 5) value: 230);
+				add: (UsedReference id: (ObjectId number: 6) value: 411);
+				add: (UsedReference id: (ObjectId number: 7) value: 1224);
 				asArray))))
 		trailer: ((PDF classAt: #Trailer)
 			with: #Size -> 8
-			with: #Root -> (file referenceAt: 1))).
-	self assert: (file crossReferences crossReferenceAt: (file referenceAt: 1)) = (UsedReference value: 15 number: 1 generation: 0).
-	self assert: (file readObjectFor: (file referenceAt: 1)) = (PDF Dictionary
+			with: #Root -> (file referenceAt: (ObjectId number: 1)))).
+	self assert: (file crossReferenceAtId: (file referenceAt: (ObjectId number: 1))) = (UsedReference id: (ObjectId number: 1) value: 15).
+	self assert: (file referenceAt: (ObjectId number: 1)) baseObject = ((PDF classAt: #Catalog)
 		with: #Type -> #Catalog
-		with: #Pages -> (file referenceAt: 2)).
-	self assert: (file readObjectFor: (file referenceAt: 2)) = (PDF Dictionary
+		with: #Pages -> (file referenceAt: (ObjectId number: 2))).
+	self assert: (file referenceAt: (ObjectId number: 2)) baseObject = (PDF Dictionary
 		with: #Type -> #Pages
 		with: #MediaBox -> #(0 0 792 612)
-		with: #Kids -> (Array with: (file referenceAt: 3)) asPDF
+		with: #Kids -> (Array with: (file referenceAt: (ObjectId number: 3))) asPDF
 		with: #Count -> 1).
-	self assert: (file readObjectFor: (file referenceAt: 3)) = (PDF Dictionary
+	self assert: (file referenceAt: (ObjectId number: 3)) baseObject = (PDF Dictionary
 		with: #Type -> #Page
-		with: #Parent -> (file referenceAt: 2)
-		with: #Resources -> (file referenceAt: 4)
-		with: #Contents -> (Array with: (file referenceAt: 5)) asPDF).
-	self assert: (file readObjectFor: (file referenceAt: 4)) = (PDF Dictionary
+		with: #Parent -> (file referenceAt: (ObjectId number: 2))
+		with: #Resources -> (file referenceAt: (ObjectId number: 4))
+		with: #Contents -> (Array with: (file referenceAt: (ObjectId number: 5))) asPDF).
+	self assert: (file referenceAt: (ObjectId number: 4)) baseObject = (PDF Dictionary
 		with: #ProcSet -> #(#PDF #Text)
 		with: #Font -> PDF Dictionary new
-		with: #XObject -> (PDF Dictionary with: #IM1 -> (file referenceAt: 6))).
-	self assert: (file readObjectFor: (file referenceAt: 5)) = (PDF Stream
-		on: (OrderedDictionary with: #Length -> 30)
+		with: #XObject -> (PDF Dictionary with: #IM1 -> (file referenceAt: (ObjectId number: 6)))).
+	self assert: (file referenceAt: (ObjectId number: 5)) baseObject = (PDF Stream
+		on: (Valuemap with: #Length -> 30)
 		internal: 'q
 101 0 0 51 0 0  cm/IM1 Do
 Q
 ' withLf).
-	self assert: ((file readObjectFor: (file referenceAt: 6)) isKindOf: PDF Stream).
-	self assert: (file readObjectFor: (file referenceAt: 6)) size = 7.
-	self assert: (file readObjectFor: (file referenceAt: 7)) = 663 asPDF
+	self assert: ((file referenceAt: (ObjectId number: 6)) baseObject isKindOf: PDF Stream).
+	self assert: (file referenceAt: (ObjectId number: 6)) baseObject size = 7.
+	self assert: (file referenceAt: (ObjectId number: 7)) baseObject = 663 asPDF
 %
 category: 'tests'
 method: FontEncodingTests
@@ -10229,7 +13922,7 @@ category: 'tests'
 method: ImageXTests
 testFixedImageAsSource
 	self assert: ImageXObject depth8Fixed asSource = (ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -10249,7 +13942,7 @@ s$g><)A,LHrGn6i]ec[E5Wh\/=?3"_?rs6$cNB=r55:`-N6J364n]E5QK^9"0lfoO8~>')) asSource
 method: ImageXTests
 testFixedMaskedImageAsSource
 	self assert: ImageXObject depth8Masked asSource = (ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -10259,7 +13952,7 @@ testFixedMaskedImageAsSource
 			add: #Length -> 1191;
 			add: #Filter -> #FlateDecode;
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 32;
@@ -10295,7 +13988,7 @@ A,J;00kM9D8/GG0KoFtoJV//I_oDd;(P5[M5OhMLP8.!#<l9\CrpRg;=r2d0FoDhhap.e~>')) asSou
 method: ImageXTests
 testMappedImageAsSource
 	self assert: ImageXObject depth6Mapped2 asSource = (ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 8;
@@ -10313,7 +14006,7 @@ testMappedImageAsSource
 method: ImageXTests
 testMaskImageAsSource
 	self assert: ImageXObject depth1Mask asSource = (ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -10362,7 +14055,7 @@ testMaskImagePrintAndRead
 category: 'tests'
 method: LibraryTests
 testVersion
-	self assert: PDF libraryVersionString = '2.0'
+	self assert: PDF libraryVersionString = '2.5'
 %
 category: 'tests'
 method: MatrixTests
@@ -10374,21 +14067,21 @@ test
 	self assert: a printString = '[3 5 2 6 9 8]'.
 	b := (PDF classAt: #Matrix) on: #(2 5 3 4 9 5).
 	self assert: b printString = '[2 5 3 4 9 5]'.
-	self assert: (a concatinatedWith: b) = ((PDF classAt: #Matrix) on: #(21 35 22 34 51 82)).
+	self assert: (a concatenatedWith: b) = ((PDF classAt: #Matrix) on: #(21 35 22 34 51 82)).
 	self assert: ((PDF classAt: #Matrix) translation: 10 @ 26) printString = '[1 0 0 1 10 26]'.
-	self assert: (((PDF classAt: #Matrix) translation: 10 @ 26) concatinatedWith: (PDF classAt: #Matrix) identity) printString = '[1 0 0 1 10 26]'.
-	self assert: ((PDF classAt: #Matrix) identity concatinatedWith: ((PDF classAt: #Matrix) translation: 10 @ 26)) printString = '[1 0 0 1 10 26]'.
-	self assert: (((PDF classAt: #Matrix) translation: 10 @ 26) concatinatedWith: ((PDF classAt: #Matrix) translation: 200 @ 300)) printString = '[1 0 0 1 210 326]'.
+	self assert: (((PDF classAt: #Matrix) translation: 10 @ 26) concatenatedWith: (PDF classAt: #Matrix) identity) printString = '[1 0 0 1 10 26]'.
+	self assert: ((PDF classAt: #Matrix) identity concatenatedWith: ((PDF classAt: #Matrix) translation: 10 @ 26)) printString = '[1 0 0 1 10 26]'.
+	self assert: (((PDF classAt: #Matrix) translation: 10 @ 26) concatenatedWith: ((PDF classAt: #Matrix) translation: 200 @ 300)) printString = '[1 0 0 1 210 326]'.
 	self assert: ((PDF classAt: #Matrix) scaling: 10 @ 26) printString = '[10 0 0 26 0 0]'.
-	self assert: (((PDF classAt: #Matrix) scaling: 10 @ 26) concatinatedWith: ((PDF classAt: #Matrix) scaling: 200 @ 300)) printString = '[2000 0 0 7800 0 0]'.
+	self assert: (((PDF classAt: #Matrix) scaling: 10 @ 26) concatenatedWith: ((PDF classAt: #Matrix) scaling: 200 @ 300)) printString = '[2000 0 0 7800 0 0]'.
 	self assert: ((PDF classAt: #Matrix) xFrom: 10 @ 10 to: 200 @ 200) printString = '[190 190 -190 190 10 10]'.
 	self assert: ((PDF classAt: #Matrix) rotation: 0) printString = '[1 0 0 1 0 0]'.
 	self assert: ((PDF classAt: #Matrix) rotation: 90 degreesToRadians) printString = '[0 1 -1 0 0 0]'.
 	self assert: ((PDF classAt: #Matrix) rotationDegrees: -90) printString = '[0 -1 1 0 0 0]'.
 	self assert: ((PDF classAt: #Matrix) rotationDegrees: 180) printString = '[-1 0 0 -1 0 0]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) scaling: 20 @ 30)) printString = '[0 30 -20 0 0 0]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatenatedWith: ((PDF classAt: #Matrix) scaling: 20 @ 30)) printString = '[0 30 -20 0 0 0]'.
 	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) printString = '[0 30 -20 0 0 0]'.
-	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatinatedWith: ((PDF classAt: #Matrix) translation: 20 @ 30)) printString = '[0 1 -1 0 20 30]'.
+	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) concatenatedWith: ((PDF classAt: #Matrix) translation: 20 @ 30)) printString = '[0 1 -1 0 20 30]'.
 	self assert: (((PDF classAt: #Matrix) rotationDegrees: 90) translatedBy: 20 @ 30) printString = '[0 1 -1 0 20 30]'.
 	self assert: ((((PDF classAt: #Matrix) rotationDegrees: 90) scaledBy: 20 @ 30) translatedBy: 20 @ 30) printString = '[0 30 -20 0 20 30]'.
 %
@@ -10400,7 +14093,7 @@ testSubclasses
 	self assert: (PDF classAt: #DeviceCMYK) empty pdfSource = '/DeviceCMYK'.
 	self assert: (PDF classAt: #DeviceGray) empty pdfSource = '/DeviceGray'.
 	self assert: (PDF classAt: #DeviceRGB) empty pdfSource = '/DeviceRGB'.
-	self assert: (PDF classAt: #Pattern) empty pdfSource = '/Pattern'.
+	self assert: (PDF classAt: #Identity) empty pdfSource = '/Identity'.
 	self assert: Clip empty pdfSource = 'W'.
 	self assert: ClipEvenOdd empty pdfSource = 'W*'.
 %
@@ -10434,7 +14127,7 @@ stream' , self stringLf , '
 		at: #W put: #(1 2 2);
 		at: #Filter put: #ASCIIHexDecode;
 		at: #Size put: 11;
-		at: #Root put: (file referenceAt: 1);
+		at: #Root put: (file referenceAt: (ObjectId number: 1));
 		at: #Length put: 154;
 		yourself) content.
 	xrefStream := (PDF classAt: #XRefStream) newFrom: stream.
@@ -10443,17 +14136,17 @@ stream' , self stringLf , '
 	self assert: xrefStream subsections first = (CrossReferenceSubsection
 		firstNumber: 0
 		entries: ((OrderedCollection new)
-			add: (FreeReference value: 0 number: 0 generation: 65535);
-			add: (UsedReference value: 50 number: 1 generation: 0);
-			add: (UsedReference value: 122 number: 2 generation: 0);
-			add: (UsedReference value: 172 number: 3 generation: 0);
-			add: (UsedReference value: 238 number: 4 generation: 0);
-			add: (UsedReference value: 370 number: 5 generation: 0);
-			add: (UsedReference value: 446 number: 6 generation: 0);
-			add: (StreamReference value: 10 number: 7 generation: 0);
-			add: (StreamReference value: 10 number: 8 generation: 1);
-			add: (StreamReference value: 10 number: 9 generation: 2);
-			add: (UsedReference value: 472 number: 10 generation: 0);
+			add: (FreeReference id: (ObjectId number: 0 generation: 65535) value: 0);
+			add: (UsedReference id: (ObjectId number: 1) value: 50);
+			add: (UsedReference id: (ObjectId number: 2) value: 122);
+			add: (UsedReference id: (ObjectId number: 3) value: 172);
+			add: (UsedReference id: (ObjectId number: 4) value: 238);
+			add: (UsedReference id: (ObjectId number: 5) value: 370);
+			add: (UsedReference id: (ObjectId number: 6) value: 446);
+			add: (StreamReference id: (ObjectId number: 7) value: 10);
+			add: (StreamReference id: (ObjectId number: 8 generation: 1) value: 10);
+			add: (StreamReference id: (ObjectId number: 9 generation: 2) value: 10);
+			add: (UsedReference id: (ObjectId number: 10) value: 472);
 			asArray))
 %
 method: ObjectStreamTests
@@ -10489,15 +14182,15 @@ stream' , self stringLf , '7 0 8 63 9 123
 	self assert: (objStm readAt: 0 with: file) = (PDF Dictionary
 		with: #Type -> #Font
 		with: #Subtype -> #TrueType
-		with: #FontDescriptor -> (file referenceAt: 12)).
+		with: #FontDescriptor -> (file referenceAt: (ObjectId number: 12))).
 	self assert: (objStm readAt: 1 with: file) = (PDF Dictionary
 		with: #Type -> #FontDescriptor
 		with: #Ascent -> 891
-		with: #FontFile2 -> (file referenceAt: 22)).
+		with: #FontFile2 -> (file referenceAt: (ObjectId number: 22))).
 	self assert: (objStm readAt: 2 with: file) = (PDF Dictionary
 		with: #Type -> #Font
 		with: #Subtype -> #Type0
-		with: #ToUnicode -> (file referenceAt: 10)).
+		with: #ToUnicode -> (file referenceAt: (ObjectId number: 10))).
 	self should: [objStm readAt: -1 with: file] raise: OffsetError.
 	self should: [objStm readAt: 3 with: file] raise: OffsetError
 %
@@ -10668,13 +14361,13 @@ testAddSecondPageToPages
 method: PagesTests
 testNestedPages
 	| root |
-	root := (PDF classAt: #Pages) exampleNestedPages root.
+	root := Document exampleNestedPages root.
 	self assert: root Pages structureString = '(#(###)#)'.
 %
 method: PagesTests
 testPageAt
 	| root |
-	root := (PDF classAt: #Pages) exampleNestedPages root.
+	root := Document exampleNestedPages root.
 	self assert: (root pageAt: 1) == root Pages Kids first.
 	self assert: ((root pageAt: 1) at: #Number) = 1 asPDF.
 	self assert: ((root pageAt: 2) at: #Number) = 2 asPDF.
@@ -10683,6 +14376,16 @@ testPageAt
 	self assert: ((root pageAt: 5) at: #Number) = 5 asPDF.
 	self should: [root pageAt: 0] raise: OffsetError.
 	self should: [root pageAt: 6] raise: OffsetError.
+%
+method: PagesTests
+testPageNumber
+	| root i |
+	root := Document exampleNestedPages root.
+	"root := PDF pdfSpecification root."
+	i := 0.
+	root pagesDo: [:page |
+		i := i + 1.
+		self assert: page pageNumber = i].
 %
 category: 'tests'
 method: PDFObjectTests
@@ -10714,41 +14417,64 @@ method: ReferenceTests
 testMinimalFile
 	| file |
 	file := File readFrom: File exampleMinimalByteArray readStream.
-	self assert: file header = (Header version: (Version major: 1 minor: 4)).
-	self assert: file trailer = ((PDF classAt: #Trailer) on: (OrderedDictionary
+	self assert: file header = (Header version: Version pdf1_4).
+	self assert: file trailer = ((PDF classAt: #Trailer) on: (Valuemap
 		with: #Size -> 7
-		with: #Root -> (file referenceAt: 1))).
-	self assert: (file trailer content at: #Root) = (file referenceAt: 1).
+		with: #Root -> (file referenceAt: (ObjectId number: 1)))).
+	self assert: (file trailer content at: #Root) = (file referenceAt: (ObjectId number: 1)).
 	self assert: (file trailer content at: #Root) isResolved not.
-	self assert: (file trailer content at: #Root) content = ((PDF classAt: #Catalog) on: (OrderedDictionary
+	self assert: (file trailer content at: #Root) content = ((PDF classAt: #Catalog) on: (Valuemap
 		with: #Type -> #Catalog
-		with: #Outlines -> (file referenceAt: 2)
-		with: #Pages -> (file referenceAt: 3))).
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3)))).
 	self assert: (file trailer content at: #Root) isResolved.
-	self assert: (file trailer content at: #Root) pdfObject = ((PDF classAt: #Catalog) on: (OrderedDictionary
+	self assert: (file trailer content at: #Root) pdfObject = ((PDF classAt: #Catalog) on: (Valuemap
 		with: #Type -> #Catalog
-		with: #Outlines -> (file referenceAt: 2)
-		with: #Pages -> (file referenceAt: 3))).
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3)))).
 	self assert: file trailer Size = 7 asPDF.
 	self assert: file trailer Size pdfObject = 7 asPDF.
-	self assert: (file crossReferences crossReferenceAt: (file referenceAt: 1)) = (UsedReference value: 9 number: 1 generation: 0).
-	self assert: (file referenceAt: 1) = (file referenceAt: 1).
-	self assert: (file readObjectFor: (file referenceAt: 1)) = (PDF Dictionary
+	self assert: (file crossReferenceAtId: (file referenceAt: (ObjectId number: 1))) = (UsedReference id: (ObjectId number: 1) value: 9).
+	self assert: (file referenceAt: (ObjectId number: 1)) = (file referenceAt: (ObjectId number: 1)).
+	self assert: (file referenceAt: (ObjectId number: 1)) baseObject = ((PDF classAt: #Catalog)
 		with: #Type -> #Catalog
-		with: #Outlines -> (file referenceAt: 2)
-		with: #Pages -> (file referenceAt: 3)).
-	self assert: (file referenceAt: 1) referent = ((PDF classAt: #Catalog)
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3))).
+	self assert: (file referenceAt: (ObjectId number: 1)) referent = ((PDF classAt: #Catalog)
 		with: #Type -> #Catalog
-		with: #Outlines -> (file referenceAt: 2)
-		with: #Pages -> (file referenceAt: 3))
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3)))
+%
+method: ReferenceTests
+testMissingObject
+	| file object doc bytes newFile outlines |
+	file := File readFrom: File exampleMinimalByteArrayWithFreeReference readStream.
+	self assert: (file trailer content at: #Root) pdfObject = ((PDF classAt: #Catalog) on: (Valuemap
+		with: #Type -> #Catalog
+		with: #Outlines -> (file referenceAt: (ObjectId number: 2))
+		with: #Pages -> (file referenceAt: (ObjectId number: 3)))).
+	self assert: (file crossReferenceAtId: (file referenceAt: (ObjectId number: 1))) = (UsedReference id: (ObjectId number: 1) value: 9).
+	self assert: (file referenceAt: (ObjectId number: 1)) = (file referenceAt: (ObjectId number: 1)).
+	self should: [(file referenceAt: (ObjectId number: 2)) baseObject] raise: FileError.
+	object := [(file referenceAt: (ObjectId number: 2)) baseObject] on: FileError do: [:ex |
+		ex resume].
+	self assert: object printString = 'MissingObject(2 0/!Outlines)'.
+	self assert: object myObject = (ObjectId number: 2).
+	self assert: object types = (Array with: (DirectType onSymbol: #Outlines)).
+	doc := file asDocument.
+	bytes := doc bytesForFile: 'test.pdf'.
+	newFile := File readFrom: bytes readStream.
+	outlines := [newFile root Outlines] on: TypeError do: [:ex | ex resume].
+	self assert: outlines printString = 'TypeMismatch(AsciiString/!Outlines)'.
+	self assert: outlines myObject printString = '(The original object is missing. It should have been a !Outlines)'
 %
 method: ReferenceTests
 testReferences
 	| file |
 	file := File readFrom: File exampleWithReferenceToReference readStream.
-	self assert: (file referenceAt: 7) isResolved not.
-	self should: [(file referenceAt: 7) referent] raise: TypeError.
-	[(file referenceAt: 7) referent] on: TypeError do: [:ex |
+	self assert: (file referenceAt: (ObjectId number: 7)) isResolved not.
+	self should: [(file referenceAt: (ObjectId number: 7)) referent] raise: TypeError.
+	[(file referenceAt: (ObjectId number: 7)) referent] on: TypeError do: [:ex |
 		self assert: ex description = 'References to References are not permitted.']
 %
 category: 'tests'
@@ -10931,26 +14657,28 @@ testDictionaryWrite
 %
 method: SimpleObjectTests
 testHeaderRead
-	self assert: (File readTesterOn: '%PDF-1.2') parser readHeaderVersion = (Version major: 1 minor: 2).
-	self assert: (File readTesterOn: '%PDF-1.7') parser readHeaderVersion = (Version major: 1 minor: 7).
-	self assert: (File readTesterOn: '%PDF-1.0') parser readHeaderVersion = (Version major: 1 minor: 0).
+	self assert: (File readTesterOn: '%PDF-1.2') parser readHeaderVersion = Version pdf1_2.
+	self assert: (File readTesterOn: '%PDF-1.7') parser readHeaderVersion = Version pdf1_7.
+	self assert: (File readTesterOn: '%PDF-1.0') parser readHeaderVersion = Version pdf1_0.
+	self assert: (File readTesterOn: '%PDF-2.0') parser readHeaderVersion = Version pdf2_0.
 	self assert: (File readTesterOn: '%PDF-1.12345') parser readHeaderVersion = (Version major: 1 minor: 12345).
 	self assert: (File readTesterOn: '%PDF-1.2
- %âãÏÓ') parser readHeaderVersion = (Version major: 1 minor: 2)
+ %âãÏÓ') parser readHeaderVersion = Version pdf1_2
 %
 method: SimpleObjectTests
 testHeaderReadErrors
 	self should: [(File readTesterOn: '%%PDF-1.0') parser readHeaderVersion] raise: ReadError.
 	[(File readTesterOn: '%%PDF-1.0') parser readHeaderVersion] on: ReadError do: [:ex |
-		self assert: ex description = '"%%PDF-1" is no PDF header! "%PDF-1." expected.'].
+		self assert: ex description = '"%%PDF" is no PDF header! "%PDF-" expected.'].
 	self should: [(File readTesterOn: 'PDF-1.0') parser readHeaderVersion] raise: ReadError.
 	[(File readTesterOn: 'PDF-1.0') parser readHeaderVersion] on: ReadError do: [:ex |
-		self assert: ex description = '"PDF-1.0" is no PDF header! "%PDF-1." expected.']
+		self assert: ex description = '"PDF-1" is no PDF header! "%PDF-" expected.']
 %
 method: SimpleObjectTests
 testHeaderVersion
-	self assert: Header example pdfVersion = Version pdf1_7.
-	self assert: Header example pdfVersion pdfSource = 'PDF-1.7'.
+	self assert: Header example pdfVersion = Version pdf1_0.
+	self assert: Header example version = Version pdf1_7.
+	self assert: Header example version pdfSource = 'PDF-1.7'.
 %
 method: SimpleObjectTests
 testHeaderWrite
@@ -11038,21 +14766,6 @@ testNullRead
 method: SimpleObjectTests
 testNullWrite
 	self assert: nil pdfSource = 'null'
-%
-method: SimpleObjectTests
-testNumberLimits
-	self shouldnt: [123 asPDF] raise: Error.
-	self shouldnt: [Integer on: Integer maxValue] raise: Error.
-	self shouldnt: [Integer on: Integer minValue] raise: Error.
-	self should: [Integer on: Integer maxValue + 1] raise: Error.
-	self should: [Integer on: Integer minValue - 1] raise: Error.
-	self shouldnt: [Real on: Real maxValue] raise: Error.
-	self shouldnt: [Real on: Real minValue] raise: Error.
-	self should: [Real on: Real maxValue + 1d23] raise: Error.
-	self should: [Real on: Real minValue - 1d23] raise: Error.
-	self assert: (Real on: 1d-37) = (Real on: 1d-37).
-	self assert: (Real on: 1d-38) = 0 asPDF.
-	self assert: (Real on: 1d-38) = (Real on: 1d-38)
 %
 method: SimpleObjectTests
 testNumberRead
@@ -11197,7 +14910,7 @@ category: 'tests'
 method: StreamTests
 testAddFilters
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	stream := PDF Stream on: dict internal: 'abcdef'.
 	self deny: (stream hasKey: #Filter).
 	stream filter: #ASCIIHexDecode.
@@ -11285,7 +14998,7 @@ testAveragePredictor
 method: StreamTests
 testDecodingError
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Length put: 20.
 	dict at: #Filter put: #DCTDecode.
 	stream := PDF Stream on: dict external: 'abcdefghijklmnopqrst'.
@@ -11300,7 +15013,7 @@ testDecodingError
 method: StreamTests
 testEncodingError
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #DCTDecode.
 	stream := PDF Stream on: dict internal: 'abcdef'.
 	self assert: stream size = 2.
@@ -11345,9 +15058,63 @@ testFlate
 			self assert: ex description = 'UserDefinedError: the checksum of the header is not correct']
 %
 method: StreamTests
+testFlateDecodingEmpty
+	| stream dict |
+	dict := Valuemap new.
+	dict at: #Filter put: #FlateDecode.
+	stream := PDF Stream on: dict external: ''.
+	self assert: stream size = 2.
+	self assert: stream Length = 0 asPDF.
+	self assert: stream Filter = #FlateDecode asPDF.
+	self shouldnt: [stream internal] raise: Error.
+	self assert: stream internal isEmpty
+%
+method: StreamTests
+testFlateDecodingZippedEmptyGemstone
+	"Gemstone zips an empty string to 6 bytes"
+
+	| stream dict |
+	dict := Valuemap new.
+	dict at: #Filter put: #FlateDecode.
+	stream := PDF Stream on: dict external: #[120 218 0 0 0 1] asString.
+	self assert: stream size = 2.
+	self assert: stream Length = 6 asPDF.
+	self assert: stream Filter = #FlateDecode asPDF.
+	self shouldnt: [stream internal] raise: Error.
+	self assert: stream internal isEmpty
+%
+method: StreamTests
+testFlateDecodingZippedEmptyVisualWorks
+	"VisualWorks zips an empty string to 8 bytes"
+
+	| stream dict |
+	dict := Valuemap new.
+	dict at: #Filter put: #FlateDecode.
+	stream := PDF Stream on: dict external: #[120 218 3 0 0 0 0 1] asString.
+	self assert: stream size = 2.
+	self assert: stream Length = 8 asPDF.
+	self assert: stream Filter = #FlateDecode asPDF.
+	self shouldnt: [stream internal] raise: Error.
+	self assert: stream internal isEmpty
+%
+method: StreamTests
+testFlateEncodingEmpty
+	| stream dict |
+	dict := Valuemap new.
+	dict at: #Filter put: #FlateDecode.
+	stream := PDF Stream on: dict internal: ''.
+	self assert: stream size = 2.
+	self assert: (stream Length = 8 asPDF "in VisualWorks" or: [
+	                 stream Length = 6 asPDF "in Gemstone"]).
+	self assert: stream Filter = #FlateDecode asPDF.
+	self shouldnt: [stream external] raise: Error.
+	self assert: (stream external asByteArray first: 2) = #[120 218].
+	self assert: (stream external asByteArray last: 4) = #[0 0 0 1]
+%
+method: StreamTests
 testMultipleDecodingErrors
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #CCITTFaxDecode).
 	stream := PDF Stream on: dict external: '6t(-ZBleA=C1/6%@;I&tBl5%mAU&:~>'.
 	self assert: stream size = 2.
@@ -11366,7 +15133,7 @@ testMultipleDecodingErrors
 method: StreamTests
 testMultipleDecodingErrors2
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#CCITTFaxDecode #ASCII85Decode).
 	stream := PDF Stream on: dict external: '6t(-ZBleA=C1/6%@;I&tBl5%mAU&:~>'.
 	self assert: stream size = 2.
@@ -11387,7 +15154,7 @@ testMultipleDecodingErrors2
 method: StreamTests
 testMultipleEncodingErrors
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #CCITTFaxDecode).
 	stream := PDF Stream on: dict internal: 'Das ist ja mal ein Text'.
 	self assert: stream size = 2.
@@ -11406,7 +15173,7 @@ testMultipleEncodingErrors
 method: StreamTests
 testMultipleEncodingErrors2
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#CCITTFaxDecode #ASCII85Decode).
 	stream := PDF Stream on: dict internal: 'Das ist ja mal ein Text'.
 	self assert: stream size = 2.
@@ -11426,7 +15193,7 @@ testMultipleEncodingErrors2
 method: StreamTests
 testMultipleEncodings
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #ASCIIHexDecode).
 	stream := PDF Stream on: dict internal: 'Das ist ja mal ein Text'.
 	self assert: stream size = 2.
@@ -11444,7 +15211,7 @@ testMultipleEncodings
 method: StreamTests
 testMultipleEncodingsWithEmptyParameters
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #ASCIIHexDecode).
 	dict
 		at: #DecodeParams
@@ -11457,7 +15224,7 @@ testMultipleEncodingsWithEmptyParameters
 method: StreamTests
 testMultipleEncodingsWithNullParameters
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #ASCIIHexDecode).
 	dict at: #DecodeParams put: #(nil nil).
 	stream := PDF Stream on: dict internal: 'Das ist ja mal ein Text'.
@@ -11466,7 +15233,7 @@ testMultipleEncodingsWithNullParameters
 method: StreamTests
 testMultipleEncodingsWithParameters
 	| stream dict |
-	dict := OrderedDictionary new.
+	dict := Valuemap new.
 	dict at: #Filter put: #(#ASCII85Decode #ASCIIHexDecode).
 	dict
 		at: #DecodeParams
@@ -11516,14 +15283,14 @@ testPDFVersion
 %
 method: StreamTests
 testRead
-	self assert: (File readTesterOn: '<</Length 0>>stream' , self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream' , self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
 	self assert: (File readTesterOn: '<< /Length 68 >>		% was: (An indirect reference to object 8)
 stream' , self stringLf , 'BT
 	/F1 12 Tf
 	72 712 Td
 	( A stream with an indirect length ) Tj
 ET' , self stringLf , 'endstream') readObject = (PDF Stream
-			on: (OrderedDictionary with: #Length -> 68)
+			on: (Valuemap with: #Length -> 68)
 			internal: 'BT
 	/F1 12 Tf
 	72 712 Td
@@ -11537,11 +15304,13 @@ testReadErrors
 	[(File readTesterOn: '<</Lenth 0>>stream' , self stringLf , 'endstream') readObject] on: ReadError do: [:ex |
 		self assert: ex description = 'The stream dictonary has no Length entry'].
 	file := File readTesterOn: '<</Length 0>>stream' , (String with: Character cr) , 'endstream'.
-	self shouldnt: [file readObject] raise: ReadError.
+	self should: [file readObject] raise: ReadError.
+	file := File readTesterOn: '<</Length 0>>stream' , (String with: Character cr) , 'endstream'.
+	[file readObject] on: ReadError do: [:ex | ex resume].
 	self assert: file parser errors first description = 'Read "$e". "<Character lf>" expected'.
 	file := File readTesterOn: '<</Length 0>>stream' , (String with: Character cr) , 'endstream'.
 	stream := [file readObject] on: ReadError do: [:ex |
-		self assert: ex description = 'Newline as start of the stream expected'.
+		self assert: ex description = 'Read "$e". "<Character lf>" expected'.
 		ex resume].
 	self assert: stream asSmalltalkValue = (PDF Dictionary with: #Length -> 0) asSmalltalkValue
 %
@@ -11580,11 +15349,79 @@ endstream'.
 method: StreamTests
 testReadStreamWithBlank
 	"found spaces after >stream< and LF in a Microsof bill - not sure if this is legal"
-	self assert: (File readTesterOn: '<</Length 0>>stream' , self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
-	self assert: (File readTesterOn: '<</Length 0>>stream' , (String with: Character cr), self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
-	self assert: (File readTesterOn: '<</Length 0>>stream ' , self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
-	self assert: (File readTesterOn: '<</Length 0>>stream ' , (String with: Character cr), self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
-	self assert: (File readTesterOn: '<</Length 0>>stream      ' , self stringLf , 'endstream') readObject = (PDF Stream on: (OrderedDictionary with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream' , self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream' , (String with: Character cr), self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream ' , self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream ' , (String with: Character cr), self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
+	self assert: (File readTesterOn: '<</Length 0>>stream      ' , self stringLf , 'endstream') readObject = (PDF Stream on: (Valuemap with: #Length -> 0) internal: '').
+%
+method: StreamTests
+testStreamLengthTooSmall
+	| stream file |
+	file := File readTesterOn: '<</Length 9>>
+stream
+abcdefghij
+endstream' withLf.
+	self should: [stream := file readObject] raise: ExtraCharacterInStreamError.
+	self assert: stream isNil
+%
+method: StreamTests
+testStreamLengthTooSmallByTwo
+	| stream file |
+	file := File readTesterOn: '<</Length 9>>
+stream
+abcdefghijk
+endstream' withLf.
+	self
+		should: [
+		[stream := file readObject] on: FileError do: [:ex |
+			self assert: ex class = ExtraCharacterInStreamError.
+			self assert: ex messageText = 'Extra character in stream'.
+			ex resume]]
+		raise: ReadError.
+	self assert: stream isNil.
+	self assert: file parser errors isEmpty.
+	self assert: file parser next = $k.
+	file := File readTesterOn: '<</Length 9>>
+stream
+abcdefghijk
+endstream' withLf.
+	[[stream := file readObject] on: FileError do: [:ex | ex resume]] on: ReadError do: [:ex |
+		self assert: ('Read #*k*. "endstream" expected' match: ex messageText)]
+%
+method: StreamTests
+testStreamLengthTooSmallHandled
+	| stream file |
+	file := File readTesterOn: '<</Length 9>>
+stream
+abcdefghij
+endstream' withLf.
+	[stream := file readObject] on: FileError do: [:ex | 
+		self assert: ex class = ExtraCharacterInStreamError.
+		self assert: ex messageText = 'Extra character in stream'.
+		ex resume].
+	self assert: stream Length = 9 asPDF.
+	self assert: stream internal = 'abcdefghi'.
+	self assert: file parser errors isEmpty.
+	self assert: file parser atEnd
+%
+method: StreamTests
+testStreamLengthTooSmallHandledWithWhitespace
+	| stream file |
+	file := File readTesterOn: '<</Length 9>>
+stream
+abcdefghij
+ 
+	  
+endstream' withLf.
+	[stream := file readObject] on: FileError do: [:ex | 
+		self assert: ex class = ExtraCharacterInStreamError.
+		self assert: ex messageText = 'Extra character in stream'.
+		ex resume].
+	self assert: stream Length = 9 asPDF.
+	self assert: stream internal = 'abcdefghi'.
+	self assert: file parser errors isEmpty.
+	self assert: file parser atEnd
 %
 method: StreamTests
 testSubPredictor
@@ -11872,7 +15709,7 @@ testCreationDate
 %
 method: TrailerTests
 testMD5Hash
-	self assert: ((PDFtalk at: #PDF) String content: ((PDFtalk at: #Trailer) new md5HashOf: 'Hello World - this is a MD5 teststring')) pdfHexSource = '<2816027FC2340BBEA7DED7ED134D47E4>'
+	self assert: (PDF String content: (Trailer new md5HashOf: 'Hello World - this is a MD5 teststring')) pdfHexSource = '<2816027FC2340BBEA7DED7ED134D47E4>'
 %
 method: TrailerTests
 testNoCreationDate
@@ -11914,8 +15751,8 @@ testRead
 	file := File readTesterOn: (PDF classAt: #Trailer) exampleString.
 	self assert: ((PDF classAt: #Trailer) readWith: file from: file parser) = ((PDF classAt: #Trailer)
 		with: #Size -> 22
-		with: #Root -> (file referenceAt: 2)
-		with: #Info -> (file referenceAt: 1)
+		with: #Root -> (file referenceAt: (ObjectId number: 2))
+		with: #Info -> (file referenceAt: (ObjectId number: 1))
 		with: #ID -> (Array
 			with: (File readTesterOn: '< 81b14aafa313db63dbd6f981e49f94f4 >') readObject
 			with: (File readTesterOn: '< 81b14aafa313db63dbd6f981e49f94f4 >') readObject) asPDF)
@@ -11926,20 +15763,18 @@ testWrite
 	file := File readTesterOn: (PDF classAt: #Trailer) exampleString.
 	trailerExample := (PDF classAt: #Trailer)
 		with: #Size -> 22
-		with: #Root -> (file referenceAt: 2)
-		with: #Info -> (file referenceAt: 1)
+		with: #Root -> (file referenceAt: (ObjectId number: 2))
+		with: #Info -> (file referenceAt: (ObjectId number: 1))
 		with: #ID -> (Array
 			with: (File readTesterOn: '< 81b14aafa313db63dbd6f981e49f94f4 >') readObject
 			with: (File readTesterOn: '< 81b14aafa313db63dbd6f981e49f94f4 >') readObject) asPDF.
 	self assert: ((PDF classAt: #Trailer) readWith: file from: file parser) = trailerExample.
-	self assert: trailerExample pdfSource = 'trailer
-<<	/Size 22
+	self assert: trailerExample pdfSource = '<<	/Size 22
 	/Root 2 0 R
 	/Info 1 0 R
 	/ID [	<81B14AAFA313DB63DBD6F981E49F94F4>
 		<81B14AAFA313DB63DBD6F981E49F94F4>]	>>' withLf.
-	self assert: (PDF classAt: #Trailer) exampleMinimal pdfSource = 'trailer
-<<	/Size 22
+	self assert: (PDF classAt: #Trailer) exampleMinimal pdfSource = '<<	/Size 22
 	/Root 0 0 R	>>' withLf
 %
 category: 'tests'
@@ -11983,27 +15818,27 @@ testArrayTypeRectangle
 	self assert: pdf hasRequiredAttributes.
 	self assert: pdf llx = 549 asPDF.
 	self assert: (pdf attributeTypesAt: 1) = (Array with: (ObjectType onSymbol: #Number)).
-	self assert: ((pdf at: 1 put: 'abc') isKindOf: TypeMismatch).
-	self assert: (pdf at: 1 put: 'abc') printString = 'TypeMismatch(AsciiString/Number)'.
-	self assert: ((pdf at: 1 put: 42) isKindOf: TypeMismatch) not.
+	self should: [pdf at: 1 put: 'abc'] raise: TypeError.
+	self assert: ([pdf at: 1 put: 'abc'] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(AsciiString/Number)'.
+	self shouldnt: [pdf at: 1 put: 42] raise: TypeError.
 	self assert: pdf llx = 42 asPDF.
-	self assert: (((PDF classAt: #Rectangle) on: #(1 2 3 #a)) last isKindOf: TypeMismatch).
-	self assert: ((PDF classAt: #Rectangle) on: #(1 2 3 #a)) last printString = 'TypeMismatch(Name/Number)'.
+	self should: [(PDF classAt: #Rectangle) on: #(1 2 3 #a)] raise: TypeError.
+	self assert: ([(PDF classAt: #Rectangle) on: #(1 2 3 #a)] on: TypeError do: [:ex | ex resume]) last printString = 'TypeMismatch(Name/Number)'.
 	self should: [(PDF classAt: #Rectangle) on: #(1 2 3)] raise: TypeError.
 	[(PDF classAt: #Rectangle) on: #(1 2 3)] on: TypeError do: [:ex |
 		self assert: ex description = 'the size of the argument (3) does not match the required number of attributes (4)'].
 	self should: [(PDF classAt: #Rectangle) on: #(1 2 3 4 5)] raise: TypeError.
 	[(PDF classAt: #Rectangle) on: #(1 2 3 4 5)] on: TypeError do: [:ex |
-		self assert: ex description = 'the size of the argument (5) does not match the required number of attributes (4)'].
+		self assert: ex description = 'the size of the argument (5) does not match the required number of attributes (4)']
 %
 method: TypecheckingTests
 testAttributes
 	| pdf |
 	pdf := (PDF classAt: #Catalog) new.
 	self deny: pdf hasRequiredAttributes.
-	self assert: ((pdf at: #Type put: 'abc') isKindOf: TypeMismatch).
-	self assert: (pdf at: #Type put: 'abc') printString = 'TypeMismatch(AsciiString/Name)'.
-	self assert: ((pdf at: #Type put: #Catalog) isKindOf: TypeMismatch) not.
+	self should: [pdf at: #Type put: 'abc'] raise: TypeError.
+	self assert: ([pdf at: #Type put: 'abc'] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(AsciiString/Name)'.
+	self shouldnt: [pdf at: #Type put: #Catalog] raise: TypeError.
 	self assert: pdf Type = #Catalog asPDF.
 	self assert: pdf Type asSmalltalkValue = #Catalog.
 	self deny: pdf hasRequiredAttributes.
@@ -12013,7 +15848,7 @@ testAttributes
 	self should: [pdf Pages] raise: LookupError.
 	self shouldnt: [pdf at: #Pages put: (PDF Dictionary with: #Type -> #Pages) newReference] raise: Error.
 	self assert: (pdf Pages isKindOf: (PDF classAt: #Pages)).
-	self assert: pdf Pages asSmalltalkValue = (OrderedDictionary with: #Type -> #Pages).
+	self assert: pdf Pages asSmalltalkValue = (Valuemap with: #Type -> #Pages).
 	self assert: pdf hasRequiredAttributes.
 	self assert: pdf Names isEmpty
 %
@@ -12042,25 +15877,28 @@ testColourSpaceSpecialization
 	self assert: (#DeviceGray asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #DeviceGray).
 	self assert: (#DeviceRGB asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #DeviceRGB).
 	self assert: (#DeviceCMYK asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #DeviceCMYK).
-	self assert: (#Pattern asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #Pattern).
+	self assert: (#(#Pattern) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #Pattern).
 	self assert: (#PatternX asPDF asType: (DirectType onSymbol: #ColourSpace)) isNil.
 	self assert: ((Array with: #CalGray with: PDF Dictionary new) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #CalGray).
 	self assert: ((Array with: #CalRGB with: PDF Dictionary new) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #CalRGB).
 	self assert: ((Array with: #Lab with: PDF Dictionary new) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #Lab).
 	self assert: ((Array with: #ICCBased with: (PDF Stream on: Dictionary new external: '  ')) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #ICCBased).
-	self assert: ((((Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 2) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 3) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 4) isKindOf: TypeMismatch).
+	self should: [(Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] raise: TypeError.
+	self assert: (([(Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 2) printString = 'TypeMismatch(Null/[Name])'.
+	self assert: (([(Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 3) printString = 'TypeMismatch(Null/DeviceColourSpace|CIEColourSpace)'.
+	self assert: (([(Array with: #DeviceN with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 4) printString = 'TypeMismatch(Null/Function)'.
 	self assert: ((Array with: #DeviceN with: #(#name) with: #DeviceCMYK with: (PDF classAt: #StichingFunction) empty) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #DeviceN).
-	self assert: ((((Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 2) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 3) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 4) isKindOf: TypeMismatch).
+	self should: [(Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] raise: TypeError.
+	self assert: (([(Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 2) printString = 'TypeMismatch(Null/ColourSpace)'.
+	self assert: (([(Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 3) printString = 'TypeMismatch(Null/Integer)'.
+	self assert: (([(Array with: #Indexed with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 4) printString = 'TypeMismatch(Null/Stream|String)'.
 	self assert: ((Array with: #Indexed with: #DeviceCMYK with: 255 with: PDF Stream empty) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #Indexed).
-	self assert: ((((Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 2) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 3) isKindOf: TypeMismatch).
-	self assert: ((((Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) at: 4) isKindOf: TypeMismatch).
+	self should: [(Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] raise: TypeError.
+	self assert: (([(Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 2) printString = 'TypeMismatch(Null/Name)'.
+	self assert: (([(Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 3) printString = 'TypeMismatch(Null/DeviceColourSpace|CIEColourSpace)'.
+	self assert: (([(Array with: #Separation with: nil with: nil with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] on: TypeError do: [:ex | ex resume]) at: 4) printString = 'TypeMismatch(Null/Function)'.
 	self assert: ((Array with: #Separation with: #cyan with: #DeviceCMYK with: (PDF classAt: #StichingFunction) empty) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #Separation).
-	self assert: (((Array with: #Pattern with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)) last isKindOf: TypeMismatch).
+	self should: [(Array with: #Pattern with: nil) asPDF asType: (DirectType onSymbol: #ColourSpace)] raise: TypeError.
 	self assert: ((Array with: #Pattern with: #DeviceCMYK) asPDF asType: (DirectType onSymbol: #ColourSpace)) class = (PDF classAt: #UncolouredPattern).
 	self assert: (5 asPDF asType: (DirectType onSymbol: #ColourSpace)) isNil
 %
@@ -12252,14 +16090,14 @@ testTypeNames
 	self assert: pdf hasRequiredAttributes.
 	self assert: pdf Names isEmpty.
 	self assert: (pdf attributeTypesAt: #Names) = (Array with: (ObjectType onSymbol: #Names)).
-	self assert: ((pdf at: #Names put: 'abc') isKindOf: TypeMismatch).
-	self assert: (pdf at: #Names put: 'abc') printString = 'TypeMismatch(AsciiString/Names)'.
-	self assert: ((pdf at: #Names put: #()) isKindOf: TypeMismatch).
-	self assert: (pdf at: #Names put: #()) printString = 'TypeMismatch(Array/Names)'.
-	self assert: ((pdf at: #Names put: PDF Dictionary new) isKindOf: TypeMismatch) not.
+	self should: [pdf at: #Names put: 'abc'] raise: TypeError.
+	self assert: ([(pdf at: #Names put: 'abc')] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(AsciiString/Names)'.
+	self should: [pdf at: #Names put: #()] raise: TypeError.
+	self assert: ([(pdf at: #Names put: #())] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(Array/Names)'.
+	self shouldnt: [pdf at: #Names put: PDF Dictionary new] raise: TypeError.
 	self assert: pdf Names = (PDF classAt: #Names) new.
-	self assert: ((pdf at: #Names put: PDF Stream new) isKindOf: TypeMismatch).
-	self assert: (pdf at: #Names put: PDF Stream new) printString = 'TypeMismatch(Stream/Names)'.
+	self should: [pdf at: #Names put: PDF Stream new] raise: TypeError.
+	self assert: ([(pdf at: #Names put: PDF Stream new)] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(Stream/Names)'.
 %
 method: TypecheckingTests
 testTypeReference
@@ -12270,18 +16108,24 @@ testTypeReference
 	pdf at: #First put: 13.
 	pdf at: #N put: 2.
 	self assert: pdf hasRequiredAttributes.
-	self assert: ((pdf at: #Extends put: (File new referenceAt: 1)) isKindOf: TypeMismatch) not.
-	self assert: ((pdf at: #Extends put: 'abc') isKindOf: TypeMismatch).
-	self assert: (pdf at: #Extends put: 'abc') printString = 'TypeMismatch(AsciiString/»ObjectStream)'.
+	self
+		shouldnt: [
+		pdf at: #Extends put: (File new referenceAt: (ObjectId number: 1))]
+		raise: TypeError.
+	self should: [pdf at: #Extends put: 'abc'] raise: TypeError.
+	self assert: ([pdf at: #Extends put: 'abc'] on: TypeError do: [:ex | ex resume]) printString = 'TypeMismatch(AsciiString/»ObjectStream)'
 %
 method: TypecheckingTests
 testTypeTrailer
 	| pdf |
 	pdf := (PDF classAt: #Trailer) new.
 	pdf at: #Size put: 7.
-	self shouldnt: [pdf at: #Root put: (PDF Dictionary with: #Type -> #Catalog) newReference] raise: TypeError.
+	self
+		shouldnt: [
+		pdf at: #Root put: (PDF Dictionary with: #Type -> #Catalog) newReference]
+		raise: TypeError.
 	self assert: pdf Root class = (PDF classAt: #Catalog).
-	pdf at: #Root put: (File new referenceAt: 1).
+	pdf at: #Root put: (File new referenceAt: (ObjectId number: 1)).
 	self assert: pdf hasRequiredAttributes
 %
 category: 'tests'
@@ -12290,7 +16134,7 @@ testAllTerminalSubtypes
 	self assert: ((PDF typeAt: #DeviceCMYK) allTerminalSubtypes collect: #name) asArray = #(#DeviceCMYK).
 	self assert: ((PDF typeAt: #CIEColourSpace) allTerminalSubtypes collect: #name) sorted asArray = #(#CalGray #CalRGB #ICCBased #Lab).
 	self assert: ((PDF typeAt: #DeviceColourSpace) allTerminalSubtypes collect: #name) sorted asArray = #(#DeviceCMYK #DeviceGray #DeviceRGB).
-	self assert: ((PDF typeAt: #ColourSpace) allTerminalSubtypes collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #UncolouredPattern).
+	self assert: ((PDF typeAt: #ColourSpace) allTerminalSubtypes collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #SimplePattern #UncolouredPattern)
 %
 method: TypingTests
 testIsClassForArray
@@ -12311,26 +16155,25 @@ testIsClassForArray
 %
 method: TypingTests
 testIsClassForDictionary
-	self assert: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: (OrderedDictionary with: #FunctionType -> 2) asPDF).
-	self assert: ((PDF classAt: #StichingFunction) isClassForDictionary: (OrderedDictionary with: #FunctionType -> 3) asPDF).
-	self deny: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: (OrderedDictionary with: #FunctionType -> -1) asPDF).
-	self deny: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: OrderedDictionary new asPDF).
+	self assert: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: (Valuemap with: #FunctionType -> 2) asPDF).
+	self assert: ((PDF classAt: #StichingFunction) isClassForDictionary: (Valuemap with: #FunctionType -> 3) asPDF).
+	self deny: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: (Valuemap with: #FunctionType -> -1) asPDF).
+	self deny: ((PDF classAt: #ExponentialInterpolationFunction) isClassForDictionary: Valuemap new asPDF).
 %
 method: TypingTests
 testIsClassForName
 	self assert: ((PDF classAt: #DeviceCMYK) isClassForName: #DeviceCMYK asPDF).
 	self assert: ((PDF classAt: #DeviceRGB) isClassForName: #DeviceRGB asPDF).
 	self assert: ((PDF classAt: #Identity) isClassForName: #Identity asPDF).
-	self assert: ((PDF classAt: #Pattern) isClassForName: #Pattern asPDF).
 	self deny: ((PDF classAt: #Name) isClassForName: #ABC asPDF).
 	self deny: ((PDF classAt: #DeviceColourSpace) isClassForName: #DeviceRGB asPDF).
 %
 method: TypingTests
 testIsClassForStream
-	self assert: ((PDF classAt: #PostScriptCalculatorFunction) isClassForStream: (PDF Stream on: (OrderedDictionary with: #FunctionType -> 4) external: '')).
-	self assert: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: (OrderedDictionary with: #FunctionType -> 0) external: '')).
-	self deny: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: (OrderedDictionary with: #FunctionType -> -1) external: '')).
-	self deny: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: OrderedDictionary new external: '')).
+	self assert: ((PDF classAt: #PostScriptCalculatorFunction) isClassForStream: (PDF Stream on: (Valuemap with: #FunctionType -> 4) external: '')).
+	self assert: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: (Valuemap with: #FunctionType -> 0) external: '')).
+	self deny: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: (Valuemap with: #FunctionType -> -1) external: '')).
+	self deny: ((PDF classAt: #SampledFunction) isClassForStream: (PDF Stream on: Valuemap new external: '')).
 %
 method: TypingTests
 testIsExemplarArrayOf
@@ -12364,8 +16207,7 @@ testIsExemplarDictionaryOf
 	self assert: ((Dictionary with: #Subtype -> #Link) asPDF canBeExemplarOf: (PDF typeAt: #LinkAnnotation)).
 	self assert: ((Dictionary with: #Subtype -> #Caret) asPDF canBeExemplarOf: (PDF typeAt: #CaretAnnotation)).
 	self assert: ((Dictionary with: #Subtype -> #'3D') asPDF canBeExemplarOf: (PDF typeAt: #ThreeDAnnotation)).
-	self assert: ((Dictionary with: #Type -> #Annot) asPDF canBeExemplarOf: (PDF typeAt: #Annot)).
-	"strange?"
+	self deny: ((Dictionary with: #Type -> #Annot) asPDF canBeExemplarOf: (PDF typeAt: #Annot)).
 	self assert: ((Dictionary with: #Type -> #Annot with: #Subtype -> #Link) asPDF canBeExemplarOf: (PDF typeAt: #Annot)).
 	self assert: ((Dictionary with: #Subtype -> #Type1 with: #BaseFont -> #MyFont) asPDF canBeExemplarOf: (PDF typeAt: #Type1)).
 	self assert: ((Dictionary with: #Subtype -> #Type0) asPDF canBeExemplarOf: (PDF typeAt: #Type0)).
@@ -12379,9 +16221,8 @@ testIsExemplarNameOf
 	self assert: (#DeviceRGB asPDF canBeExemplarOf: (PDF typeAt: #DeviceRGB)).
 	self assert: (#DeviceGray asPDF canBeExemplarOf: (PDF typeAt: #DeviceGray)).
 	self assert: (#Identity asPDF canBeExemplarOf: (PDF typeAt: #Identity)).
-	self assert: (#Pattern asPDF canBeExemplarOf: (PDF typeAt: #Pattern)).
 	
-	self deny: (#Identity asPDF canBeExemplarOf: (PDF typeAt: #Pattern)).
+	self deny: (#Identity asPDF canBeExemplarOf: (PDF typeAt: #DeviceGray)).
 	self deny: (#ABC asPDF canBeExemplarOf: (PDF typeAt: #Name)).
 	self deny: (#DeviceRGB asPDF canBeExemplarOf: (PDF typeAt: #ColourSpace)).
 %
@@ -12398,7 +16239,6 @@ testIsExemplarStreamOf
 	self deny: ((PDF Stream on: (Dictionary with: #ShadingType -> 6) external: '') canBeExemplarOf: (PDF typeAt: #TensorProductPatchMesh)).
 	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #Form) external: '') canBeExemplarOf: (PDF typeAt: #FormXObject)).
 	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #Image) external: '') canBeExemplarOf: (PDF typeAt: #ImageXObject)).
-	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #SoftMaskImage) external: '') canBeExemplarOf: (PDF typeAt: #SoftMaskImage)).
 	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #PS) external: '') canBeExemplarOf: (PDF typeAt: #PostScriptXObject)).
 	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #Form with: #Group -> 1) external: '') canBeExemplarOf: (PDF typeAt: #Group)).
 	self assert: ((PDF Stream on: (Dictionary with: #Subtype -> #Form with: #Group -> (Dictionary with: #S -> #Transparency)) external: '') canBeExemplarOf: (PDF typeAt: #TransparencyGroup)).
@@ -12430,6 +16270,18 @@ testSpecialized
 	self assert: (((PDF typeAt: #ColourSpace) specialized: #DeviceCMYK asPDF) isKindOf: (PDF classAt: #DeviceCMYK)).
 %
 method: TypingTests
+testSpecializedActions
+	self assert: (((PDF typeAt: #Action) specialized: (PDF classAt: #URI) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #URI)).
+	self assert: (((PDF typeAt: #Action) specialized: (Dictionary with: #S -> #URI) asPDF) isKindOf: (PDF classAt: #URI)).
+	self assert: (((PDF typeAt: #Action) specialized: (Dictionary with: #S -> #GoTo) asPDF) isKindOf: (PDF classAt: #Action)).
+%
+method: TypingTests
+testSpecializedAnnotations
+	self assert: (((PDF typeAt: #Annot) specialized: (PDF classAt: #LinkAnnotation) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #LinkAnnotation)).
+	self assert: (((PDF typeAt: #Annot) specialized: (Dictionary with: #Subtype -> #Link) asPDF) isKindOf: (PDF classAt: #LinkAnnotation)).
+	self assert: (((PDF typeAt: #Annot) specialized: (Dictionary with: #Subtype -> #Unknown) asPDF) isKindOf: (PDF classAt: #Annot)).
+%
+method: TypingTests
 testSpecializedColors
 	self assert: (((PDF typeAt: #DeviceCMYK) specialized: #DeviceCMYK asPDF) isKindOf: (PDF classAt: #DeviceCMYK)).
 	self assert: (((PDF typeAt: #DeviceColourSpace) specialized: #DeviceCMYK asPDF) isKindOf: (PDF classAt: #DeviceCMYK)).
@@ -12444,14 +16296,14 @@ testSpecializedColors
 	self assert: (((PDF typeAt: #ColourSpace) specialized: #(#DeviceN #(#Red) #DeviceCMYK #Identity) asPDF) isKindOf: (PDF classAt: #DeviceN)).
 	self assert: (((PDF typeAt: #ColourSpace) specialized: #(#Indexed #DeviceCMYK 1 '') asPDF) isKindOf: (PDF classAt: #Indexed)).
 	self assert: (((PDF typeAt: #ColourSpace) specialized: #(#Separation #All #DeviceCMYK #Identity) asPDF) isKindOf: (PDF classAt: #Separation)).
-	self assert: (((PDF typeAt: #ColourSpace) specialized: #Pattern asPDF) isKindOf: (PDF classAt: #Pattern)).
+	self assert: (((PDF typeAt: #ColourSpace) specialized: #(#Pattern) asPDF) isKindOf: (PDF classAt: #Pattern)).
 	self assert: (((PDF typeAt: #ColourSpace) specialized: #(#Pattern #DeviceCMYK) asPDF) isKindOf: (PDF classAt: #UncolouredPattern)).
 %
 method: TypingTests
 testSpecializedFonts
 	self assert: (((PDF typeAt: #Font) specialized: (PDF classAt: #CIDFontType0) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #CIDFontType0)).
 	self assert: (((PDF typeAt: #Font) specialized: (PDF classAt: #CIDFontType2) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #CIDFontType2)).
-	self assert: ((PDF typeAt: #Font) specialized: (PDF classAt: #CIDFont) empty asSmalltalkValue asPDF) isNil.
+	self assert: (((PDF typeAt: #Font) specialized: (PDF classAt: #CIDFont) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #CIDFont)).
 	self assert: (((PDF typeAt: #CIDFont) specialized: (PDF classAt: #CIDFontType0) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #CIDFontType0)).
 	self assert: (((PDF typeAt: #CIDFont) specialized: (PDF classAt: #CIDFontType2) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #CIDFontType2)).
 	self assert: (((PDF typeAt: #Font) specialized: (PDF classAt: #Type0) empty asSmalltalkValue asPDF) isKindOf: (PDF classAt: #Type0)).
@@ -12471,13 +16323,13 @@ testSpecializedFunctions
 %
 method: TypingTests
 testSpecializedShadings
-	self assert: (((PDF typeAt: #Shading) specialized: (OrderedDictionary with: #ShadingType -> 1) asPDF) isKindOf: (PDF classAt: #FunctionBasedShading)).
-	self assert: (((PDF typeAt: #Shading) specialized: (OrderedDictionary with: #ShadingType -> 2) asPDF) isKindOf: (PDF classAt: #AxialShading)).
-	self assert: (((PDF typeAt: #Shading) specialized: (OrderedDictionary with: #ShadingType -> 3) asPDF) isKindOf: (PDF classAt: #RadialShading)).
-	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (OrderedDictionary with: #ShadingType -> 4) external: '')) isKindOf: (PDF classAt: #FreeFormGouraudShadedMesh)).
-	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (OrderedDictionary with: #ShadingType -> 5) external: '')) isKindOf: (PDF classAt: #LatticeFormGouraudShadedMesh)).
-	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (OrderedDictionary with: #ShadingType -> 6) external: '')) isKindOf: (PDF classAt: #CoonsPatchMesh)).
-	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (OrderedDictionary with: #ShadingType -> 7) external: '')) isKindOf: (PDF classAt: #TensorProductPatchMesh)).
+	self assert: (((PDF typeAt: #Shading) specialized: (Valuemap with: #ShadingType -> 1) asPDF) isKindOf: (PDF classAt: #FunctionBasedShading)).
+	self assert: (((PDF typeAt: #Shading) specialized: (Valuemap with: #ShadingType -> 2) asPDF) isKindOf: (PDF classAt: #AxialShading)).
+	self assert: (((PDF typeAt: #Shading) specialized: (Valuemap with: #ShadingType -> 3) asPDF) isKindOf: (PDF classAt: #RadialShading)).
+	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (Valuemap with: #ShadingType -> 4) external: '')) isKindOf: (PDF classAt: #FreeFormGouraudShadedMesh)).
+	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (Valuemap with: #ShadingType -> 5) external: '')) isKindOf: (PDF classAt: #LatticeFormGouraudShadedMesh)).
+	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (Valuemap with: #ShadingType -> 6) external: '')) isKindOf: (PDF classAt: #CoonsPatchMesh)).
+	self assert: (((PDF typeAt: #Shading) specialized: (PDF Stream on: (Valuemap with: #ShadingType -> 7) external: '')) isKindOf: (PDF classAt: #TensorProductPatchMesh)).
 %
 method: TypingTests
 testSubtype
@@ -12541,7 +16393,7 @@ testTypingFlowArray
 	self assert: (attributeType specializedArray: pdfObject) pdfType name = #DeviceN.
 	self assert: (attributeType specializedObject: pdfObject) pdfType name = #DeviceN.
 	self assert: (attributeType type specialized: pdfObject) pdfType name = #DeviceN.
-	self assert: ((attributeType type allTerminalSubtypes) collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #UncolouredPattern).
+	self assert: ((attributeType type allTerminalSubtypes) collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #SimplePattern #UncolouredPattern).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceGray)).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceRGB)).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceCMYK)).
@@ -12599,7 +16451,7 @@ testTypingFlowName
 	self assert: (pdfObject asType: attributeType) pdfType name = #DeviceCMYK.
 	self assert: (attributeType specializedObject: pdfObject) pdfType name = #DeviceCMYK.
 	self assert: (attributeType type specialized: pdfObject) pdfType name = #DeviceCMYK.
-	self assert: ((attributeType type allTerminalSubtypes) collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #UncolouredPattern).
+	self assert: ((attributeType type allTerminalSubtypes) collect: #name) sorted asArray = #(#CalGray #CalRGB #DeviceCMYK #DeviceGray #DeviceN #DeviceRGB #ICCBased #Indexed #Lab #Pattern #Separation #SimplePattern #UncolouredPattern).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceGray)).
 	self deny: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceRGB)).
 	self assert: (pdfObject canBeExemplarOf: (PDF typeAt: #DeviceCMYK)).
@@ -12667,36 +16519,22 @@ DoIt
 	dict := SymbolDictionary new.
 	dict name: #'PDFtalk Demonstrations'.
 	dict at: #comment put: 'Examples for using PDFtalk'.
-	dict at: #isFunctional put: false.
-	dict at: #notice put: '''The MIT License
-
-Copyright © 2011-2017 Christian Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.'''.
+	dict at: #isFunctional put: true.
+	dict at: #notice put: ''.
 	dict at: #packageName put: 'PDFtalk Demonstrations'.
-	dict at: #storeVersion put: '2.0.0.5'.
+	dict at: #storeVersion put: '2.5.0.2'.
 	components := (GsPackageLibrary packageNamed: #PDFtalkTesting) symbolDict at: #codeComponents.
-	components := (components at:  #'PDFtalk Testing') at: #codeComponents.
 	components at: dict name put: dict.
 %
 DoIt
 System myUserProfile insertDictionary: PDFtalk at: 1.
+%
+category: '*PDFtalk Demonstrations-actions'
+method: Document
+saveAndShowAs: aFilenameString
+	| dir |
+	dir := (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/'.
+	self saveAs: dir , aFilenameString
 %
 category: '*PDFtalk Demonstrations-demo images'
 classmethod: ImageXObject
@@ -12705,7 +16543,7 @@ balloonImage
 	self balloonImageCreated asMethod: #balloonImage in: #'demo images' package: 'PDFtalk Demonstrations' "
 
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -12723,7 +16561,7 @@ balloonImage
 classmethod: ImageXObject
 balloonInvertedImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 10)
+		on: ((Valuemap new: 10)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -12734,7 +16572,7 @@ balloonInvertedImage
 			add: #Filter -> #FlateDecode;
 			add: #Decode -> #(1 0 1 0 1 0);
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 16;
@@ -12752,7 +16590,7 @@ balloonInvertedImage
 classmethod: ImageXObject
 balloonMaskedImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -12765,7 +16603,7 @@ balloonMaskedImage
 			add: #Length -> 92;
 			add: #Filter -> #FlateDecode;
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 16;
@@ -12783,7 +16621,7 @@ balloonMaskedImage
 classmethod: ImageXObject
 balloonMaskImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 16;
@@ -12799,7 +16637,7 @@ balloonMaskImage
 classmethod: ImageXObject
 buttonAlphaImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 64;
@@ -12807,9 +16645,9 @@ buttonAlphaImage
 			add: #BitsPerComponent -> 8;
 			add: #ColorSpace -> #DeviceRGB;
 			add: #Length -> 1148;
-			add: #SMask -> (SoftMaskImage
-				on: ((OrderedDictionary new: 7)
-					add: #Subtype -> #SoftMaskImage;
+			add: #SMask -> (ImageXObject
+				on: ((Valuemap new: 7)
+					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 64;
 					add: #Height -> 32;
@@ -12869,7 +16707,7 @@ buttonAlphaImage
 classmethod: ImageXObject
 fixedDepth6Image
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 8;
@@ -12884,7 +16722,7 @@ fixedDepth6Image
 classmethod: ImageXObject
 pdfIconFigureImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 8)
+		on: ((Valuemap new: 8)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -12917,7 +16755,7 @@ pdfIconFigureImage
 classmethod: ImageXObject
 pdfIconImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -12927,7 +16765,7 @@ pdfIconImage
 			add: #Length -> 1191;
 			add: #Filter -> #FlateDecode;
 			add: #Mask -> (ImageXObject
-				on: ((OrderedDictionary new: 9)
+				on: ((Valuemap new: 9)
 					add: #Subtype -> #Image;
 					add: #Type -> #XObject;
 					add: #Width -> 32;
@@ -12963,7 +16801,7 @@ pdfIconImage
 classmethod: ImageXObject
 pdfIconMaskImage
 	^ImageXObject
-		on: ((OrderedDictionary new: 9)
+		on: ((Valuemap new: 9)
 			add: #Subtype -> #Image;
 			add: #Type -> #XObject;
 			add: #Width -> 32;
@@ -12979,13 +16817,29 @@ pdfIconMaskImage
 category: '*PDFtalk Demonstrations-actions'
 method: Page
 saveAndShowAs: aFilenameString
-	| document dir |
+	| document |
 	document := Document new.
 	document root addPage: self.
-	dir := (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/'.
-	document saveAs: dir , aFilenameString
+	document saveAndShowAs: aFilenameString
 %
 category: '*PDFtalk Demonstrations-demos'
+classmethod: PDF
+allDemos_appendPDFs
+	"shows how to add all pages of a PDF to another.
+	We take all pdfs from the current directory which start with 'demo' and append them all to a new document"
+	"PDF allDemos_appendPDFs"
+
+	| doc files |
+	doc := Document new.
+	files := GsFile
+		contentsOfDirectory: (GsFile _expandEnvVariable: 'HOME' isClient: false)
+		onClient: false.
+	(files select: [:path | '*/demo*.pdf' match: path]) sorted do: [:path |
+		| file |
+		file := GsFile openReadOnServer: path.
+		doc appendAllPagesFrom: (File readFrom: file)].
+	doc saveAndShowAs: 'allDemos_appendPDFs.pdf'
+%
 classmethod: PDF
 demo01_HelloWorld
 	"PDF demo01_HelloWorld"
@@ -13004,9 +16858,7 @@ demo01_minimalPDF
 	"bare bones for showing the internals (dont worry - most of that is abstracted away (see next demos)"
 	"self demo01_minimalPDF"
 
-	| doc root page trailer refs wst xrefs startxref fst |
-	doc := Document new.
-	doc initializeVersion: Version pdf1_0.	"artefact"
+	| root page trailer refs writer xrefs startxref fst |
 	root := (PDF classAt: #Catalog) new.
 	root at: #Type put: #Catalog.
 	root at: #Pages put: (PDF classAt: #Pages) new newReference.
@@ -13022,21 +16874,19 @@ demo01_minimalPDF
 	trailer at: #Root put: root newReference.
 	refs := trailer tracedReferences.
 	trailer at: #Size put: refs size + 1.
-	doc assignObjectNumbersTo: refs.
-	wst := Writer on: String new.
-	doc writeHeaderOn: wst.
-	xrefs := doc writeObjects: refs on: wst.
-	startxref := wst position.
-	wst cr.
-	xrefs writePDFOn: wst indent: 0.
-	wst cr.
-	trailer writePDFOn: wst indent: 0.
-	doc writeStartxref: startxref on: wst.
+	refs doWithIndex: [:reference :id | reference assignNewNumber: id].
+	writer := Writer new.
+	writer writeVersionHeader: (Version highestVersionIn: refs).
+	xrefs := writer writeObjects: refs.
+	startxref := writer position.
+	writer writeCrossReferenceSection: xrefs.
+	writer writeTrailer: trailer.
+	writer writeStartxref: startxref.
 	fst := GsFile
 		open: (GsFile _expandEnvVariable: 'HOME' isClient: false) , '/demo01_minimalPDF.pdf'
 		mode: 'wb'
 		onClient: false.
-	[fst nextPutAll: wst contents asByteArray] ensure: [fst close]
+	[fst nextPutAll: writer contents] ensure: [fst close]
 %
 classmethod: PDF
 demo01a_normalPDF
@@ -13218,8 +17068,8 @@ demo03d_text_Underline
 		renderer linewidth: underlineLinewidth.
 		underlinePosition := (((PDFtalk at: #Fonts) at: #Font) fontAt: #Helvetica) underlinePositionInTextSpace * scale.
 		renderer moveTo: 5 @ (10 + underlinePosition).
-		stringWidth := (((PDFtalk at: #Fonts) at: #Font) fontAt: #Helvetica) stringWidthOf: string at: scale.
-		renderer lineTo: 5 + stringWidth @ (10 + underlinePosition).
+		stringWidth := ((((PDFtalk at: #Fonts) at: #Font) fontAt: #Helvetica) widthOfString: string) * scale.
+		renderer lineTo: (5 + stringWidth) @ (10 + underlinePosition).
 		renderer stroke].
 	page saveAndShowAs: 'demo03d_text_Underline.pdf'
 %
@@ -13565,7 +17415,8 @@ demo12_copyPagesToNewPDF
 	[
 	| root |
 	root := (File readFrom: inputStream) root.
-	10 to: 20 do: [:pageNumber | extractedDocument root addPage: (root pageAt: pageNumber)].
+	10 to: 20 do: [:pageNumber |
+		extractedDocument root addPage: (root pageAt: pageNumber) copyIsolatedWithNewReferences].
 	extractedDocument saveAs: targetFilename] ensure: [
 			inputStream close].
 	^targetFilename
@@ -13584,7 +17435,7 @@ demo13_splitPDF
 	inputPDF root pagesDo: [:page |
 		| targetFilename onePageDocument |
 		onePageDocument := Document new.
-		onePageDocument root addPage: page.
+		onePageDocument root addPage: page copyIsolatedWithNewReferences.
 		targetFilename := (filename asString allButLast: 4) , '_' , pageNumber printString , '.pdf'.
 		onePageDocument saveAs: targetFilename.
 		pageNumber := pageNumber + 1]] ensure: [
@@ -13594,9 +17445,11 @@ classmethod: PDF
 demo14_addAnnotation
 	"PDF demo14_addAnnotation"
 
-	| clone filename |
+	| filename inputStream clone |
 	filename := self demo12_copyPagesToNewPDF.
-	clone := (File readFrom: (GsFile openReadOnServer: filename)) asDocument.
+	inputStream := GsFile openReadOnServer: filename.
+	clone := (File readFrom: inputStream) asDocument.
+	[
 	clone root pagesDo: [:page |
 		| newAnnotation popupAnnotation popupAnnotationRef |
 		newAnnotation := (PDF classAt: #TextAnnotation) empty.
@@ -13611,7 +17464,8 @@ demo14_addAnnotation
 		page
 			at: #Annots
 			put: ((page Annots with: newAnnotation newReference) with: popupAnnotationRef)].
-	clone saveAs: (filename asString allButLast: 4) , '_Annotated.pdf'
+	clone saveAs: (filename asString allButLast: 4) , '_Annotated.pdf'] ensure: [
+			inputStream close]
 %
 classmethod: PDF
 demo20_ImagesUsage
@@ -13720,7 +17574,8 @@ runAllDemos
 	PDF demo13_splitPDF.
 	PDF demo14_addAnnotation.
 	PDF demo20_ImagesUsage.
-	PDF demo21_Images
+	PDF demo21_Images.
+	PDF allDemos_appendPDFs
 %
 category: '*PDFtalk Demonstrations-demos'
 method: Renderer
