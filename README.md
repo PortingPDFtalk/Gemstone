@@ -5,7 +5,7 @@ See the wiki page [PDFtalk for Gemstone](https://wiki.pdftalk.de/doku.php?id=pdf
 
 * **PDFtalk.gs** is the runtime library in Gemstone topaz source format
 
-* **PDFtalkWithCMaps.gs** is the same with all standard CMaps included (needed to work with Asian texts
+* **PDFtalkWithCMaps.gs** is the same with all standard CMaps included (needed to work with Asian texts)
 
 * **PDFtalkTesting.gs** contains tests and demos
 
