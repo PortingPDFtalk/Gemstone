@@ -1,4 +1,4 @@
-# PDFtalk-for-Gemstone
+# PDFtalk for Gemstone
 Library for reading and writing PDF files for [`GsDevKit for Gemstone`](https://github.com/GsDevKit/GsDevKit_home).
 
 See the wiki page [PDFtalk for Gemstone](https://wiki.pdftalk.de/doku.php?id=pdftalk4gemstone) for details.
